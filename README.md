@@ -59,7 +59,7 @@ end
 require 'social_web'
 
 class MyApp < Roda
-  use SocialWeb::Routes
+  use SocialWeb
 end
 ```
 

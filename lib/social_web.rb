@@ -7,4 +7,8 @@ require 'social_web/configuration'
 require 'social_web/hooks'
 require 'social_web/routes'
 
-module SocialWeb; end
+module SocialWeb
+  def self.new(app, *args, &block)
+    Routes.new(app, *args, &block)
+  end
+end
