@@ -84,7 +84,8 @@ SocialWeb.configure do |config|
 end
 ```
 
-Check the docs for the relevant library's configuration.
+Check the docs for the relevant library's configuration. The library's are 
+loaded by deafult. You can set these namespaces to `false` to disable them.
 
 | Namespace          | Configuration
 | ------------------ |---------------------------------------------------------------------
