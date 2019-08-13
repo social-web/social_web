@@ -11,4 +11,8 @@ module SocialWeb
   def self.new(app, *args, &block)
     Routes.new(app, *args, &block)
   end
+
+  def self.call(env)
+    Routes.call(env)
+  end
 end

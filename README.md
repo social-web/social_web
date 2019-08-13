@@ -48,7 +48,7 @@ end
 # config/routes.rb
 
 Rails.application.routes.draw do
-  mount SocialWeb
+  mount SocialWeb, at: '/'
 end
 ```
 
