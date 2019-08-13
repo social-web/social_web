@@ -13,7 +13,7 @@ SocialWeb to federate an existing app.
 * [Setup](#setup)
   * [Install](#1-install)
   * [Configure](#2-configure)
-  * [Mount](#3-mount)
+  * [Rack up](#3-rack-up)
     * [Rails](#rails)
     * [Roda](#roda)
     * [Any rack app](#any-rack-app)
@@ -40,7 +40,7 @@ SocialWeb.configure do |config|
 end
 ```
 
-### 3. Mount
+### 3. Rack up
 
 #### Rails
 
@@ -52,24 +52,22 @@ Rails.application.routes.draw do
 end
 ```
 
-#### Roda
-
-```ruby
-
-require 'social_web'
-
-class MyApp < Roda
-  use SocialWeb
-end
-```
-
 #### Any Rack app
+
+##### As middleware
 
 ```ruby
 # config.ru
 
-use SocialWeb::Routes
+use SocialWeb
 run MyApp
+```
+
+##### As an app
+```ruby
+# config.ru
+
+run SocialWeb
 ```
 
 ## Configuration
