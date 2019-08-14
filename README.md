@@ -100,7 +100,7 @@ SocialWeb is extensible via hooks. Register a hook with a callable object to
 react to events handled by SocialWeb.
 
 ```ruby
-SocialWeb::Hooks.register('activity_pub.inbox.after_post') do |activity, response|
+SocialWeb.add_hook('activity_pub.inbox.after_post') do |activity, response|
   MyApp::ProcessActivity.perform_later(activity) if response.ok?
 end
 ```
@@ -109,7 +109,8 @@ end
 
 | Name                             | Arguments
 | -------------------------------- |---------------
-| activity_pub.inbox.before_post   | `Rack::Request`
-| activity_pub.inbox.after_post    | `ActivityStreams::Object`, `Rack::Response`
-| well_known.webfinger.before_get  | `Rack::Request`
-| well_known.webfinger.after_get   | `Rack::Response`
+| activity_pub.inbox.post.around   | `Rack::Request`
+| activity_pub.inbox.post.before   | `Rack::Request`
+| activity_pub.inbox.post.after    | `ActivityStreams::Object`, `Rack::Response`, `Rack::Request`
+| well_known.webfinger.get.before  | `Rack::Request`
+| well_known.webfinger.get.after   | `Rack::Response`, `Rack::Request`
