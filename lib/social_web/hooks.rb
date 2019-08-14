@@ -2,7 +2,7 @@
 
 module SocialWeb
   def self.add_hook(name, &hook)
-    Hooks::Registry.instance.register(name, &blk)
+    Hooks::Registry.instance.register(name, &hook)
   end
 
   module Hooks
