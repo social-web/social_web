@@ -17,6 +17,8 @@ SocialWeb to federate an existing app.
     * [Rails](#rails)
     * [Roda](#roda)
     * [Any rack app](#any-rack-app)
+* [Configuration](#configuration)
+* [Hooks](#hooks)
 
 ## Setup
 
