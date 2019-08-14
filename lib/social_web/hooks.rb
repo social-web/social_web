@@ -14,9 +14,9 @@ module SocialWeb
       hooks = Registry.instance[name]
       hooks&.each do |hook|
         hook.call(*args, **kwargs)
-      rescue StandardError => e
-        raise FailedHook.new(name, hook.source_location, e)
       end
+    rescue StandardError => e
+      raise FailedHook.new(name, hook.source_location, e)
     end
 
     class Registry
