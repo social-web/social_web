@@ -11,28 +11,27 @@ module ActivityPub
         Rack::Request.new(env)
       end
 
-      #   "signature": {
-      #     "type": "RsaSignature2017",
-      #     "creator": "https://ruby.social/users/shanecav#main-key",
-      #     "created": "2019-08-06T13:18:53Z",
-      #     "signatureValue": "Y6wqiUgqm/ykzKw/jCtsB5fQciGq9TMILNt57FanVg5N8UfLg4vG7Z9Xg6jIAMb++UzyDCW2oc3k9OzD/w0iCSsbMG3Mi+0OdVXNEK7DarDMWJHLgOTaUMW7C/hY8Z+OlhbSu+VvhRVuFUETgTxCDxnGSydZyFL8PTjNQ52hbEbkDqKyS+SwyQqr4T4niM5c631cwlVfX8cwSPWKdNjEpQGyqSp4nqxfw//Mtz4n6eK4X0FcZVoGA8ZddZXViZB/xw0SZfxj+ctKqz2BHRtn7f3MNMlkIBdhuqbIy46DfTODQFnnbHsuLykR8uXL7d1nf27sEdczxzcWRgnK8dG+aQ=="
-      #   }
       def verify_signature
-        return if request_method.downcase != 'post'
-        return if [nil, ''].include?(each_header.to_h['Signature'])
+        headers = each_header.to_h
+        signature_header = headers.delete('Signature')
+        return if !request_method.casecmp?('post')
+        return if [nil, ''].include?(signature_header)
 
         # Parse Authorization header to return algorithm, headers,
         # keyid, and signature parameters
-        signature_header = headers['Signature'].
-          downcase.
+        signature_params = signature_header.
           split(',').
-          map { |p| p.match(/(?<param>[a-z]+)="(?<value>.*?)"/) }.
-          each_with_object({}) do |match_data, hsh|
-          hsh[match_data[:param]] = match_data[:value]
+          map { |p| p.match(/(?<key>.+?)="?(?<value>.*?)"?$/) }.
+          each_with_object({}) do |param, hsh|
+            hsh[param[:key]] = if param[:value].to_i.to_s == param[:value]
+              param[:value].to_i
+            else
+              param[:value]
+            end
         end
 
         # Construct the signature string for comparison
-        request_target = "#{request_method.downcase} #{path}"
+        request_target = "#{request_method.downcase} #{fullpath}"
         signing_headers = { '(request-target)': request_target }.
           merge(headers).
           transform_keys(&:downcase)
@@ -45,7 +44,7 @@ module ActivityPub
         #     legacy OStatus format
         #     - https://github.com/tootsuite/mastodon/issues/4906#issuecomment-328844846
         #   uri: https://example.com
-        #   uri with fragment: https://example.com
+        #   uri with fragment: https://example.com#main-key
         # From: https://github.com/tootsuite/mastodon/issues/4906#issuecomment-328844846
         #   Mastodon will ignore actors without WebFinger (it performs verification for username@domain ownership), and Mastodon
         #   will ignore actors without an inbox.
@@ -56,14 +55,12 @@ module ActivityPub
         #
         #   For legacy, OStatus purposes the keyId can also be [acct:]username@domain, since OStatus used to return magic
         #   key in WebFinger.
-        public_key = Clients.http.get(signature_header[:keyid]).body
+        public_key = Clients.http.get(signature_params['keyid']).body
 
         digest = OpenSSL::Digest::SHA256.new
-        public_key = OpenSSL::PKey::RSA.new(
-          # TODO: get key from key id
-        )
-        signature = Base64.decode(signature_header[:signature])
-        public_key.verify(digest, signature, signing_string)
+        pkey = OpenSSL::PKey::RSA.new(public_key.strip)
+        signature = Base64.decode64(signature_params['signature'])
+        pkey.verify(digest, signature, signing_string)
       rescue OpenSSL::PKey::PKeyError
         false
       end
