@@ -13,6 +13,8 @@ module ActivityPub
         def initialize(method, uri, opts = {})
           @method = method
           @uri = URI(uri)
+          raise TypeError, 'Expected an HTTP URI' unless @uri.is_a?(HTTP::URI)
+
           @options = opts
         end
 

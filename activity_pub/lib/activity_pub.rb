@@ -2,6 +2,8 @@
 
 require 'roda'
 
+require 'activity_streams'
+
 require 'activity_pub/exceptions'
 require 'activity_pub/configuration'
 require 'activity_pub/hooks'

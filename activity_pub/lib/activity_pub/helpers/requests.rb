@@ -55,10 +55,17 @@ module ActivityPub
         #
         #   For legacy, OStatus purposes the keyId can also be [acct:]username@domain, since OStatus used to return magic
         #   key in WebFinger.
-        public_key = Clients.http.get(signature_params['keyid']).body
+
+        unless URI(signature_params['keyId']).is_a?(URI::HTTP)
+          raise TypeError, 'Expects "keyId" to be a URI'
+        end
+        actor = Clients.
+          activity_pub.
+          get(signature_params['keyId'])
+        public_key = actor.publicKey['publicKeyPem'].strip
 
         digest = OpenSSL::Digest::SHA256.new
-        pkey = OpenSSL::PKey::RSA.new(public_key.strip)
+        pkey = OpenSSL::PKey::RSA.new(public_key)
         signature = Base64.decode64(signature_params['signature'])
         pkey.verify(digest, signature, signing_string)
       rescue OpenSSL::PKey::PKeyError

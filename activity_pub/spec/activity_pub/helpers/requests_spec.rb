@@ -49,12 +49,15 @@ module ActivityPub
             to receive(:fullpath).
             and_return('/foo?param=value&pet=dog')
 
-          http_client = class_double('ActivityPub::Clients::HTTP')
-          response = instance_double('Rack::Response')
-          allow(http_client).to receive(:get).and_return(response)
-          allow(response).to receive(:body).and_return(public_key)
+          http_client = class_double(ActivityPub::Clients::ActivityPub)
+          response = instance_double(Rack::Response)
+          actor = instance_double(::ActivityStreams::Actor)
+          allow(actor).to receive(:publicKey).and_return(
+            'publicKeyPem' => public_key
+          )
+          allow(http_client).to receive(:get).and_return(actor)
           allow(ActivityPub::Clients).
-            to receive(:http).
+            to receive(:activity_pub).
             and_return(http_client)
 
           expect(request.verify_signature).to eq(true)
