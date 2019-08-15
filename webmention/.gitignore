@@ -1,7 +1,4 @@
-.rspec
-
 coverage/
-log/
 tmp/
 
 Gemfile.lock

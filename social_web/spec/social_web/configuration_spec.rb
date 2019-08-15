@@ -11,9 +11,9 @@ module SocialWeb
   RSpec.describe Configuration do
 
     {
-      activity_pub: ActivityPub,
-      webmention: Webmention,
-      well_known: WellKnown
+      activity_pub: ::ActivityPub,
+      webmention: ::Webmention,
+      well_known: ::WellKnown
     }.each do |namespace, library|
 
       context "when configuring #{library}" do

@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'social_web'
+require 'irb'
+
+IRB.start
