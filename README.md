@@ -3,10 +3,10 @@
 A suite of apps and tools for participating in the Social Web. You can [mount](#setup)
 SocialWeb to federate an existing app.
 
-* [**ActivityPub**](https://github.com/social-web/activity_pub): Endpoints for the [ActivityPub](https://activitypub.rocks/) protocol
-* [**ActivityStreams**](https://github.com/social-web/activity_streams): Models for [ActivityStreams](https://www.w3.org/TR/activitystreams-core/) objects
-* [**Webmention**](https://github.com/social-web/webmention): Endpoint for the [Webmentions](https://webmention.net/) protocol
-* [**WellKnown**](https://github.com/social-web/well_known): Endpoints for [Well-Known URIs](https://tools.ietf.org/html/rfc5785)
+* [**ActivityPub**](https://github.com/social-web/social_web/tree/master/activity_pub): Endpoints for the [ActivityPub](https://activitypub.rocks/) protocol
+* [**ActivityStreams**](https://github.com/social-web/social_web/tree/master/activity_streams): Models for [ActivityStreams](https://www.w3.org/TR/activitystreams-core/) objects
+* [**Webmention**](https://github.com/social-web/social_web/tree/master/webmention): Endpoint for the [Webmentions](https://webmention.net/) protocol
+* [**WellKnown**](https://github.com/social-web/social_web/tree/master/well_known): Endpoints for [Well-Known URIs](https://tools.ietf.org/html/rfc5785)
 
 ## Table of Contents
 
