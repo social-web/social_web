@@ -7,10 +7,8 @@ require 'activity_streams'
 SocialWeb::Routes.use ::ActivityPub::Routes
 
 # Delegate SocialWeb hooks to relevant ActivityPub hooks
-ActivityPub.add_hook('activity_pub.inbox.post.after') do |res, req|
-  req.body.rewind
-  body = req.body.read
-  activity = ::ActivityStreams.from_json(body)
+SocialWeb::Hooks.register('activity_pub.inbox.post.after')
 
-  SocialWeb::Hooks.run('activity_pub.inbox.post.after', activity, res, req)
+ActivityPub.add_hook('inbox.post.after') do |hook|
+  SocialWeb::Hooks.run('activity_pub.inbox.post.after', hook)
 end

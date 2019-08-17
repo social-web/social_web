@@ -23,6 +23,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'social_web-webmention'
   s.add_dependency 'social_web-well_known'
 
+  s.add_dependency 'dry-events'
+
   s.add_development_dependency 'bundler', '~> 2.0'
   s.add_development_dependency 'rack-test', '~> 1.0'
   s.add_development_dependency 'rails', '>= 5.2.3'

@@ -71,36 +71,6 @@ module ActivityPub
       rescue OpenSSL::PKey::PKeyError
         false
       end
-
-      # Public: Run the given request
-      def with_hook(name, &match_block)
-        request = self
-
-        # Retrieve the hooks set by the user
-        around = Hooks[name + '.around']
-        before = Hooks[name + '.before']
-        after = Hooks[name + '.after']
-
-        before_and_after = -> do
-          before.call(request) if before
-
-          # To run the after hook, we need to interpose it between
-          # the end of the match block and the :halt that Roda throws to end the
-          # response. We then rethrow to continue
-          # Roda's procedure.
-          if after
-            catch(:halt) do
-              after.call(response.rack_response, request.rack_request)
-              throw :halt
-            end
-          end
-
-          match_block.call
-        end
-
-        # Wrap the whole thing in an 'around' hook; otherwise call what we got
-        around ? around.call(request, &before_and_after) : before_and_after.call
-      end
     end
   end
 end

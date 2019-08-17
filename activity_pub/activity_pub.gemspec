@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.5.5'
 
+  s.add_dependency 'dry-events'
   s.add_dependency 'social_web-activity_streams'
   s.add_dependency 'http', '~> 4.0'
   s.add_dependency 'roda', '~> 3.0'

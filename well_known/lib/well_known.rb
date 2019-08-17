@@ -26,7 +26,7 @@ module WellKnown
     route do |r|
       r.on('.well-known') do
         r.get 'webfinger' do
-          Hooks.run('well_known.webfinger.before_get', r)
+          Hooks.run('webfinger.get.before', request: r)
 
           resource_param = r.params['resource']
           r.halt 400 if resource_param.nil?
@@ -38,7 +38,7 @@ module WellKnown
           response['Content-Type'] = 'application/jrd+json'
           WellKnown.config.webfinger_resource
         ensure
-          Hooks.run('well_known.webfinger.after_get', response)
+          Hooks.run('webfinger.get.after', response: response, request: r)
         end
       end
     end

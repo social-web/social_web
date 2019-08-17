@@ -6,8 +6,6 @@ module ActivityPub
     plugin :hash_routes
     plugin :head
     plugin :hooks
-    plugin :json
-    plugin :json_parser
     plugin :middleware, env_var: 'social_web.activity_pub'
     plugin :module_include
 

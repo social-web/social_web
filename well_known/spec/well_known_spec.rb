@@ -41,15 +41,16 @@ module WellKnown
               to receive(:run).
               ordered.
               with(
-                'well_known.webfinger.before_get',
-                kind_of(Rack::Request)
+                'webfinger.get.before',
+                request: kind_of(Rack::Request)
               )
             expect(Hooks).
               to receive(:run).
               ordered.
               with(
-                'well_known.webfinger.after_get',
-                kind_of(Roda::RodaResponse)
+                'webfinger.get.after',
+                response: kind_of(Roda::RodaResponse),
+                request: kind_of(Rack::Request)
               )
             get '/.well-known/webfinger', '{}'
           end

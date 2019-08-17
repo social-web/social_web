@@ -1,45 +1,27 @@
 # frozen_string_literal: true
 
+require 'dry-events'
+require 'singleton'
+
 module ActivityPub
   def self.add_hook(name, &blk)
-    Hooks::Registry.instance.register(name, &blk)
+    Hooks.instance.subscribe(name, &blk)
   end
 
-  module Hooks
+  class Hooks
+    include ::Singleton
+    include Dry::Events::Publisher[:activity_pub]
+
     def self.[](name)
-      Registry.instance[name]
+      instance.process(name)
     end
 
-    def self.run(name, *args, **kwargs)
-      hooks = Registry.instance[name]
-      hooks&.each do |hook|
-        hook.call(*args, **kwargs)
-      rescue StandardError => e
-        raise FailedHook.new(name, hook.source_location, e)
-      end
+    def self.register(name)
+      instance.register_event(name)
     end
 
-    class Registry
-      attr_accessor :hooks
-
-      def self.instance
-        @instance ||= new
-      end
-
-      def [](name)
-        @hooks[name]
-      end
-
-      def register(name, &action)
-        @hooks[name] ||= []
-        @hooks[name] << action
-      end
-
-      private
-
-      def initialize
-        @hooks = {}
-      end
+    def self.run(name, **kwargs)
+      instance.publish(name, kwargs)
     end
   end
 end
