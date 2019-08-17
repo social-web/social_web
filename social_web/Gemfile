@@ -1,0 +1,8 @@
+source 'https://rubygems.org'
+
+gem 'social_web-activity_pub', path: '../activity_pub'
+gem 'social_web-activity_streams', path: '../activity_streams'
+gem 'social_web-webmention', path: '../webmention'
+gem 'social_web-well_known', path: '../well_known'
+
+gemspec
