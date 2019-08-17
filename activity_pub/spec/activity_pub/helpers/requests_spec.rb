@@ -51,7 +51,7 @@ module ActivityPub
 
           http_client = class_double(ActivityPub::Clients::ActivityPub)
           response = instance_double(Rack::Response)
-          actor = instance_double(::ActivityStreams::Actor)
+          actor = double(::ActivityStreams::Actor)
           allow(actor).to receive(:publicKey).and_return(
             'publicKeyPem' => public_key
           )
