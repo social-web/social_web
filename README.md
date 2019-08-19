@@ -119,4 +119,4 @@ end
 | activity_pub.inbox.post.before   | **`request`:** `Rack::Request`                                                                                          | *n/a*
 | activity_pub.inbox.post.after    | **`activity`:** `ActivityStreams::Object` <br/> **`response`:** `Rack::Response` <br/> **`request`:** `Rack::Request`   | *n/a*
 | well_known.webfinger.get.before  | **`request`:** `Rack::Request`                                                                                          | *n/a*
-| well_known.webfinger.get.after   | **`response`:** `Rack::Response`, `request: Rack::Request`                                                              | *n/a*
+| well_known.webfinger.get.after   | **`response`:** `Rack::Response` <br/> **`request`:** `Rack::Request`                                                   | *n/a*
