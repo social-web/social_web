@@ -5,6 +5,34 @@ require 'spec_helper'
 module ActivityPub
   class Routes
     RSpec.describe '/inbox', type: :route do
+      context 'GET /inbox' do
+        it 'returns an array of activities' do
+          expect(Hooks).
+            to receive(:run).
+              with('inbox.get.before', request: kind_of(Rack::Request)).
+              and_return([%({
+                "@context": "https://www.w3.org/ns/activitystreams",
+                "type": "Create"
+              }),
+              ActivityStreams::Activity::Create.new]).
+            ordered
+
+          expect(Hooks).
+          to receive(:run).
+            with(
+              'inbox.get.after',
+              response: kind_of(Rack::Response),
+              request: kind_of(Rack::Request)
+            ).
+            ordered
+
+          get '/inbox'
+          response = JSON.parse(last_response.body)
+          expect(response).to be_a(Array)
+          expect(response.count).to eq(2)
+        end
+      end
+
       context 'POST /inbox' do
         context 'when the request has an empty body' do
           it 'returns a 400 response' do
@@ -46,7 +74,7 @@ module ActivityPub
                 'inbox.post.after',
                 activity: kind_of(ActivityStreams::Object),
                 request: kind_of(Rack::Request),
-                response: kind_of(Roda::RodaResponse)
+                response: kind_of(Rack::Response)
               ).
               ordered
 

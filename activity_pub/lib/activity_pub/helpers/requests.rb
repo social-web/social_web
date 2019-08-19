@@ -3,12 +3,14 @@
 module ActivityPub
   module Helpers
     module Requests
-      def activty
-        @activity ||= ActivityStreams.from_json(body)
+      def activity
+        @activity ||= ActivityStreams.from_json(body.read)
+      rescue ActivityStreams::Error
+        halt 400
       end
 
       def rack_request
-        Rack::Request.new(env)
+        @rack_request ||= Rack::Request.new(env).freeze
       end
 
       def verify_signature

@@ -6,6 +6,7 @@ module ActivityPub
     plugin :hash_routes
     plugin :head
     plugin :hooks
+    plugin :json
     plugin :middleware, env_var: 'social_web.activity_pub'
     plugin :module_include
 
@@ -20,7 +21,7 @@ module ActivityPub
 
     response_module do
       def rack_response
-        Rack::Response.new(self.finish)
+        Rack::Response.new(self.dup.finish)
       end
     end
 
