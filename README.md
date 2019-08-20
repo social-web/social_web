@@ -1,7 +1,9 @@
 # SocialWeb
 
 A suite of apps and tools for participating in the Social Web. You can [mount](#setup)
-SocialWeb to federate an existing app.
+SocialWeb to an existing app, then [hook](#hooks) into the request-response 
+cycle to translate your domain-specific data models (your posts, links, videos,
+etc. ) into a format accessible to the [federated web](https://fediverse.party/).
 
 * [**ActivityPub**](https://github.com/social-web/social_web/tree/master/activity_pub): Endpoints for the [ActivityPub](https://activitypub.rocks/) protocol
 * [**ActivityStreams**](https://github.com/social-web/social_web/tree/master/activity_streams): Models for [ActivityStreams](https://www.w3.org/TR/activitystreams-core/) objects
@@ -36,9 +38,12 @@ gem 'social_web'
 
 ### 2. Configure
 
+See [Configuration](#configuration) for more.
+
 ```ruby
 SocialWeb.configure do |config|
     config.webfinger_resource = {}
+    ...
 end
 ```
 
@@ -86,20 +91,18 @@ SocialWeb.configure do |config|
 end
 ```
 
-Check the docs for the relevant library's configuration. The library's are 
-loaded by deafult. You can set these namespaces to `false` to disable them.
 
-| Namespace          | Configuration
-| ------------------ |---------------------------------------------------------------------
-| `activity_pub`     | [docs](https://github.com/social-web/activity_pub#configuration)
-| `activity_streams` | [docs](https://github.com/social-web/activity_streams#configuration)
-| `webmention`       | [docs](https://github.com/social-web/webmention#configuration)
-| `well_known`       | [docs](https://github.com/social-web/well_known#configuration)
 
 ## Hooks
 
 SocialWeb is extensible via hooks. Register a hook with a callable object to
 react to events handled by SocialWeb.
+
+A hook yields an `event` object, with parameters accessible via square brackets.
+
+Some hooks expect a specific data structure to be returned. For example, the
+`activity_pub.inbox.get.before` expects an array of Activity Streams-compatible
+objects to 
 
 ```ruby
 SocialWeb.add_hook('activity_pub.inbox.post.after') do |event|
