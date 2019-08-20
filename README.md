@@ -95,10 +95,9 @@ end
 
 ## Hooks
 
-SocialWeb is extensible via hooks. Register a hook with a callable object to
-react to events handled by SocialWeb.
-
-A hook yields an `event` object, with parameters accessible via square brackets.
+SocialWeb is extensible via hooks. Hook into the SocialWeb request-response 
+cycle using a block. A hook yields an `event` object, with parameters 
+accessible via square brackets.
 
 Some hooks expect a specific data structure to be returned. For example, the
 `activity_pub.inbox.get.before` expects an array of Activity Streams-compatible
