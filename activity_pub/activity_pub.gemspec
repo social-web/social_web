@@ -24,8 +24,10 @@ Gem::Specification.new do |s|
   s.add_dependency 'social_web-activity_streams'
   s.add_dependency 'http', '~> 4.0'
   s.add_dependency 'roda', '~> 3.0'
+  s.add_dependency 'sequel', '~> 5.0'
 
   s.add_development_dependency 'bundler', '~> 2.0'
+  s.add_development_dependency 'pg'
   s.add_development_dependency 'rack-test', '~> 1.0'
   s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'simplecov', '~> 0.1'

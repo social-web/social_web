@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
-require 'activity_pub'
-require "irb"
 
-IRB.start(__FILE__)
+ENV['DATABASE_URL'] = 'postgres://localhost/activity_pub_dev'
+require 'activity_pub'
+
+binding.irb

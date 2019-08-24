@@ -4,6 +4,8 @@ require 'simplecov'
 SimpleCov.add_filter(/spec/)
 SimpleCov.start
 
+ENV['DATABASE_URL'] = 'postgres://localhost/activity_pub_test'
+
 require 'activity_pub'
 require 'rack/test'
 require 'helper'
@@ -11,6 +13,8 @@ require 'helper'
 RSpec.configure do |config|
   config.include Rack::Test::Methods, type: :route
   config.include Helper
+
+  config.after(:all) { ActivityPub::Object.truncate }
 
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true

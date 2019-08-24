@@ -12,17 +12,15 @@ module ActivityPub
     hash_branch('inbox') do |r|
       r.get do
         objects = Hooks.run('inbox.get.before', request: r.rack_request)
-        activities = if objects.is_a?(Array)
-          objects.each do |obj|
-            case obj
-            when String, Hash
-            when ActivityStreams::Object then obj.to_h
-            end
+        activities = objects.to_a.each do |obj|
+          case obj
+          when String, Hash
+          when ActivityStreams::Object then obj.to_h
           end
-        else
-          []
         end
+
         response.status = 200
+
         Hooks.run(
           'inbox.get.after',
           response: response.rack_response,
@@ -39,6 +37,7 @@ module ActivityPub
         )
 
         response.status = 201
+
         Hooks.run(
           'inbox.post.after',
           activity: r.activity,
