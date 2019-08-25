@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+`sequel -m lib/activity_pub/db/migrations postgres://localhost/activity_pub_dev`
+`sequel -m lib/activity_pub/db/migrations postgres://localhost/activity_pub_test`

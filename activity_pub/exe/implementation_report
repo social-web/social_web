@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+system('bundle exec rackup -d')
+# system('ACTIVITY_PUB_SERVER_URL=http://localhost:9292 bundle exec rspec spec/implementation')

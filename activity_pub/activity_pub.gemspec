@@ -27,8 +27,10 @@ Gem::Specification.new do |s|
   s.add_dependency 'sequel', '~> 5.0'
 
   s.add_development_dependency 'bundler', '~> 2.0'
+  s.add_development_dependency 'factory_bot'
   s.add_development_dependency 'pg'
   s.add_development_dependency 'rack-test', '~> 1.0'
+  s.add_development_dependency 'rack'
   s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'simplecov', '~> 0.1'
 end

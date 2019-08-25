@@ -9,9 +9,13 @@ module ActivityPub
     plugin :json
     plugin :middleware, env_var: 'social_web.activity_pub'
     plugin :module_include
+    plugin :type_routing, types: {
+      activity_streams: 'application/ld+json; ' \
+        'profile="https://www.w3.org/ns/activitystreams"'
+    }
 
     before do
-      request.verify_signature
+      request.halt 403 unless request.verify_signature
     end
 
     # Helpers
@@ -27,7 +31,14 @@ module ActivityPub
 
     # Routes
     require 'activity_pub/routes/inbox'
+    require 'activity_pub/routes/outbox'
 
-    route { |r| r.hash_branches }
+    route do |r|
+      r.hash_branches
+
+      r.on Integer do |id|
+        r.activity_streams { Object.first(id: id).json }
+      end
+    end
   end
 end

@@ -11,40 +11,19 @@ module ActivityPub
 
     hash_branch('inbox') do |r|
       r.get do
-        objects = Hooks.run('inbox.get.before', request: r.rack_request)
-        activities = objects.to_a.each do |obj|
-          case obj
-          when String, Hash
-          when ActivityStreams::Object then obj.to_h
-          end
-        end
-
         response.status = 200
-
-        Hooks.run(
-          'inbox.get.after',
-          response: response.rack_response,
-          request: r.rack_request
-        )
-        activities
+        ActivityPub::Inbox.all.map(&:json)
       end
 
       r.post do
-        Hooks.run(
-          'inbox.post.before',
-          activity: r.activity,
-          request: r.rack_request
-        )
+        act = Activity.process(r.activity, collection: 'inbox')
 
+        response.headers['location'] = Object.path(act.object.id)
         response.status = 201
-
-        Hooks.run(
-          'inbox.post.after',
-          activity: r.activity,
-          response: response.rack_response,
-          request: r.rack_request
-        )
-        response.write(nil)
+        ''
+      rescue ActivityStreams::Error => e
+        response.status = 400
+        e.message
       end
     end
   end

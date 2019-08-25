@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'memory_profiler'
 require "bundler/setup"
 
 ENV['DATABASE_URL'] = 'postgres://localhost/activity_pub_dev'

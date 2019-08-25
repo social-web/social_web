@@ -5,16 +5,30 @@ SimpleCov.add_filter(/spec/)
 SimpleCov.start
 
 ENV['DATABASE_URL'] = 'postgres://localhost/activity_pub_test'
+ENV['ACTIVITY_PUB_SERVER_URL']
 
 require 'activity_pub'
+require 'factory_bot'
 require 'rack/test'
 require 'helper'
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods, type: :route
   config.include Helper
+  config.include FactoryBot::Syntax::Methods
 
-  config.after(:all) { ActivityPub::Object.truncate }
+  config.before(:suite) do
+    FactoryBot.find_definitions
+  end
+  config.before(:each, type: :route) do
+    allow_any_instance_of(ActivityPub::Routes::RodaRequest).
+      to receive(:verify_signature).
+        and_return(true)
+  end
+  config.after(:each) {
+    ActivityPub::Object.truncate(cascade: true)
+    ActivityPub::Activity.truncate(cascade: true)
+  }
 
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
