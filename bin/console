@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'social_web'
+
+SocialWeb.configure do |config|
+  config.database_url = 'postgresql://localhost/social_web_dev'
+end
+
+SocialWeb.load!
+
+require 'factory_bot'
+FactoryBot.find_definitions
+
+SocialWeb.db.transaction(rollback: :always) do
+  binding.irb
+end
