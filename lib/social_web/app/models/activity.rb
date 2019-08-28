@@ -51,7 +51,11 @@ module SocialWeb
     end
 
     def stream
-      @stream ||= ActivityStreams.from_json(json)
+      @stream ||= begin
+        act = ActivityStreams.from_json(json)
+        act.created_at = created_at
+        act
+      end
     end
 
     private

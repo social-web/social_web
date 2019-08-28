@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'roda'
+require 'slim'
+require 'tilt'
 
 module SocialWeb
   class Routes < Roda
@@ -8,6 +10,10 @@ module SocialWeb
     plugin :hash_routes
     plugin :middleware
     plugin :module_include
+    plugin :render,
+      engine: 'html.slim',
+      views: 'lib/social_web/app/views/'
+    plugin :type_routing
 
     require 'social_web/app/routes/helpers/request_helpers'
     request_module Helpers::RequestHelpers

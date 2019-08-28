@@ -5,7 +5,10 @@ module SocialWeb
     hash_branch "inbox" do |r|
       r.get do
         response.status = 200
-        Activity.where(collection: 'inbox').map(&:to_h)
+        collection = ActivityStreams::Collection::OrderedCollection.new
+        collection.items = Activity.where(collection: 'inbox').map(&:stream)
+        r.json { collection }
+        r.html { view('inbox', locals: { collection: collection.items }) }
       end
 
       r.post do

@@ -4,7 +4,7 @@ require 'bundler/setup'
 require 'social_web'
 
 SocialWeb.configure do |config|
-  config.database_url = 'sqlite://social_web_dev'
+  config.database_url = 'sqlite://social_web_dev.sqlite3'
 end
 
 Sequel.extension :migration, :core_extensions

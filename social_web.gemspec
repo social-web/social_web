@@ -23,6 +23,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'pg'
   s.add_dependency 'roda'
   s.add_dependency 'sequel'
+  s.add_dependency 'slim'
+  s.add_dependency 'tilt'
 
   s.add_development_dependency 'bundler', '~> 2.0'
   s.add_development_dependency 'factory_bot'
