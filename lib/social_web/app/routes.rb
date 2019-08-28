@@ -12,7 +12,7 @@ module SocialWeb
     plugin :module_include
     plugin :render,
       engine: 'html.slim',
-      views: 'lib/social_web/app/views/'
+      views: File.join(__dir__, 'views')
     plugin :type_routing
 
     require 'social_web/app/routes/helpers/request_helpers'
