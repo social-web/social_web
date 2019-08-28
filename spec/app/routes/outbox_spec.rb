@@ -5,14 +5,6 @@ require 'spec_helper'
 module SocialWeb
   class Routes
     RSpec.describe '/outbox', type: :request do
-      describe 'GET /outbox' do
-        it 'returns outbox activities' do
-          act = create :activity, collection: 'outbox'
-          get '/outbox'
-          expect(last_response.body).to include(act.json)
-        end
-      end
-
       describe 'POST /outbox' do
         it 'returns a 201' do
           allow(Activity).to receive(:receive)

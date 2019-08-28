@@ -15,8 +15,7 @@ module SocialWeb
             "type": "Note"
           }
         })
-        act = ActivityStreams.from_json(json)
-        expect { described_class.receive(act, collection: 'inbox') }.
+        expect { described_class.receive(json, collection: 'inbox') }.
           to change { described_class.count }.by(+1)
       end
     end

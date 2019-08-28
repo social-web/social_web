@@ -5,14 +5,14 @@ module SocialWeb
     hash_branch "inbox" do |r|
       r.get do
         response.status = 200
-        collection = ActivityStreams::Collection::OrderedCollection.new
-        collection.items = Activity.where(collection: 'inbox').map(&:stream)
-        r.activity_json { collection.to_json }
-        r.html { view('inbox', locals: { collection: collection.items }) }
+        inbox = Activity.inbox
+        r.activity_json { inbox.to_json }
+        r.html { view('inbox', locals: { items: inbox.items }) }
       end
 
       r.post do
-        Activity.receive(r.activity, collection: 'inbox')
+        r.body.rewind
+        Activity.receive(r.body.read, collection: 'inbox')
         response.status = 201
         ''
       rescue ::ActivityStreams::Error, Sequel::Error => e

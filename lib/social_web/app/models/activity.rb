@@ -7,7 +7,23 @@ module SocialWeb
       left_key: :social_web_activity_id,
       right_key: :social_web_object_id
 
-    def self.receive(act, collection:)
+    def self.inbox
+      items = where(collection: 'inbox').
+        order(Sequel.desc(:created_at)).
+        map(&:stream)
+      ActivityStreams::Collection::OrderedCollection.new(items: items)
+    end
+
+    def self.outbox
+      items = where(collection: 'outbox').
+        order(Sequel.desc(:created_at)).
+        map(&:stream)
+      ActivityStreams::Collection::OrderedCollection.new(items: items)
+    end
+
+    def self.receive(json, collection:)
+      act = ActivityStreams.from_json(json)
+
       Activity.create(
         collection: collection,
         _id: act.id,

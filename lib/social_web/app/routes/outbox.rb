@@ -5,11 +5,14 @@ module SocialWeb
     hash_branch "outbox" do |r|
       r.get do
         response.status = 200
-        Activity.where(collection: 'outbox').map(&:to_h)
+        outbox = Activity.outbox
+        r.activity_json { outbox.to_json }
+        r.html { view('outbox', locals: { items: outbox.items }) }
       end
 
       r.post do
-        Activity.receive(r.activity, collection: 'outbox')
+        r.body.rewind
+        Activity.receive(r.body.read, collection: 'outbox')
         response.status = 201
         ''
       rescue ::ActivityStreams::Error, Sequel::Error => e

@@ -1,0 +1,15 @@
+- items.each do |item|
+  .card
+    h3.card-header= item.type
+    .card-body
+      .row
+        .col-6
+          dl.list-group
+            - item.properties.each do |prop, v|
+              dt= prop
+              dd= v.is_a?(ActivityStreams::Model) ? v.type : v
+
+        .col-6
+          dt JSON
+          dd
+            pre= JSON.pretty_generate(item.to_h)
