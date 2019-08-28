@@ -20,16 +20,6 @@ FactoryBot.define do
     }
   end
 
-  factory :object, class: SocialWeb::Objects do
-    sequence(:_id) { |n| "https://example.com/#{n}" }
-    type { 'Note' }
-  end
-
-  factory :object_version, class: SocialWeb::ObjectVersion do
-    activity
-    object
-  end
-
   factory :stream, class: ActivityStreams do
     initialize_with do
       ActivityStreams.from_json(
