@@ -4,9 +4,15 @@ require 'implementation_spec_helper'
 
 RSpec.describe 'inbox', type: :request do
   it 'accepts Create activities' do
-    act = build :activity, type: 'Create'
-    post '/inbox', act.json
+    act = build :stream,
+      type: 'Create',
+      object: build(:stream, type: 'Note')
+
+    post '/inbox', act.to_json
+
+    header 'accept', 'application/activity+json'
     get '/inbox'
-    expect(last_response.body).to include(act.json)
+    collection = ActivityStreams.from_json(last_response.body)
+    expect(collection.items).to include(act)
   end
 end

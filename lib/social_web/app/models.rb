@@ -7,9 +7,6 @@ module ActivityStreams
     module ActivityPub
       def self.included(base)
         base.class_eval do
-          property :created_at
-          property :updated_at
-
           property :inbox
           property :outbox
         end

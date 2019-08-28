@@ -6,6 +6,8 @@ require 'tilt'
 
 module SocialWeb
   class Routes < Roda
+    ACCEPT_HEADER = /application\/ld\+json; profile="https:\/\/www.w3.org\/ns\/activitystreams|application\/activity\+json/.freeze
+
     plugin :json
     plugin :hash_routes
     plugin :middleware
@@ -13,7 +15,9 @@ module SocialWeb
     plugin :render,
       engine: 'html.slim',
       views: File.join(__dir__, 'views')
-    plugin :type_routing
+    plugin :type_routing, types: {
+      activity_json: 'application/activity+json'
+    }
 
     require 'social_web/app/routes/helpers/request_helpers'
     request_module Helpers::RequestHelpers

@@ -7,7 +7,7 @@ module SocialWeb
         response.status = 200
         collection = ActivityStreams::Collection::OrderedCollection.new
         collection.items = Activity.where(collection: 'inbox').map(&:stream)
-        r.json { collection }
+        r.activity_json { collection.to_json }
         r.html { view('inbox', locals: { collection: collection.items }) }
       end
 
