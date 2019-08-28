@@ -2,14 +2,14 @@
 
 module SocialWeb
   class Routes
-    hash_branch "inbox" do |r|
+    hash_branch "outbox" do |r|
       r.get do
         response.status = 200
-        Activity.where(collection: 'inbox').map(&:to_h)
+        Activity.where(collection: 'outbox').map(&:to_h)
       end
 
       r.post do
-        Activity.receive(r.activity, collection: 'inbox')
+        Activity.receive(r.activity, collection: 'outbox')
         response.status = 201
         ''
       rescue ::ActivityStreams::Error, Sequel::Error => e

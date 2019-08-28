@@ -1,4 +1,4 @@
-.rspec
+*.sqlite3
 
 coverage/
 log/

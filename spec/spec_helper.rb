@@ -19,6 +19,11 @@ RSpec.configure do |config|
   config.around(:example) do |example|
     SocialWeb.db.transaction(rollback: :always, &example)
   end
+  config.before(:each, type: :request) do
+    allow_any_instance_of(SocialWeb::Routes::Helpers::RequestHelpers).
+      to receive(:verify_signature).
+      and_return(true)
+  end
   config.before(:suite) do
     FactoryBot.find_definitions
   end

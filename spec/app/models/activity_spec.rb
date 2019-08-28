@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module SocialWeb
   RSpec.describe Activity do
-    describe '.process' do
+    describe '.receive' do
       it 'persist an activity and its object' do
         json = %({
           "@context": "https://www.w3.org/ns/activitystreams",
@@ -15,17 +15,15 @@ module SocialWeb
             "type": "Note"
           }
         })
-        expect { described_class.process(json, collection: 'inbox') }.
+        act = ActivityStreams.from_json(json)
+        expect { described_class.receive(act, collection: 'inbox') }.
           to change { described_class.count }.by(+1)
       end
     end
 
-    describe '#object=' do
-      it 'creates the version for the activity and object' do
-        act = create :activity, object: nil
-        obj = create :object
-
-        expect{ act.object = obj }.to change { ObjectVersion.count }.by(+1)
+    describe '.create' do
+      it 'creates the object and its version for the activity' do
+        expect{ create :activity }.to change { ObjectVersion.count }.by(+1)
       end
     end
   end

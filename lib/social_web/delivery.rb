@@ -1,25 +1,22 @@
 # frozen_string_literal: true
 
 module SocialWeb
-  class Client
-    def self.follow(actor, object)
-      act = ActivityStreams::Activity::Follow.new(actor: actor, object: object)
-      request = ::HTTP.build_request(
-        :post,
-        act.object.id,
-        act.to_json,
-        headers: {
-          'content-type': 'application/json',
-          'date': Time.now.utc.httpdate
-        }
-      )
-      request.headers.add(
+  class Delivery
+    DEFAULT_HEADERS = -> {
+      {
+        'content-type': 'application/activity+json',
+        'date': Time.now.utc.httpdate
+      }
+    }
+
+    def self.call(uri, json)
+      headers = DEFAULT_HEADERS.call
+      headers.merge!(
         'signature',
         Signature.call(request, SocialWeb.config.private_key)
       )
 
-      client = ::HTTP::Client.new
-      client.perform(request, client.default_options)
+      HTTP.headers(headers).follow.post(uri, body: json)
     end
 
     HTTP_SIGNATURE_FORMAT = 'headers="%<headers>s",'\

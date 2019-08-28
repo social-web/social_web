@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.5.0'
 
+  s.add_dependency 'http'
   s.add_dependency 'social_web-activity_streams'
   s.add_dependency 'pg'
   s.add_dependency 'roda'
@@ -30,4 +31,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'simplecov', '~> 0.1'
+  s.add_development_dependency 'sqlite3'
 end

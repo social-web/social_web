@@ -29,4 +29,16 @@ FactoryBot.define do
     activity
     object
   end
+
+  factory :stream, class: ActivityStreams do
+    initialize_with do
+      ActivityStreams.from_json(
+        JSON.dump(attributes.merge('@context' => ActivityStreams::NAMESPACE))
+      )
+    end
+
+    sequence(:id) { |n| "https://example.com/#{n}"}
+    type { 'Create' }
+    object { {} }
+  end
 end

@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require 'activity_streams'
+require 'http'
 require 'rake'
 
 require 'social_web/configuration'
+require 'social_web/delivery'
 require 'social_web/db'
 
 module SocialWeb
