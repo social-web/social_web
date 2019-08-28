@@ -7,7 +7,7 @@ module SocialWeb
     RSpec.describe '/outbox', type: :request do
       describe 'POST /outbox' do
         it 'returns a 201' do
-          allow(Activity).to receive(:receive)
+          allow(Activity).to receive(:process)
           post '/outbox', build(:stream).to_json
 
           expect(last_response.status).to eq(201)

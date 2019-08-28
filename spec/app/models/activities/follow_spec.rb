@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 module SocialWeb
-  module Activities
+  module Services
     RSpec.describe Follow do
       describe '.deliver' do
         it 'delivers the object' do

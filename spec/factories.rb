@@ -3,7 +3,7 @@
 FactoryBot.define do
   to_create { |obj| obj.save }
 
-  factory :activity, class: SocialWeb::Activity do
+  factory :activity, class: SocialWeb::Activities do
     sequence(:_id) { |n| "https://example.com/#{n}" }
     collection { 'Inbox' }
     type { 'Create' }
@@ -20,7 +20,7 @@ FactoryBot.define do
     }
   end
 
-  factory :object, class: SocialWeb::Object do
+  factory :object, class: SocialWeb::Objects do
     sequence(:_id) { |n| "https://example.com/#{n}" }
     type { 'Note' }
   end
