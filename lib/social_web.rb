@@ -8,8 +8,6 @@ require 'social_web/configuration'
 require 'social_web/delivery'
 require 'social_web/db'
 
-ActivityStreams.internet.on
-
 module SocialWeb
   def self.new(app, *args, &block)
     load!

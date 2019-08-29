@@ -5,7 +5,9 @@ module SocialWeb
     module Helpers
       module RequestHelpers
         def activity
-          @activity ||= ActivityStreams.from_json(body.read)
+          @activity ||= ActivityStreams.internet.on do
+            ActivityStreams.from_json(body.read)
+          end
         rescue ActivityStreams::Error
           halt 400
         end
