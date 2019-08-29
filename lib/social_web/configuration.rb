@@ -11,6 +11,7 @@ module SocialWeb
 
   class Configuration
     attr_accessor :database_url,
+      :domain,
       :private_key,
       :public_key,
       :actor,

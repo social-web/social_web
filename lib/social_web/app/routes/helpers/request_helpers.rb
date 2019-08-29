@@ -5,7 +5,7 @@ module SocialWeb
     module Helpers
       module RequestHelpers
         def activity
-          @activity ||= ActivityStreams.internet.on do
+          @activity ||= ActivityStreams.internet.on(domain: SocialWeb.config.domain) do
             ActivityStreams.from_json(body.read)
           end
         rescue ActivityStreams::Error
