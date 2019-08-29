@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+Sequel.extension :inflector
+
 module SocialWeb
   class Activity
     def self.deliver(act)

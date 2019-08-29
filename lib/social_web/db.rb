@@ -6,6 +6,6 @@ Rake.load_rakefile 'social_web/tasks/db.rake'
 
 module SocialWeb
   def self.db
-    @db ||= Sequel.connect(SocialWeb.configuration.database_url)
+    @db ||= Sequel.connect(SocialWeb.config.database_url)
   end
 end
