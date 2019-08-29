@@ -12,10 +12,6 @@ module SocialWeb
         case accept.object.type
         when 'Follow' then
         end
-        follow = Inbox.by_uri(accept.object.id)
-        if follow.type == 'Follow' &&
-
-        end
       end
     end
   end
