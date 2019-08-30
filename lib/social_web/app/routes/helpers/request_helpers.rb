@@ -72,6 +72,10 @@ module SocialWeb
         rescue OpenSSL::PKey::PKeyError
           false
         end
+
+        def authenticate!
+          env['warden']&.authenticate
+        end
       end
     end
   end
