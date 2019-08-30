@@ -22,12 +22,9 @@ FactoryBot.define do
 
   factory :stream, class: ActivityStreams do
     initialize_with do
-      ActivityStreams.from_json(
-        JSON.dump(attributes.merge('@context' => attributes.delete(:_context)))
-      )
+      ActivityStreams.from_json(JSON.dump(attributes))
     end
 
-    _context { ActivityStreams::NAMESPACE }
     sequence(:id) { |n| "https://example.com/#{n}"}
     type { 'Create' }
   end
