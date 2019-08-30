@@ -42,6 +42,9 @@ run SocialWeb
 
 ### 3. Migrate
 
+SocialWeb uses [Sequel](https://github.com/jeremyevans/sequel/) as a database
+toolkit, which supports PostgreSQL, MySQL, and other databases.
+
 ```ruby
 SocialWeb.configure do |config|
   config.database_url = 'postgresq://example.com/my_db'
