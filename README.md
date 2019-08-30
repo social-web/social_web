@@ -56,6 +56,9 @@ rake social_web:db:migrate
 
 ```ruby
 SocialWeb.configure do |config|
+  config.database_url = 'sqlite://example.sqlite3'
+  config.domain = 'example.com'
+  config.public_key = ENV['PUBLIC_KEY']
   config.private_key = ENV['PRIVATE_KEY']
   config.webfinger_resource = {
     'subject': 'acct:me@example.com',
