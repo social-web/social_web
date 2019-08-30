@@ -18,16 +18,26 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.5.0'
 
+  # Provides easy access to an HTTP client
   s.add_dependency 'http'
+
+  # Provides Ruby models to represent Activity Streams objects
   s.add_dependency 'social_web-activity_streams'
-  s.add_dependency 'pg'
+
+  # Provides a framework for efficient routing of requests
   s.add_dependency 'roda'
+
+  # Provides a database toolkit for persistance
   s.add_dependency 'sequel'
+
+  # Provides simple templating of HTML documents
   s.add_dependency 'slim'
+  # Supports 'slim'
   s.add_dependency 'tilt'
 
   s.add_development_dependency 'bundler', '~> 2.0'
   s.add_development_dependency 'factory_bot'
+  s.add_development_dependenvy 'pg'
   s.add_development_dependency 'rack-test', '~> 1.0'
   s.add_development_dependency 'rails', '>= 5.2.3'
   s.add_development_dependency 'rake'

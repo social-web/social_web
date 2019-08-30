@@ -1,6 +1,15 @@
 # SocialWeb
 
-1. [Setup](#setup)
+:warning: Development is in the **alpha** phase. Changes large and small are
+expected. Feedback is very welcome.
+
+Tools and apps for participating in the [Social Web](https://www.w3.org/2005/Incubator/socialweb/XGR-socialweb-20101206/).
+
+SocialWeb provides routing and persistance for handling 
+[ActivityPub](https://www.w3.org/TR/2018/REC-activitypub-20180123/)-compliant
+requests. You can mount SocialWeb as middleware to federate an existing Rack app.
+
+* [Setup](#setup)
 
 ## Setup
 
