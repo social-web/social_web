@@ -3,6 +3,8 @@
 module SocialWeb
   class Routes
     hash_branch "outbox" do |r|
+      r.verify_signature if r.post?
+
       r.get do
         response.status = 200
         outbox = Outbox.all
