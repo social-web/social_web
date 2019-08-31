@@ -11,11 +11,6 @@ module SocialWeb
           object = build :stream, type: 'Person', inbox: 'https://example.com/2'
           follow.object = object
 
-          allow(ActivityStreams).
-            to receive(:from_uri).
-            with(object.inbox).
-            and_return(object)
-
           expect(Delivery).
             to receive(:call).
             with(object.inbox, follow.to_json)

@@ -4,8 +4,8 @@ module SocialWeb
   module Services
     class Accept
       def self.deliver(accept)
-        target_inbox = ActivityStreams.from_uri(accept.object.id).inbox
-        Delivery.call(target_inbox, follow.to_json)
+        target_inbox = accept.object.inbox
+        Delivery.call(target_inbox, accept.to_json)
       end
 
       def self.receive(accept)

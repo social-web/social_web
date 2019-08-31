@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'bundler/setup'
+
 require 'activity_streams'
 require 'http'
 require 'rake'
@@ -7,6 +9,7 @@ require 'rake'
 require 'social_web/configuration'
 require 'social_web/delivery'
 require 'social_web/db'
+require 'social_web/client'
 
 module SocialWeb
   def self.new(app, *args, &block)

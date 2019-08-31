@@ -14,18 +14,15 @@ module SocialWeb
         end
 
         it 'dispatches the action' do
-          person = build :stream, type: 'Person'
+          person = build :stream,
+            type: 'Person',
+            inbox: 'https://example.com/outbox'
           act = build :stream,
             type: 'Follow',
             object: person
 
-          allow(ActivityStreams).
-            to receive(:from_uri).
-            with(person.id).
-            and_return(double('Person', inbox: person.id))
-
           expect(SocialWeb::Delivery).
-            to receive(:call).with(person.id, act.to_json)
+            to receive(:call).with(person.inbox, act.to_json)
 
           post '/outbox', act.to_json
         end

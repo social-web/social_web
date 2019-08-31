@@ -12,4 +12,25 @@ module SocialWeb
       end
     end
   end
+
+  RSpec.describe Activity::Dereference do
+    it 'requests the IRI' do
+      act = build :stream, object: 'https://example.com/1'
+      expect(Client).to receive(:get).with(act.object)
+
+      expect(described_class).
+        to receive(:call).
+        with(act).
+        and_call_original.
+        ordered
+
+      expect(described_class).
+        to receive(:call).
+        with(act.object).
+        and_call_original.
+        ordered
+
+      described_class.call(act)
+    end
+  end
 end
