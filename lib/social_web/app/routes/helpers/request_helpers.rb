@@ -11,13 +11,6 @@ module SocialWeb
           halt 400
         end
 
-        def actor
-          actor_path = path.split('/')[0...-1].join('/')
-          Actors.find_or_create(iri: "#{scheme}://#{host}#{actor_path}") do |actor|
-            actor.created_at = Time.now.utc
-          end
-        end
-
         def authenticate!
           env['warden']&.authenticate
         end
