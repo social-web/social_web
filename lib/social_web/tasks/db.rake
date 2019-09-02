@@ -16,7 +16,8 @@ namespace :social_web do
           :social_web_activities,
           :social_web_object_activities,
           :social_web_actors,
-          :social_web_schema_migrations
+          :social_web_schema_migrations,
+          cascade: true
         )
         puts 'Removed SocialWeb tables. ' \
         'Run `rake sequel:db:migrate` to add them.'
