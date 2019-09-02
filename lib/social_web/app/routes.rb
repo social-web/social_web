@@ -8,6 +8,7 @@ module SocialWeb
   class Routes < Roda
     ACCEPT_HEADER = /application\/ld\+json; profile="https:\/\/www.w3.org\/ns\/activitystreams|application\/activity\+json/.freeze
 
+    plugin :halt
     plugin :json
     plugin :hash_routes
     plugin :middleware
