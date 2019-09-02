@@ -22,6 +22,7 @@ module SocialWeb
         end
         return obj
       when String then Client.get(obj) if obj.match?(URI.regexp(%w[http https]))
+      when Array then obj.each { |o| Dereference.call(o) }
       else raise TypeError, "Unable to dereference #{obj}. " \
         'Expects an ActivityStreams::Model or IRI.'
       end
