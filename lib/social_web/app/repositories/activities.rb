@@ -5,16 +5,16 @@ module SocialWeb
     def self.persist(act, collection:)
       id = insert(
         collection: collection,
-        _id: act.id,
+        iri: act.id,
         json: act._original_json,
         type: act.type,
         created_at: Time.now.utc
       )
 
-      object_id = Objects[_id: act.object.id]&.id ||
+      object_id = Objects[iri: act.object.id]&.id ||
         Objects.persist(act.object)
 
-      SocialWeb.db[:social_web_object_versions].insert(
+      SocialWeb.db[:social_web_object_activities].insert(
         social_web_activity_id: id,
         social_web_object_id: object_id,
         created_at: Time.now.utc
@@ -22,7 +22,7 @@ module SocialWeb
     end
 
     def self.by_iri(iri)
-      record = first(_id: iri)
+      record = first(iri: iri)
       ActivityStreams.from_json(record.json) if record
     end
   end

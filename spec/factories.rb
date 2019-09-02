@@ -4,13 +4,13 @@ FactoryBot.define do
   to_create { |obj| obj.save }
 
   factory :activity, class: SocialWeb::Activities do
-    sequence(:_id) { |n| "https://example.com/#{n}" }
+    sequence(:iri) { |n| "https://example.com/#{n}" }
     collection { 'Inbox' }
     type { 'Create' }
     json {
       {
         '@context' => ActivityStreams::NAMESPACE,
-        id: _id,
+        id: iri,
         type: type,
         object: {
           id: 'https://example.com/1',
