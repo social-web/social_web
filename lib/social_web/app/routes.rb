@@ -28,6 +28,10 @@ module SocialWeb
     require 'social_web/app/routes/well_known'
 
     route do |r|
+      r.body.rewind
+      $stdout.write("Received #{r.body.read}")
+      r.body.rewind
+
       @actor = begin
         actor_path = r.path.split('/')[0...-1].join('/')
         iri = "#{r.scheme}://#{r.host}#{actor_path}"
