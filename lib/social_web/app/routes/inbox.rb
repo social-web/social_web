@@ -3,9 +3,6 @@
 module SocialWeb
   class Routes
     hash_branch "inbox" do |r|
-      r.verify_signature if r.post?
-      r.authenticate!
-
       r.get do
         response.status = 200
         inbox = Inbox.all

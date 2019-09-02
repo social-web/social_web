@@ -27,6 +27,9 @@ module SocialWeb
     require 'social_web/app/routes/well_known'
 
     route do |r|
+      r.verify_signature if r.post?
+      r.authenticate!
+
       r.hash_routes
     end
   end
