@@ -12,9 +12,10 @@ namespace :social_web do
     task :drop_tables do
       SocialWeb.db.transaction do
         SocialWeb.db.drop_table(
-          :social_web_object_versions,
           :social_web_objects,
           :social_web_activities,
+          :social_web_object_activities,
+          :social_web_actors,
           :social_web_schema_migrations
         )
         puts 'Removed SocialWeb tables. ' \
