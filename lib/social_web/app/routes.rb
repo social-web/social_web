@@ -29,7 +29,7 @@ module SocialWeb
 
     route do |r|
       r.body.rewind
-      $stdout.write("Received #{r.body.read}")
+      puts "Received #{r.body.read}"
       r.body.rewind
 
       @actor = begin
