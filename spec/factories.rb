@@ -20,6 +20,12 @@ FactoryBot.define do
     }
   end
 
+  factory :object, class: SocialWeb::Objects do; end
+  factory :actor, class: SocialWeb::Actors do
+    sequence(:iri) { |n| "https://example.com/actors/#{n}" }
+    created_at { Time.now.utc }
+  end
+
   factory :stream, class: ActivityStreams do
     initialize_with do
       ActivityStreams.from_json(JSON.dump(attributes))

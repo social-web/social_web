@@ -27,6 +27,14 @@ module SocialWeb
     require 'social_web/app/routes/well_known'
 
     route do |r|
+      @actor = begin
+        actor_path = r.path.split('/')[0...-1].join('/')
+        iri = "#{r.scheme}://#{r.host}#{actor_path}"
+        Actors.find_or_create(iri: iri) do |actor|
+          actor.created_at = Time.now.utc
+        end
+      end
+
       r.verify_signature if r.post?
       r.authenticate!
 

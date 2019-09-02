@@ -2,9 +2,10 @@
 
 module SocialWeb
   class Activities < Sequel::Model(SocialWeb.db[:social_web_activities])
-    def self.persist(act, collection:)
+    def self.persist(act, actor:, collection:)
       id = insert(
         collection: collection,
+        actor_iri: actor.iri,
         iri: act.id,
         json: act._original_json,
         type: act.type,

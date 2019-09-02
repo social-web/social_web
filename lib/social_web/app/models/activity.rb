@@ -32,14 +32,14 @@ module SocialWeb
       klass.deliver(act)
     end
 
-    def self.process(act, collection:)
+    def self.process(act, actor:, collection:)
       SocialWeb.db.transaction do
-        Activities.persist(act, collection: collection)
+        Activities.persist(act, actor: actor, collection: collection)
+      end
 
-        case collection
-        when 'inbox' then receive(act)
-        when 'outbox' then deliver(act)
-        end
+      case collection
+      when 'inbox' then receive(act)
+      when 'outbox' then deliver(act)
       end
     end
 

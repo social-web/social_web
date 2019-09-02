@@ -11,6 +11,17 @@ module SocialWeb
           halt 400
         end
 
+        def actor
+          actor_path = path.split('/')[0...-1].join('/')
+          Actors.find_or_create(iri: "#{scheme}://#{host}#{actor_path}") do |actor|
+            actor.created_at = Time.now.utc
+          end
+        end
+
+        def authenticate!
+          env['warden']&.authenticate
+        end
+
         def verify_signature
           headers = each_header.to_h
           signature_header = headers.delete('Signature')
@@ -70,10 +81,6 @@ module SocialWeb
           pkey.verify(digest, signature, signing_string)
         rescue OpenSSL::PKey::PKeyError
           false
-        end
-
-        def authenticate!
-          env['warden']&.authenticate
         end
       end
     end

@@ -8,7 +8,6 @@ Sequel.migration do
       primary_key :id
 
       String :iri, null: false
-      String :type, null: false
 
       Time :created_at, null: false
       Time :updated_at, null: true
@@ -16,24 +15,8 @@ Sequel.migration do
       index :iri, unique: true
     end
 
-    create_table(:social_web_actor_activities) do
-      primary_key :id
-
-      foreign_key :social_web_actor_id, :social_web_actors
-      foreign_key :social_web_activity_id, :social_web_activities
-
-      Time :created_at, null: false
-      Time :updated_at, null: true
-    end
-
-    create_table(:social_web_actor_objects) do
-      primary_key :id
-
-      foreign_key :social_web_object_id, :social_web_objects
-      foreign_key :social_web_activity_id, :social_web_activities
-
-      Time :created_at, null: false
-      Time :updated_at, null: true
+    alter_table(:social_web_activities) do
+      add_foreign_key :actor_iri, :social_web_actors, key: :iri, type: String
     end
   end
 end
