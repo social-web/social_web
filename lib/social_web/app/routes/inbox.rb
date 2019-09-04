@@ -18,9 +18,6 @@ module SocialWeb
         Activity.process(@activity, actor: @actor, collection: 'inbox')
         response.status = 201
         ''
-      rescue ::ActivityStreams::Error, Sequel::Error => e
-        response.status = 400
-        e.message
       end
     end
   end

@@ -29,13 +29,7 @@ module SocialWeb
       r.verify_signature if r.post?
       r.authenticate!
 
-      if r.post?
-        @activity = begin
-          ActivityStreams.from_json(r.body.read)
-        rescue ActivityStreams::Error
-          r.halt 400
-        end
-      end
+      @activity = ActivityStreams.from_json(r.body.read) if r.post?
       @actor = begin
         iri = r.url.split('/')[0...-1].join('/')
         Actors.find_or_create(iri: iri) do |actor|
@@ -44,6 +38,9 @@ module SocialWeb
       end
 
       r.hash_routes
+    rescue ::ActivityStreams::Error, Sequel::Error => e
+      response.status = 400
+      e.message
     end
   end
 end
