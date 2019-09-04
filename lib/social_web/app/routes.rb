@@ -26,20 +26,22 @@ module SocialWeb
     require 'social_web/app/routes/well_known'
 
     route do |r|
-      r.body.rewind
-      puts "Received #{r.body.read}"
-      r.body.rewind
+      r.verify_signature if r.post?
+      r.authenticate!
 
+      if r.post?
+        @activity = begin
+          ActivityStreams.from_json(r.body.read)
+        rescue ActivityStreams::Error
+          r.halt 400
+        end
+      end
       @actor = begin
-        actor_path = r.path.split('/')[0...-1].join('/')
-        iri = "#{r.scheme}://#{r.host}#{actor_path}"
+        iri = r.url.split('/')[0...-1].join('/')
         Actors.find_or_create(iri: iri) do |actor|
           actor.created_at = Time.now.utc
         end
       end
-
-      r.verify_signature if r.post?
-      r.authenticate!
 
       r.hash_routes
     end

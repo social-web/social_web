@@ -4,13 +4,6 @@ module SocialWeb
   class Routes
     module Helpers
       module RequestHelpers
-        # Immediately wrap the incoming activity in our model
-        def activity
-          @activity ||= Activity.new(ActivityStreams.from_json(body.read))
-        rescue ActivityStreams::Error
-          halt 400
-        end
-
         def authenticate!
           env['warden']&.authenticate
         end

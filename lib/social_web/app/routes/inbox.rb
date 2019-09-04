@@ -15,7 +15,7 @@ module SocialWeb
       end
 
       r.post do
-        Activity.process(r.activity, actor: @actor, collection: 'inbox')
+        Activity.process(@activity, actor: @actor, collection: 'inbox')
         response.status = 201
         ''
       rescue ::ActivityStreams::Error, Sequel::Error => e
