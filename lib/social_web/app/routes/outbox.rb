@@ -5,7 +5,9 @@ module SocialWeb
     hash_branch "outbox" do |r|
       r.get do
         response.status = 200
-        outbox = Outbox.all
+        outbox = ActivityStreams.
+          ordered_collection(items: Outbox.for_actor(@actor).all)
+
         r.activity_json { outbox.to_json }
         r.html { view('outbox', locals: { items: outbox.items }) }
       end

@@ -2,10 +2,20 @@
 
 module SocialWeb
   class Activities < Sequel::Model(SocialWeb.db[:social_web_activities])
+    def self.dataset
+      @dataset.with_row_proc ->(record) {
+        ActivityStreams.from_json(record[:json])
+      }
+    end
+
+    def self.for_actor(actor)
+      dataset.where(actor_iri: actor.id)
+    end
+
     def self.persist(act, actor:, collection:)
       id = insert(
         collection: collection,
-        actor_iri: actor.iri,
+        actor_iri: actor.id,
         iri: act.id,
         json: act._original_json,
         type: act.type,
@@ -23,8 +33,7 @@ module SocialWeb
     end
 
     def self.by_iri(iri)
-      record = first(iri: iri)
-      ActivityStreams.from_json(record.json) if record
+      first(iri: iri)
     end
   end
 end

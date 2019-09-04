@@ -5,11 +5,9 @@ module SocialWeb
     hash_branch "inbox" do |r|
       r.get do
         response.status = 200
-        collection = ActivityStreams.collection
-        collection.items = Inbox.for_actor(@actor).
-          order(Sequel.desc(:created_at)).
-          map { |o| ActivityStreams.from_json(o.json) }
-
+        collection = ActivityStreams.collection(
+          items: Inbox.for_actor(@actor).order(Sequel.desc(:created_at)).to_a
+        )
         r.activity_json { collection.to_json }
         r.html { view('inbox', locals: { items: collection.items }) }
       end

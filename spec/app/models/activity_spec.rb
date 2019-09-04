@@ -7,7 +7,8 @@ module SocialWeb
     describe '.receive' do
       it 'persist an activity and its object' do
         act = build :stream, object: build(:stream)
-        actor = create :actor
+        actor = build :stream
+        Actors.persist(actor)
         expect { described_class.process(act, actor: actor, collection: 'inbox') }.
           to change { Activities.count }.by(+1)
       end

@@ -2,11 +2,6 @@
 
 module SocialWeb
   class Outbox < Activities
-    def self.all
-      items = dataset.
-        order(Sequel.desc(:created_at)).
-        map { |o| ActivityStreams.from_json(o.json) }
-      ActivityStreams::Collection::OrderedCollection.new(items: items)
-    end
+    @dataset = SocialWeb.db[:social_web_activities].where(collection: 'outbox')
   end
 end

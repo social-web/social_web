@@ -5,5 +5,9 @@ module SocialWeb
     def self.by_iri(iri)
       dataset.first!(iri: iri)
     end
+
+    def self.persist(actor)
+      find_or_create(iri: actor.id) { |atr| atr.created_at = Time.now.utc }
+    end
   end
 end

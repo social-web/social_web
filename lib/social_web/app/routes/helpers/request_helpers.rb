@@ -8,6 +8,11 @@ module SocialWeb
           env['warden']&.authenticate
         end
 
+        def user
+          return unless authenticate!
+          env['warden'].user
+        end
+
         def verify_signature
           headers = each_header.to_h
           signature_header = headers.delete('Signature')

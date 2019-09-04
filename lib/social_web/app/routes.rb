@@ -41,7 +41,9 @@ module SocialWeb
       end
 
       r.hash_routes
-    rescue ::ActivityStreams::Error, Sequel::Error => e
+    rescue ::ActivityStreams::Error => e
+      raise(e) if ENV['RACK_ENV'] == 'test'
+
       response.status = 400
       e.message
     end

@@ -8,6 +8,7 @@ Sequel.migration do
       primary_key :id
 
       String :iri, null: false
+      String :json, null: false
 
       Time :created_at, null: false
       Time :updated_at, null: true
