@@ -33,5 +33,14 @@ module SocialWeb
 
       described_class.call(act)
     end
+
+    it 'derereferences an ActivityStreams::Model' do
+      object = double('object')
+      act = build :stream
+      act.object = 'https://example.com'
+      expect(Client).to receive(:get).with(act.object).and_return(object)
+      expect { described_class.call(act) }.
+        to change { act.object }.to(object)
+    end
   end
 end

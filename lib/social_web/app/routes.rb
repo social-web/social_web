@@ -29,7 +29,10 @@ module SocialWeb
       r.verify_signature if r.post?
       r.authenticate!
 
-      @activity = ActivityStreams.from_json(r.body.read) if r.post?
+      if r.post?
+        @activity = ActivityStreams.from_json(r.body.read)
+        Activity::Dereference.call(@activity)
+      end
       @actor = begin
         iri = r.url.split('/')[0...-1].join('/')
         Actors.find_or_create(iri: iri) do |actor|
