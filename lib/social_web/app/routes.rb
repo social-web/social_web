@@ -38,6 +38,7 @@ module SocialWeb
         Actors.find_or_create(iri: iri) do |actor|
           actor.created_at = Time.now.utc
         end
+        ActivityStreams.actor(id: iri)
       end
 
       r.hash_routes
