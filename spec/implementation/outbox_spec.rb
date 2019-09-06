@@ -4,6 +4,7 @@ require 'implementation_spec_helper'
 
 RSpec.describe 'outbox', type: :request do
   it 'accepts Create activities' do
+    create :actor, iri: 'http://example.org'
     act = build :stream,
       type: 'Create',
       object: build(:stream, type: 'Note')

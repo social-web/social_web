@@ -59,15 +59,7 @@ module SocialWeb
 
     def load_actor(url)
       iri = url.split('/')[0...-1].join('/')
-      Actors.find_or_create(iri: iri) do |actor|
-        actor.created_at = Time.now.utc
-        actor.json = {
-          id: iri,
-          type: 'Person',
-          inbox: "#{iri}/inbox",
-          outbox: "#{iri}/outbox"
-        }.to_json
-      end
+      Actors.first(iri: iri)
     end
   end
 end

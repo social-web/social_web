@@ -3,7 +3,13 @@
 module SocialWeb
   module Services
     class Create < ActivityStreams::Activity::Create
-      def self.deliver(create); end
+      def self.deliver(create, for_actor)
+        Activities.persist(
+          create,
+          actor: for_actor,
+          collection: 'outbox'
+        )
+      end
 
       def self.receive(create, for_actor:)
         Activities.persist(

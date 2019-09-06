@@ -28,15 +28,16 @@ module SocialWeb
       end
     }
 
-    def self.deliver(act)
+    def self.deliver(act, for_actor)
       klass = "::SocialWeb::Services::#{act.type}".constantize
-      klass.deliver(act)
+      klass.deliver(act, for_actor)
     end
 
     def self.process(act, actor, collection)
+      # dereference
       case collection
       when 'inbox' then receive(act, for_actor: actor)
-      when 'outbox' then deliver(act)
+      when 'outbox' then deliver(act, actor)
       end
     end
 
