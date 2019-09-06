@@ -12,10 +12,10 @@ namespace :social_web do
     task :drop_tables do
       SocialWeb.db.transaction do
         SocialWeb.db.drop_table(
-          :social_web_objects,
           :social_web_activities,
-          :social_web_object_activities,
           :social_web_actors,
+          :social_web_actor_activities,
+          :social_web_actor_actors,
           :social_web_schema_migrations,
           cascade: true
         )
@@ -41,6 +41,12 @@ namespace :social_web do
       Dir[File.join(gem_dir,'db', 'migrations', '*.rb')].each do |migration|
         puts File.read(migration)
       end
+    end
+
+    desc 'Reset SocialWeb tables'
+    task :reset do
+      Rake::Task['social_web:db:drop_tables'].invoke
+      Rake::Task['social_web:db:migrate'].invoke
     end
   end
 end
