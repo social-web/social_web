@@ -26,18 +26,18 @@ module SocialWeb
       r.verify_signature if r.post?
       r.authenticate!
 
-      @actor = load_actor(r.url)
+      actor = load_actor(r.url)
       collection = r.url.split('/')[-1]
 
       r.post do
         activity = load_activity(r.body.read)
-        Activity.process(activity, @actor, collection)
+        Activity.process(activity, actor, collection)
         response.status = 201
         ''
       end
 
       r.get do
-        items = Activities.for_actor(@actor).for_collection(collection).to_a
+        items = Activities.for_actor(actor).for_collection(collection).to_a
         stream = ActivityStreams.ordered_collection(items: items)
 
         r.activity_json { stream.to_json }
