@@ -2,32 +2,41 @@
 
 module SocialWeb
   class Activities < Sequel::Model(SocialWeb.db[:social_web_activities])
+    one_to_many :social_web_actor_activities,
+      class: 'SocialWeb::ActorActivity',
+      primary_key: :iri,
+      key: :activity_iri
+
+    dataset_module do
+      def for_actor(actor)
+        association_join(:social_web_actor_activities)
+          .where(Sequel[:social_web_actor_activities][:actor_iri] => actor.id)
+      end
+
+      def for_collection(collection)
+        association_join(:social_web_actor_activities)
+          .where(Sequel[:social_web_actor_activities][:collection] => collection)
+      end
+    end
+
     def self.dataset
       @dataset.with_row_proc ->(record) {
         ActivityStreams.from_json(record[:json])
       }
     end
 
-    def self.for_actor(actor)
-      dataset.where(actor_iri: actor.id)
-    end
-
     def self.persist(act, actor:, collection:)
       id = insert(
-        collection: collection,
-        actor_iri: actor.id,
         iri: act.id,
         json: act._original_json,
         type: act.type,
         created_at: Time.now.utc
       )
 
-      object_id = Objects[iri: act.object.id]&.id ||
-        Objects.persist(act.object)
-
-      SocialWeb.db[:social_web_object_activities].insert(
-        social_web_activity_id: id,
-        social_web_object_id: object_id,
+      SocialWeb.db[:social_web_actor_activities].insert(
+        collection: collection,
+        activity_iri: act.id,
+        actor_iri: actor.id,
         created_at: Time.now.utc
       )
     end

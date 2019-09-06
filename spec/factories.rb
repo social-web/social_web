@@ -5,7 +5,6 @@ FactoryBot.define do
 
   factory :activity, class: SocialWeb::Activities do
     sequence(:iri) { |n| "https://example.com/#{n}" }
-    collection { 'Inbox' }
     type { 'Create' }
     json {
       {
@@ -18,10 +17,18 @@ FactoryBot.define do
         }
       }.to_json
     }
+    created_at { Time.now.utc }
   end
 
   factory :actor, class: SocialWeb::Actors do
     sequence(:iri) { |n| "https://example.com/actors/#{n}" }
+    json {
+      {
+        '@context' => ActivityStreams::NAMESPACE,
+        id: iri,
+        type: 'Person'
+      }.to_json
+    }
     created_at { Time.now.utc }
   end
 

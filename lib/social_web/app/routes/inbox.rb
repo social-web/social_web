@@ -13,6 +13,7 @@ module SocialWeb
       end
 
       r.post do
+        Activities.persist(@activity, actor: @actor, collection: 'inbox')
         Activity.process(@activity, actor: @actor, collection: 'inbox')
         response.status = 201
         ''

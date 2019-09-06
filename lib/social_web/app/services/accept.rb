@@ -8,10 +8,14 @@ module SocialWeb
         Delivery.call(target_inbox, accept.to_json)
       end
 
-      def self.receive(accept)
-        case accept.object.type
-        when 'Follow' then
-        end
+      def self.receive(accept, for_actor:)
+        return if Activities.
+          for_actor(for_actor).
+          for_collection('outbox').
+          first(type: 'Follow', iri: accept.object.id).
+          nil?
+
+        Followers.follow(accept.actor, for_actor: for_actor)
       end
     end
   end

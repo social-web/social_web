@@ -34,25 +34,29 @@ module SocialWeb
     end
 
     def self.process(act, actor:, collection:)
-      SocialWeb.db.transaction do
-        Activities.persist(act, actor: actor, collection: collection)
-      end
-
       case collection
-      when 'inbox' then receive(act)
+      when 'inbox' then receive(act, for_actor: actor)
       when 'outbox' then deliver(act)
       end
     end
 
-    def self.receive(act)
+    def self.receive(act, for_actor:)
       klass = "::SocialWeb::Services::#{act.type}".constantize
-      klass.receive(act)
+      klass.receive(act, for_actor: for_actor)
     end
 
     def_delegators :@act, :to_json
 
     def initialize(act)
       @act = Dereference.call(act)
+    end
+
+    def database_id
+      Activities.first(iri: @act.id)
+    end
+
+    def id
+      @act.id
     end
 
     # Delegate most methods to wrapped ActivityStreams model

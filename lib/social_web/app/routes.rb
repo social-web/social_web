@@ -29,23 +29,8 @@ module SocialWeb
       r.verify_signature if r.post?
       r.authenticate!
 
-      if r.post?
-        @activity = ActivityStreams.from_json(r.body.read)
-        Activity::Dereference.call(@activity)
-      end
-      @actor = begin
-        iri = r.url.split('/')[0...-1].join('/')
-        Actors.find_or_create(iri: iri) do |actor|
-          actor.created_at = Time.now.utc
-          actor.json = {
-            id: iri,
-            type: 'Person',
-            inbox: "#{iri}/inbox",
-            outbox: "#{iri}/outbox"
-          }.to_json
-        end
-        ActivityStreams.actor(id: iri)
-      end
+      @actor = load_actor(r.url)
+      @activity = load_activity(r.body.read) if r.post?
 
       r.hash_routes
     rescue ::ActivityStreams::Error => e
@@ -53,6 +38,26 @@ module SocialWeb
 
       response.status = 400
       e.message
+    end
+
+    def load_activity(json)
+      act = ActivityStreams.from_json(json)
+      Activity::Dereference.call(act)
+      act
+    end
+
+    def load_actor(url)
+      iri = url.split('/')[0...-1].join('/')
+      actor = Actors.find_or_create(iri: iri) do |actor|
+        actor.created_at = Time.now.utc
+        actor.json = {
+          id: iri,
+          type: 'Person',
+          inbox: "#{iri}/inbox",
+          outbox: "#{iri}/outbox"
+        }.to_json
+      end
+      SocialWeb::Actor.new(ActivityStreams.from_json(actor.json))
     end
   end
 end

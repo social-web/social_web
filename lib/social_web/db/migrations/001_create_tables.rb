@@ -30,11 +30,13 @@ Sequel.migration do
     create_table(:social_web_actor_activities) do
       primary_key :id
 
-      foreign_key :social_web_actor_iri,
+      String :collection, null: false
+
+      foreign_key :actor_iri,
         :social_web_actors,
         key: :iri,
         type: String
-      foreign_key :social_web_activity_iri,
+      foreign_key :activity_iri,
         :social_web_activities,
         key: :iri,
         type: String
@@ -42,7 +44,7 @@ Sequel.migration do
       Time :created_at, null: false
       Time :updated_at, null: true
 
-      index %i[social_web_actor_iri social_web_activity_iri], unique: true
+      index %i[actor_iri activity_iri], unique: true
     end
 
     create_table(:social_web_actor_actors) do
@@ -50,11 +52,11 @@ Sequel.migration do
 
       String :collection, null: false
 
-      foreign_key :social_web_actor_iri,
+      foreign_key :actor_iri,
         :social_web_actors,
         key: :iri,
         type: String
-      foreign_key :social_web_for_actor_iri,
+      foreign_key :for_actor_iri,
         :social_web_actors,
         key: :iri,
         type: String
@@ -62,7 +64,7 @@ Sequel.migration do
       Time :created_at, null: false
       Time :updated_at, null: true
 
-      index %i[social_web_actor_iri social_web_for_actor_iri], unique: true
+      index %i[actor_iri for_actor_iri], unique: true
     end
   end
 end

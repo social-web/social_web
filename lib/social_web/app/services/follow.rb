@@ -8,7 +8,9 @@ module SocialWeb
         Delivery.call(target_inbox, follow.to_json)
       end
 
-      def self.receive(follow); end
+      def self.receive(follow)
+
+      end
     end
   end
 end
