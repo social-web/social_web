@@ -18,8 +18,14 @@ module SocialWeb
       right_key: :for_actor_iri,
       right_primary_key: :iri
 
-    def self.by_iri(iri)
-      dataset.first!(iri: iri)
+    def self.dataset
+      @dataset.with_row_proc ->(record) { SocialWeb::Actor.new(record[:json]) }
+    end
+
+    dataset_module do
+      def by_iri(iri)
+        first!(iri: iri)
+      end
     end
 
     def self.persist(actor)

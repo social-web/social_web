@@ -3,18 +3,6 @@
 require 'spec_helper'
 
 module SocialWeb
-  RSpec.describe Activity do
-    describe '.receive' do
-      it 'persist an activity and its object' do
-        act = build :stream, object: build(:stream)
-        actor = build :stream
-        Actors.persist(actor)
-        expect { described_class.process(act, actor: actor, collection: 'inbox') }.
-          to change { Activities.count }.by(+1)
-      end
-    end
-  end
-
   RSpec.describe Activity::Dereference do
     it 'requests the IRI' do
       act = build :stream, object: 'https://example.com/1'

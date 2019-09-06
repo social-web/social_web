@@ -8,7 +8,6 @@ module SocialWeb
   class Routes < Roda
     plugin :halt
     plugin :json
-    plugin :hash_routes
     plugin :middleware
     plugin :module_include
     plugin :render,
@@ -21,18 +20,30 @@ module SocialWeb
     require 'social_web/app/routes/helpers/request_helpers'
     request_module Helpers::RequestHelpers
 
-    require 'social_web/app/routes/inbox'
-    require 'social_web/app/routes/outbox'
     require 'social_web/app/routes/well_known'
 
     route do |r|
+      r.on('.well-known') { r.run Routes::WellKnown}
       r.verify_signature if r.post?
       r.authenticate!
 
       @actor = load_actor(r.url)
-      @activity = load_activity(r.body.read) if r.post?
+      collection = r.url.split('/')[-1]
 
-      r.hash_routes
+      r.post do
+        activity = load_activity(r.body.read)
+        Activity.process(activity, actor: @actor, collection: collection)
+        response.status = 201
+        ''
+      end
+
+      r.get do
+        items = Activities.for_actor(@actor).for_collection(collection).to_a
+        stream = ActivityStreams.ordered_collection(items: items)
+
+        r.activity_json { stream.to_json }
+        r.html { view('collection', locals: { items: stream.items }) }
+      end
     rescue ::ActivityStreams::Error => e
       raise(e) if ENV['RACK_ENV'] == 'test'
 
@@ -48,7 +59,7 @@ module SocialWeb
 
     def load_actor(url)
       iri = url.split('/')[0...-1].join('/')
-      actor = Actors.find_or_create(iri: iri) do |actor|
+      Actors.find_or_create(iri: iri) do |actor|
         actor.created_at = Time.now.utc
         actor.json = {
           id: iri,
@@ -57,7 +68,6 @@ module SocialWeb
           outbox: "#{iri}/outbox"
         }.to_json
       end
-      SocialWeb::Actor.new(ActivityStreams.from_json(actor.json))
     end
   end
 end

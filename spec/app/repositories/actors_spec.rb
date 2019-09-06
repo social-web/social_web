@@ -7,7 +7,8 @@ module SocialWeb
     describe '.by_iri' do
       it 'find an object by iri' do
         object = create :actor
-        expect(described_class.by_iri(object.iri)).to eq(object)
+        found_object = described_class.by_iri(object.iri)
+        expect(found_object.id).to eq(object.iri)
       end
     end
   end

@@ -7,6 +7,7 @@ module SocialWeb
     RSpec.describe '/inbox', type: :request do
       describe 'POST /inbox' do
         it 'returns a 201' do
+          create :actor, iri: 'http://example.org'
           allow(Activity).to receive(:process)
           post '/inbox', build(:stream).to_json
 

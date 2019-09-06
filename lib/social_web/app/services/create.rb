@@ -5,7 +5,13 @@ module SocialWeb
     class Create < ActivityStreams::Activity::Create
       def self.deliver(create); end
 
-      def self.receive(create); end
+      def self.receive(create, for_actor:)
+        Activities.persist(
+          create,
+          actor: for_actor,
+          collection: 'inbox'
+        )
+      end
     end
   end
 end

@@ -15,7 +15,7 @@ module SocialWeb
           first(type: 'Follow', iri: accept.object.id).
           nil?
 
-        Followers.follow(accept.actor, for_actor: for_actor)
+        for_actor.follow(accept.actor)
       end
     end
   end

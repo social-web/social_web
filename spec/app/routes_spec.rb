@@ -7,7 +7,8 @@ module SocialWeb
     it 'creates a new actor automatically' do
       expect { get '/users/1/inbox' }.
         to change { Actors.count }.by(+1)
-      expect(JSON.parse(Actors.all.first.json)).to eq(
+      expect(JSON.parse(Actors.all.first.to_json)).to eq(
+        '@context' => 'https://www.w3.org/ns/activitystreams',
         'id' => 'http://example.org/users/1',
         'type' => 'Person',
         'inbox' => 'http://example.org/users/1/inbox',
