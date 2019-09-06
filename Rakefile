@@ -3,5 +3,8 @@
 require 'bundler/setup'
 require 'social_web'
 
-SocialWeb.config.database_url = 'postgresql://localhost/social_web_dev'
-SocialWeb.load!
+SocialWeb.config.database_url = if ENV['RACK_ENV'] == 'test'
+  'postgresql://localhost/social_web_test'
+else
+  'postgresql://localhost/social_web_dev'
+end
