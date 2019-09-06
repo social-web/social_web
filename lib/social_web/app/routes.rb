@@ -7,7 +7,6 @@ require 'tilt'
 module SocialWeb
   class Routes < Roda
     plugin :halt
-    plugin :json
     plugin :middleware
     plugin :module_include
     plugin :render,
