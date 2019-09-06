@@ -23,13 +23,14 @@ module SocialWeb
 
     route do |r|
       r.on('.well-known') { r.run Routes::WellKnown}
-      r.verify_signature if r.post?
       r.authenticate!
 
       actor = load_actor(r.url)
       collection = r.url.split('/')[-1]
 
       r.post do
+        r.halt(403) unless r.verify_signature
+
         activity = load_activity(r.body.read)
         Activity.process(activity, actor, collection)
         response.status = 201
