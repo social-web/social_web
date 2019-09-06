@@ -32,7 +32,7 @@ module SocialWeb
 
       r.post do
         activity = load_activity(r.body.read)
-        Activity.process(activity, actor: @actor, collection: collection)
+        Activity.process(activity, @actor, collection)
         response.status = 201
         ''
       end

@@ -33,7 +33,7 @@ module SocialWeb
       klass.deliver(act)
     end
 
-    def self.process(act, actor:, collection:)
+    def self.process(act, actor, collection)
       case collection
       when 'inbox' then receive(act, for_actor: actor)
       when 'outbox' then deliver(act)
