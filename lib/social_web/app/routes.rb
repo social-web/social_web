@@ -56,9 +56,7 @@ module SocialWeb
     end
 
     def load_activity(json)
-      act = ActivityStreams.from_json(json)
-      Activity::Dereference.call(act)
-      act
+      ActivityStreams.from_json(json)
     end
 
     def load_actor(url)
