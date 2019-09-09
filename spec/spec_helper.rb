@@ -22,9 +22,6 @@ RSpec.configure do |config|
     SocialWeb.db.transaction(rollback: :always, &example)
   end
   config.before(:each, type: :request) do
-    actor = build :stream
-    login_as actor
-
     allow_any_instance_of(SocialWeb::Routes::Helpers::RequestHelpers).
       to receive(:verify_signature).
       and_return(true)

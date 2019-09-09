@@ -30,6 +30,10 @@ module SocialWeb
 
       r.post do
         r.halt(403) unless r.verify_signature
+        if collection == 'outbox'
+          r.halt(403) if actor.nil? || r.user.nil?
+          r.halt(403) if actor.id != r.user.iri
+        end
 
         activity = load_activity(r.body.read)
         Activity.process(activity, actor, collection)
