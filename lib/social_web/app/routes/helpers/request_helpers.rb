@@ -9,8 +9,10 @@ module SocialWeb
         end
 
         def user
-          return unless authenticate!
-          env['warden'].user
+          @user ||= begin
+            return unless authenticate!
+            env['warden'].user
+          end
         end
 
         def verify_signature
