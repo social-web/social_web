@@ -26,7 +26,7 @@ module SocialWeb
       r.authenticate!
 
       actor = load_actor(r.url)
-      collection = r.url.split('/')[-1]
+      collection = load_collection(r.url)
 
       r.post do
         r.halt(403) unless r.verify_signature
@@ -60,6 +60,10 @@ module SocialWeb
     def load_actor(url)
       iri = url.split('/')[0...-1].join('/')
       Actors.first(iri: iri)
+    end
+
+    def load_collection(url)
+      url.split('/')[-1]
     end
   end
 end
