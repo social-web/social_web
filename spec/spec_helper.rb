@@ -3,10 +3,11 @@
 ENV['RACK_ENV'] = 'test'
 
 require 'social_web'
+require_relative '../spec/spec_container'
 SocialWeb.configure do |config|
- config.database_url = 'postgres://localhost/social_web_test'
+  config.database_url = 'postgres://localhost/social_web_test'
+  config.container = SocialWeb::SpecContainer
 end
-SocialWeb.load!
 
 require 'rack/test'
 require 'factory_bot'
@@ -19,12 +20,7 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
   config.around(:example) do |example|
-    SocialWeb.db.transaction(rollback: :always, &example)
-  end
-  config.before(:each, type: :request) do
-    allow_any_instance_of(SocialWeb::Routes::Helpers::RequestHelpers).
-      to receive(:verify_signature).
-      and_return(true)
+    SocialWeb::SpecContainer::DB.transaction(rollback: :always, &example)
   end
   config.before(:suite) do
     FactoryBot.find_definitions

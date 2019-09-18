@@ -36,6 +36,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'tilt'
 
   s.add_development_dependency 'bundler', '~> 2.0'
+  s.add_development_dependency 'dry-auto_inject'
+  s.add_development_dependency 'dry-container'
   s.add_development_dependency 'factory_bot'
   s.add_development_dependency 'pg'
   s.add_development_dependency 'rack-test', '~> 1.0'

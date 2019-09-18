@@ -3,30 +3,46 @@
 require 'bundler/setup'
 
 require 'activity_streams'
-require 'http'
+require 'dry-auto_inject'
 require 'rake'
 
 require 'social_web/configuration'
-require 'social_web/delivery'
-require 'social_web/db'
-require 'social_web/client'
+require 'social_web/container'
 
 module SocialWeb
-  def self.new(app, *args, &block)
-    load!
-    Routes.new(app, *args, &block)
+  Activity = Struct.new(:activity, :actor, :collection) do
+    def id
+      activity.id
+    end
+
+    def type
+      activity.type
+    end
   end
 
-  def self.call(env)
-    load!
-    Routes.call(env)
+  def self.container
+    @container ||= Dry::AutoInject(SocialWeb.config.container)
   end
 
-  def self.load!
-    require 'social_web/app'
+  def self.process(activity, actor, collection)
+    act = Activity.new(activity, actor, collection)
+    SocialWeb.config.container['repositories.activities'].store(act)
+
+    case act.collection
+    when 'outbox'
+      case act.type
+      when 'Follow' then Outbox::Follow.new.call(act)
+      end
+    when 'inbox'
+      case act.type
+      when 'Accept' then Inbox::Accept.new.call(act)
+      end
+    end
   end
 end
 
+require 'social_web/collections/outbox/activities/follow'
+require 'social_web/collections/inbox/activities/accept'
 
 module ActivityStreams
   module Extensions
