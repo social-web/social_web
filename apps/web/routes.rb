@@ -9,35 +9,22 @@ require 'social_web'
 module SocialWeb
   module Web
     class Routes < Roda
-      plugin :halt
       plugin :middleware
-      plugin :module_include
       plugin :render,
         engine: 'html.slim',
         views: File.join(__dir__, 'views')
       plugin :type_routing,
         types: { activity_json: 'application/activity+json' }
 
-      require_relative './routes/helpers/request_helpers'
-      request_module Helpers::RequestHelpers
-
       require_relative './routes/well_known'
 
       route do |r|
         r.on('.well-known') { r.run Routes::WellKnown }
-        r.authenticate!
 
         actor = load_actor(r.url)
         collection = load_collection(r.url)
 
         r.post do
-          if collection == 'outbox'
-            r.halt(403) if actor.nil? || r.user.nil?
-            r.halt(403) if actor.id != r.user.iri
-          else
-            # r.halt(403) unless r.verify_signature
-          end
-
           activity = load_activity(r.body.read)
           SocialWeb.process(activity, actor, collection)
           response.status = 201
