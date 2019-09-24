@@ -13,7 +13,7 @@ module SocialWeb
             actr = ActivityStreams.from_json(actor.json)
             follow = create :activity,
               type: 'Follow'
-            SocialWeb.db[:social_web_actor_activities].insert(
+            SocialWeb::Web.db[:social_web_actor_activities].insert(
               actor_iri: actor.iri,
               activity_iri: follow.iri,
               collection: 'outbox',

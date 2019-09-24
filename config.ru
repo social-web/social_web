@@ -1,19 +1,52 @@
 # frozen_string_literal: true
 
+ENV['DATABASE_URL'] = 'sqlite://social_web_dev.sqlite3'
+
 require 'bundler/setup'
 require 'social_web'
+require_relative './apps/web'
 
-SocialWeb.configure do |config|
-  config.database_url = 'sqlite://social_web_dev.sqlite3'
-end
+Sequel.extension :migration
 
-Sequel.extension :migration, :core_extensions
 Sequel::Migrator.run(
-  SocialWeb.db,
-  './lib/social_web/db/migrations',
+  SocialWeb::Web.db,
+  './db/migrations',
   table: :social_web_schema_migrations
 )
 
-SocialWeb.load!
+SocialWeb.configure do |config|
+  config.container = SocialWeb::Web::Container
+end
 
-run SocialWeb::Routes.app.freeze
+class WardenUser
+  WARDEN = Struct.new(:test) do
+    def authenticate!
+      true
+    end
+
+    def user
+      user = Struct.new(:test) do
+        def iri
+          'http://localhost:9292'
+        end
+      end
+
+      user.new
+    end
+  end
+
+
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    env['warden'] = WARDEN.new
+
+    @app.call(env)
+  end
+end
+
+use WardenUser
+
+run SocialWeb::Web::Routes.app.freeze

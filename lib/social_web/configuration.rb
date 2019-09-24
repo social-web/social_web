@@ -10,15 +10,10 @@ module SocialWeb
   end
 
   class Configuration
-    attr_accessor :database_url,
-      :domain,
-      :private_key,
-      :public_key,
-      :actor,
-      :webfinger_resource
+    attr_accessor :container
 
-    def database_url=(url)
-      @database_url ||= url
+    def container
+      @container ||= SocialWeb::Container
     end
   end
 end

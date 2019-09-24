@@ -2,43 +2,36 @@
 
 require 'bundler/setup'
 
-require 'activity_streams'
-require 'http'
 require 'rake'
 
+require_relative './activity_streams_extension'
 require 'social_web/configuration'
-require 'social_web/delivery'
-require 'social_web/db'
-require 'social_web/client'
+require 'social_web/container'
 
 module SocialWeb
-  def self.new(app, *args, &block)
-    load!
-    Routes.new(app, *args, &block)
-  end
+  Activity = Struct.new(:activity, :actor, :collection) do
+    def id
+      activity.id
+    end
 
-  def self.call(env)
-    load!
-    Routes.call(env)
-  end
-
-  def self.load!
-    require 'social_web/app'
-  end
-end
-
-
-module ActivityStreams
-  module Extensions
-    module ActivityPub
-      def self.included(base)
-        base.class_eval do
-          property :inbox
-          property :outbox
-        end
-      end
+    def type
+      activity.type
     end
   end
+
+  def self.container
+    @container ||= SocialWeb::Container.merge(SocialWeb.config.container)
+  end
+
+  def self.process(activity, actor, collection)
+    raise unless %w[inbox outbox].include?(collection)
+
+    act = Activity.new(activity, actor, collection)
+
+    container['repositories.activities'].store(act)
+    container["collections.#{collection}.#{activity.type.downcase}"].call(act)
+  end
 end
 
-ActivityStreams::Model.include ActivityStreams::Extensions::ActivityPub
+require 'social_web/collections/outbox/activities/follow'
+require 'social_web/collections/inbox/activities/accept'
