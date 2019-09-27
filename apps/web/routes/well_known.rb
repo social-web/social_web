@@ -10,25 +10,7 @@ module SocialWeb
           r.on 'webfinger' do
             r.get do
               r.halt 404 unless r.params['resource']&.include?('shane@shanecav.net')
-              {
-                'subject': 'acct:shane@shanecav.net',
-                'links': [
-                  {
-                    'rel': 'self',
-                    'type': 'application/activity+json',
-                    'href': 'https://shanecav.net'
-                  },
-                  {
-                    'rel': 'http://webfinger.net/rel/avatar',
-                    'href': 'https://shanecav.net/images/shane_cavanaugh.jpg'
-                  },
-                  {
-                    'rel': 'http://webfinger.net/rel/profile-page',
-                    'href': 'https://shanecav.net/'
-                  },
-                  { 'rel': 'me', 'href': 'https://shanecav.net/' }
-                ]
-              }
+              SocialWeb::Web.config.webfinger_resource
             end
           end
         end

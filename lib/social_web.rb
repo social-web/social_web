@@ -2,11 +2,11 @@
 
 require 'bundler/setup'
 
-require 'rake'
-
 require_relative './activity_streams_extension'
 require 'social_web/configuration'
 require 'social_web/container'
+
+require_relative '../apps/web.rb'
 
 module SocialWeb
   def self.container

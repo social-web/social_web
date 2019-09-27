@@ -13,8 +13,8 @@ Gem::Specification.new do |s|
   s.email = ['shane@shanecav.net']
   s.homepage = 'https://github.com/social-web'
 
-  s.files = %w[README.md Rakefile LICENSE.txt] + Dir['{social_web}/**/*']
-  s.require_path = 'lib'
+  s.files = %w[README.md Rakefile LICENSE.txt] + Dir['{apps,lib}/**/*']
+  s.require_paths = %w[apps lib]
 
   s.required_ruby_version = '>= 2.5.0'
 
