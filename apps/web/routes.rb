@@ -30,6 +30,17 @@ module SocialWeb
           response.status = 201
           ''
         end
+
+        r.get do
+          view 'collection', locals: { items: load_activities(actor_iri) }
+        end
+      end
+
+      def load_activities(actor_iri)
+        SocialWeb.
+          container['repositories.activities'].
+          for_actor_iri(actor_iri).
+          items
       end
 
       def parse_actor_iri(url)
