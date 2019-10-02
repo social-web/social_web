@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
-module WebHelper
+module RackHelper
+  def app
+    SocialWeb::Rack.new
+  end
+
   def create_activity(for_actor: nil)
     iri = 'https://example.org/activities/1'
     json = {
@@ -31,12 +35,12 @@ module WebHelper
   def create_actor
     json = {
       '@context' => 'https://www.w3.org/ns/activitystreams',
-      'id' => 'https://example.org/actors/1',
+      'id' => 'http://example.org/actors/1',
       'type' => 'Person'
     }.to_json
 
     SocialWeb::Rack.db[:social_web_actors].insert(
-      iri: "https://example.org/actors/1",
+      iri: "http://example.org/actors/1",
       json: json,
       created_at: Time.now.utc
     )

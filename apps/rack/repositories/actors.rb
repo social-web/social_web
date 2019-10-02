@@ -5,7 +5,10 @@ module SocialWeb
     module Repositories
       class Actors
         def find_by(iri:)
+
           found = SocialWeb::Rack.db[:social_web_actors].first(iri: iri)
+          return unless found
+
           ActivityStreams.person(id: found[:iri])
         end
 
