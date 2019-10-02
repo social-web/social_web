@@ -3,7 +3,7 @@
 require 'sequel'
 
 module SocialWeb
-  module Web
+  module Rack
     def self.db
       @db ||= Sequel.connect(ENV['DATABASE_URL'])
     end

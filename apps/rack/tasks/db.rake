@@ -10,8 +10,8 @@ namespace :social_web do
   namespace :db do
     desc 'Remove SocialWeb tables'
     task :drop_tables do
-      SocialWeb::Web.db.transaction do
-        SocialWeb::Web.db.drop_table(
+      SocialWeb::Rack.db.transaction do
+        SocialWeb::Rack.db.drop_table(
           :social_web_activities,
           :social_web_actors,
           :social_web_actor_activities,
@@ -28,7 +28,7 @@ namespace :social_web do
     task :migrate do
       Sequel.extension :migration, :core_extensions
       Sequel::Migrator.run(
-        SocialWeb::Web.db,
+        SocialWeb::Rack.db,
         migrations_path,
         table: :social_web_schema_migrations
       )

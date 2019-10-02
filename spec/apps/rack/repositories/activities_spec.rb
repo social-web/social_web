@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'web_spec_helper'
+require 'rack_spec_helper'
 
 module SocialWeb
-  module Web
+  module Rack
     module Repositories
       RSpec.describe Activities do
         describe '#exists?' do
@@ -26,6 +26,19 @@ module SocialWeb
             collection = described_class.new.for_actor_iri(actor.id)
             expect(collection).to be_a(ActivityStreams::Collection)
             expect(collection.items).to eq([activity])
+          end
+        end
+
+        describe '#store' do
+          it 'persists the activity' do
+            actor = create_actor
+            activity = ActivityStreams.create {
+              id 'https://example.org/activities/1'
+            }
+
+            expect { described_class.new.store(activity, actor, 'inbox') }.
+              to change { SocialWeb::Rack.db[:social_web_activities].count }.
+              by(+1)
           end
         end
       end

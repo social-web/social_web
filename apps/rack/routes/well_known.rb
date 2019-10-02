@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SocialWeb
-  module Web
+  module Rack
     class Routes
       class WellKnown < Roda
         plugin :halt
@@ -10,7 +10,7 @@ module SocialWeb
           r.on 'webfinger' do
             r.get do
               r.halt 404 unless r.params['resource']&.include?('shane@shanecav.net')
-              SocialWeb::Web.config.webfinger_resource
+              SocialWeb::Rack.config.webfinger_resource
             end
           end
         end

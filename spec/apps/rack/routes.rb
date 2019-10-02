@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'web_spec_helper'
+require 'rack_spec_helper'
 
 module SocialWeb
-  module Web
+  module Rack
     Rspec.describe Routes do
 
     end

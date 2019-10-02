@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SocialWeb
-  module Web
+  module Rack
     class Delivery
       DEFAULT_HEADERS = -> {
         {

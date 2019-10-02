@@ -7,7 +7,7 @@ require 'tilt'
 require 'social_web'
 
 module SocialWeb
-  module Web
+  module Rack
     class Routes < Roda
       plugin :middleware
       plugin :render,

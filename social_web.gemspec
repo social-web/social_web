@@ -5,16 +5,16 @@ Gem::Specification.new do |s|
   s.version = '0.1'
   s.summary = 'Framework for the Social Web'
   s.description = 'A suite of apps and tools for participating in the social ' \
-    'web.'
+    'rack.'
 
   s.license = 'MIT'
 
   s.authors = ['Shane Cavanaugh']
   s.email = ['shane@shanecav.net']
-  s.homepage = 'https://github.com/social-web'
+  s.homepage = 'https://github.com/social-rack'
 
   s.files = %w[README.md Rakefile LICENSE.txt] + Dir['{apps,lib}/**/*']
-  s.require_paths = %w[apps lib]
+  s.require_paths = %w[lib]
 
   s.required_ruby_version = '>= 2.5.0'
 

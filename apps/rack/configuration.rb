@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SocialWeb
-  module Web
+  module Rack
     def self.config
       @config ||= Configuration.new
     end

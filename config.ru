@@ -4,18 +4,18 @@ ENV['DATABASE_URL'] = 'sqlite://social_web_dev.sqlite3'
 
 require 'bundler/setup'
 require 'social_web'
-require_relative './apps/web'
+require_relative './apps/rack'
 
 Sequel.extension :migration
 
 Sequel::Migrator.run(
-  SocialWeb::Web.db,
+  SocialWeb::Rack.db,
   './db/migrations',
   table: :social_web_schema_migrations
 )
 
 SocialWeb.configure do |config|
-  config.container = SocialWeb::Web::Container
+  config.container = SocialWeb::Rack::Container
 end
 
 class WardenUser
@@ -49,4 +49,4 @@ end
 
 use WardenUser
 
-run SocialWeb::Web::Routes.app.freeze
+run SocialWeb::Rack::Routes.app.freeze

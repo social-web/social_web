@@ -3,7 +3,7 @@
 require 'dry-container'
 
 module SocialWeb
-  module Web
+  module Rack
     class Container
       extend Dry::Container::Mixin
 

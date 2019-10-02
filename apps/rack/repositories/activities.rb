@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 module SocialWeb
-  module Web
+  module Rack
     module Repositories
       class Activities
         def exists?(act)
-          found = SocialWeb::Web.db[:social_web_activities].first(iri: act.id)
+          found = SocialWeb::Rack.db[:social_web_activities].first(iri: act.id)
           !found.nil?
         end
 
         def for_actor_iri(actor_iri)
-          found = SocialWeb::Web.
+          found = SocialWeb::Rack.
             db[:social_web_activities].
             join(:social_web_actor_activities, activity_iri: :iri).
             where(Sequel[:social_web_actor_activities][:actor_iri] => actor_iri)
@@ -23,15 +23,15 @@ module SocialWeb
         def store(activity, actor, collection)
           now = Time.now.utc
 
-          SocialWeb::Web.db.transaction do
-            SocialWeb::Web.db[:social_web_activities].insert(
+          SocialWeb::Rack.db.transaction do
+            SocialWeb::Rack.db[:social_web_activities].insert(
               iri: activity.id,
               type: activity.type,
               json: activity.to_json,
               created_at: now
             )
 
-            SocialWeb::Web.db[:social_web_actor_activities].insert(
+            SocialWeb::Rack.db[:social_web_actor_activities].insert(
               collection: collection,
               actor_iri: actor.id,
               activity_iri: activity.id,

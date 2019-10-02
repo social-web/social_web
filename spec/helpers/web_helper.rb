@@ -9,7 +9,7 @@ module WebHelper
       'type' => 'Create'
     }.to_json
 
-    id = SocialWeb::Web.db[:social_web_activities].insert(
+    id = SocialWeb::Rack.db[:social_web_activities].insert(
       iri: iri,
       json: json,
       type: 'Create',
@@ -17,7 +17,7 @@ module WebHelper
     )
 
     if for_actor
-      SocialWeb::Web.db[:social_web_actor_activities].insert(
+      SocialWeb::Rack.db[:social_web_actor_activities].insert(
         collection: 'inbox',
         actor_iri: for_actor.id,
         activity_iri: iri,
@@ -35,7 +35,7 @@ module WebHelper
       'type' => 'Person'
     }.to_json
 
-    SocialWeb::Web.db[:social_web_actors].insert(
+    SocialWeb::Rack.db[:social_web_actors].insert(
       iri: "https://example.org/actors/1",
       json: json,
       created_at: Time.now.utc
