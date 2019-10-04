@@ -32,7 +32,9 @@ module SocialWeb
 
           r.get do
             view 'collection',
-              locals: { items: load_collection(actor_iri, collection)
+              locals: {
+                collection: collection,
+                items: load_collection(actor_iri, collection)
             }
           end
         end

@@ -6,7 +6,18 @@ module SocialWeb
   module Rack
     RSpec.describe Routes, type: :request do
       %w[inbox outbox].each do |collection|
-        describe "/#{collection}" do
+        describe "get /#{collection}" do
+          it 'gets the collection' do
+            actor = create_actor
+            act = create_activity(for_actor: actor, collection: collection)
+
+            get "/actors/1/#{collection}"
+            expect(last_response.body).to include(collection.capitalize)
+            expect(last_response.body).to include(act.type)
+          end
+        end
+
+        describe "post /#{collection}" do
           it 'passes along to SocialWeb' do
             actor = create_actor
             json = %({
