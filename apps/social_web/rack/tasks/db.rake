@@ -6,19 +6,20 @@ migrations_path = File.join(
   'migrations'
 )
 
+tables = %i[
+  social_web_actors
+  social_web_activities
+  social_web_actor_actors
+  social_web_actor_activities
+  social_web_schema_migrations
+]
+
 namespace :social_web do
   namespace :db do
     desc 'Remove SocialWeb tables'
     task :drop_tables do
       SocialWeb::Rack.db.transaction do
-        SocialWeb::Rack.db.drop_table(
-          :social_web_activities,
-          :social_web_actors,
-          :social_web_actor_activities,
-          :social_web_actor_actors,
-          :social_web_schema_migrations,
-          cascade: true
-        )
+        SocialWeb::Rack.db.drop_table(*tables,  cascade: true)
         puts 'Removed SocialWeb tables. ' \
         'Run `rake sequel:db:migrate` to add them.'
       end
