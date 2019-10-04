@@ -4,8 +4,6 @@ require 'roda'
 require 'slim'
 require 'tilt'
 
-require 'social_web'
-
 module SocialWeb
   module Rack
     class Routes < Roda
@@ -16,7 +14,7 @@ module SocialWeb
       plugin :type_routing,
         types: { activity_json: 'application/activity+json' }
 
-      require_relative './routes/well_known'
+      require 'social_web/rack/routes/well_known'
 
       route do |r|
         r.on('.well-known') { r.run Routes::WellKnown }

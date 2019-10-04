@@ -24,7 +24,7 @@ gem install 'social_web'
 #### Rails
 
 ```ruby
-# config/routes.rb
+routes_spec.rb
 
 Rails.application.routes.draw do
   mount SocialWeb, at: '/'
