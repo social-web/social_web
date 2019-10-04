@@ -19,7 +19,8 @@ module SocialWeb
       require 'social_web/rack/routes/well_known'
 
       route do |r|
-        actor_iri = parse_actor_iri(r.url)
+        actor = load_actor(r.url)
+        r.halt(404) unless actor
 
         r.on('.well-known') { r.run Routes::WellKnown }
 
@@ -28,7 +29,7 @@ module SocialWeb
 
         r.on(/.*\/(?:inbox|outbox)$/) do
           r.post do
-            SocialWeb.process(activity_json, actor_iri, collection)
+            SocialWeb.process(activity_json, actor, collection)
             response.status = 201
             ''
           end
@@ -37,27 +38,25 @@ module SocialWeb
             view 'collection',
               locals: {
                 collection: collection,
-                items: load_collection(actor_iri, collection)
+                items: load_collection(actor, collection)
             }
           end
         end
 
         r.on do
-          r.activity_json do
-            actor = load_actor(actor_iri)
-            actor ? actor.to_json : r.halt(404)
-          end
+          r.activity_json { actor.to_json }
         end
       end
 
-      def load_actor(actor_iri)
+      def load_actor(url)
+        actor_iri = parse_actor_iri(url)
         SocialWeb.container['repositories.actors'].find_by(iri: actor_iri)
       end
 
-      def load_collection(actor_iri, collection)
+      def load_collection(actor, collection)
         SocialWeb.
           container['repositories.activities'].
-          for_actor_iri(actor_iri, collection: collection).
+          for_actor_iri(actor.id, collection: collection).
           items
       end
 

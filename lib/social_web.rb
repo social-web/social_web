@@ -11,11 +11,10 @@ module SocialWeb
     @container ||= SocialWeb::Container.merge(SocialWeb.config.container)
   end
 
-  def self.process(activity_json, actor_iri, collection)
+  def self.process(activity_json, actor, collection)
     raise unless %w[inbox outbox].include?(collection)
 
     activity = ActivityStreams.from_json(activity_json)
-    actor = container['repositories.actors'].find_by(iri: actor_iri)
 
     container['repositories.activities'].store(activity, actor, collection)
     handler = container.resolve(
