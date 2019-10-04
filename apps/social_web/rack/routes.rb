@@ -23,14 +23,16 @@ module SocialWeb
         actor_iri = parse_actor_iri(r.url)
         collection = parse_collection(r.url)
 
-        r.post do
-          SocialWeb.process(activity_json, actor_iri, collection)
-          response.status = 201
-          ''
-        end
+        r.on(/.*(?:inbox|outbox)$/) do
+          r.post do
+            SocialWeb.process(activity_json, actor_iri, collection)
+            response.status = 201
+            ''
+          end
 
-        r.get do
-          view 'collection', locals: { items: load_activities(actor_iri) }
+          r.get do
+            view 'collection', locals: { items: load_activities(actor_iri) }
+          end
         end
       end
 
