@@ -31,15 +31,17 @@ module SocialWeb
           end
 
           r.get do
-            view 'collection', locals: { items: load_activities(actor_iri) }
+            view 'collection',
+              locals: { items: load_activities(actor_iri, collection)
+            }
           end
         end
       end
 
-      def load_activities(actor_iri)
+      def load_collection(actor_iri, collection)
         SocialWeb.
           container['repositories.activities'].
-          for_actor_iri(actor_iri).
+          for_actor_iri(actor_iri, collection: collection).
           items
       end
 

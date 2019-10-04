@@ -9,11 +9,13 @@ module SocialWeb
           !found.nil?
         end
 
-        def for_actor_iri(actor_iri)
+        def for_actor_iri(actor_iri, collection: nil)
           found = SocialWeb::Rack.
             db[:social_web_activities].
             join(:social_web_actor_activities, activity_iri: :iri).
             where(Sequel[:social_web_actor_activities][:actor_iri] => actor_iri)
+
+          found = found.where(collection: collection) if collection
 
           collection = ActivityStreams.collection
           collection.items = found.map { |act| ActivityStreams.from_json(act[:json]) }
