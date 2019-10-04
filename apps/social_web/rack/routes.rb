@@ -19,10 +19,10 @@ module SocialWeb
       require 'social_web/rack/routes/well_known'
 
       route do |r|
+        r.on('.well-known') { r.run Routes::WellKnown }
+
         actor = load_actor(r.url)
         r.halt(404) unless actor
-
-        r.on('.well-known') { r.run Routes::WellKnown }
 
         activity_json = r.body.read
         collection = parse_collection(r.url)
