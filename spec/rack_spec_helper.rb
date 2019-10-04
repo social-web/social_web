@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ENV['DATABASE_URL'] = 'postgresql://localhost/social_web_test'
+ENV['SOCIAL_WEB_DATABASE_URL'] = 'postgresql://localhost/social_web_test'
 
 require 'rack/test'
 
