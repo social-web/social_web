@@ -18,7 +18,9 @@ module SocialWeb
     actor = container['repositories.actors'].find_by(iri: actor_iri)
 
     container['repositories.activities'].store(activity, actor, collection)
-    handler = container["collections.#{collection}.#{activity.type.downcase}"]
+    handler = container.resolve(
+      "collections.#{collection}.#{activity.type.downcase}"
+    ) {}
     handler&.call(activity)
   end
 end
