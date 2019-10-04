@@ -5,6 +5,7 @@ module SocialWeb
     class Routes
       class WellKnown < Roda
         plugin :halt
+        plugin :json
 
         route do |r|
           r.on 'webfinger' do
