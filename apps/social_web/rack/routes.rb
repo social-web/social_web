@@ -7,6 +7,7 @@ require 'tilt'
 module SocialWeb
   module Rack
     class Routes < Roda
+      plugin :halt
       plugin :json
       plugin :middleware
       plugin :render,
@@ -44,7 +45,7 @@ module SocialWeb
         r.on do
           r.activity_json do
             actor = load_actor(actor_iri)
-            actor&.to_json
+            actor ? actor.to_json : r.halt(404)
           end
         end
       end
