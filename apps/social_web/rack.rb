@@ -16,8 +16,8 @@ SocialWeb.config.container = SocialWeb::Rack::Container
 
 module SocialWeb
   module Rack
-    def self.new(*args, **kwargs)
-      SocialWeb::Rack::Routes.app
+    def self.new(app, *args, &block)
+      SocialWeb::Rack::Routes.new(app, *args, &block)
     end
   end
 end

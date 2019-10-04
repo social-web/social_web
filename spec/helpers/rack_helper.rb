@@ -2,7 +2,10 @@
 
 module RackHelper
   def app
-    SocialWeb::Rack.new
+    Rack::Builder.app do
+      use SocialWeb::Rack
+      run -> { raise 'This should not be reached '}
+    end
   end
 
   def create_activity(for_actor: nil)
