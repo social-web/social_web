@@ -21,9 +21,11 @@ module SocialWeb
         end
 
         def store(activity, actor, collection)
-          now = Time.now.utc
+          return if exists?(activity)
 
           SocialWeb::Rack.db.transaction do
+            now = Time.now.utc
+
             SocialWeb::Rack.db[:social_web_activities].insert(
               iri: activity.id,
               type: activity.type,
