@@ -25,7 +25,7 @@ module SocialWeb
         activity_json = r.body.read
         collection = parse_collection(r.url)
 
-        r.on(/.*(?:inbox|outbox)$/) do
+        r.on(/.*\/(?:inbox|outbox)$/) do
           r.post do
             SocialWeb.process(activity_json, actor_iri, collection)
             response.status = 201
