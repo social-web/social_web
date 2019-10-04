@@ -7,6 +7,7 @@ require 'tilt'
 module SocialWeb
   module Rack
     class Routes < Roda
+      plugin :json
       plugin :middleware
       plugin :render,
         engine: 'html.slim',
@@ -17,10 +18,11 @@ module SocialWeb
       require 'social_web/rack/routes/well_known'
 
       route do |r|
+        actor_iri = parse_actor_iri(r.url)
+
         r.on('.well-known') { r.run Routes::WellKnown }
 
         activity_json = r.body.read
-        actor_iri = parse_actor_iri(r.url)
         collection = parse_collection(r.url)
 
         r.on(/.*(?:inbox|outbox)$/) do
@@ -38,6 +40,17 @@ module SocialWeb
             }
           end
         end
+
+        r.on do
+          r.activity_json do
+            actor = load_actor(actor_iri)
+            actor&.to_json
+          end
+        end
+      end
+
+      def load_actor(actor_iri)
+        SocialWeb.container['repositories.actors'].find_by(iri: actor_iri)
       end
 
       def load_collection(actor_iri, collection)
@@ -48,7 +61,7 @@ module SocialWeb
       end
 
       def parse_actor_iri(url)
-        url.split('/')[0...-1].join('/')
+        url.gsub(/\/(?:inbox|outbox)$/, '')
       end
 
       def parse_collection(url)

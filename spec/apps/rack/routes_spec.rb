@@ -5,6 +5,15 @@ require 'rack_spec_helper'
 module SocialWeb
   module Rack
     RSpec.describe Routes, type: :request do
+      describe 'get /' do
+        it 'returns actor' do
+          actor = create_actor
+          header('Accept', 'application/activity+json')
+          get '/actors/1'
+          expect(last_response.body).to eq(actor.to_json)
+        end
+      end
+
       %w[inbox outbox].each do |collection|
         describe "get /#{collection}" do
           it 'gets the collection' do

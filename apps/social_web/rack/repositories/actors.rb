@@ -9,7 +9,7 @@ module SocialWeb
           found = SocialWeb::Rack.db[:social_web_actors].first(iri: iri)
           return unless found
 
-          ActivityStreams.person(id: found[:iri])
+          ActivityStreams.from_json(found[:json])
         end
 
         def store(act, actor, collection)
