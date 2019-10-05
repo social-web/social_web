@@ -45,7 +45,7 @@ module SocialWeb
         format(
           'headers="%<headers>s",keyId="%<keyId>s",signature="%<signature>s"',
           headers: signing_headers.keys.join(' '),
-          keyId: SocialWeb.config.actor.publicKey['id'],
+          keyId: pub_key,
           signature: Base64.strict_encode64(signature)
         )
       }
