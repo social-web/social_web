@@ -17,7 +17,7 @@ module SocialWeb
       end
 
       namespace(:services) do
-        register(:delivery) { ->(act) { puts "SocialWeb: Delivered #{act}" } }
+        register(:delivery) { Delivery }
       end
     end
   end
