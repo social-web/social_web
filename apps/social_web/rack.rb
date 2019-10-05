@@ -11,6 +11,7 @@ require 'social_web/rack/collections/following'
 require 'social_web/rack/persistance'
 require 'social_web/rack/repositories'
 require 'social_web/rack/routes'
+require 'social_web/rack/services'
 
 SocialWeb.config.container = SocialWeb::Rack::Container
 

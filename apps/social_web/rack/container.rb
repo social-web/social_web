@@ -17,7 +17,7 @@ module SocialWeb
       end
 
       namespace(:services) do
-        register(:delivery) { Delivery }
+        register(:delivery) { Rack::Delivery }
       end
     end
   end
