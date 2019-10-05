@@ -10,7 +10,7 @@ module SocialWeb
         }
       }
 
-      def self.call(uri, json)
+      def self.call(uri, json, private_key: nil, public_key: nil)
         request = ::HTTP.build_request(
           :post,
           uri.to_s,
@@ -18,13 +18,10 @@ module SocialWeb
           headers: DEFAULT_HEADERS.call
         )
 
-        request.headers.merge!(
-          'signature': Signature.call(
-            request,
-            SocialWeb.config.private_key,
-            SocialWeb.config.public_key
-          )
-        )
+        if private_key && public_key
+          signature = Signature.call(request, private_key, public_key)
+          request.headers.merge!(signature: signature)
+        end
 
         client = ::HTTP::Client.new
         client.perform(request, client.default_options)
