@@ -21,8 +21,9 @@ module SocialWeb
       route do |r|
         r.on('.well-known') { r.run Routes::WellKnown }
 
+        actor = load_actor(r.url)
+
         r.on(/.*\/(?:inbox|outbox)$/) do
-          actor = load_actor(r.url)
           r.halt(404) unless actor
 
           activity_json = r.body.read
