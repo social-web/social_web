@@ -44,9 +44,7 @@ module SocialWeb
           end
         end
 
-        r.on do
-          r.activity_json { actor.to_json }
-        end
+        r.activity_json { actor.to_json }
       end
 
       def load_actor(url)
