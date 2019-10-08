@@ -7,6 +7,8 @@ require 'tilt'
 module SocialWeb
   module Rack
     class Routes < Roda
+      COLLECTION_REGEX = /(?:inbox|outbox)$/.freeze
+
       plugin :halt
       plugin :json
       plugin :middleware
@@ -23,7 +25,7 @@ module SocialWeb
 
         actor = load_actor(r.url)
 
-        r.on(/(?:inbox|outbox)$/) do
+        r.on(COLLECTION_REGEX ) do
           r.halt(404) unless actor
 
           activity_json = r.body.read
@@ -60,11 +62,11 @@ module SocialWeb
       end
 
       def parse_actor_iri(url)
-        url.gsub(/\/(?:inbox|outbox)$/, '')
+        url.gsub(/\/#{COLLECTION_REGEX}/, '')
       end
 
       def parse_collection(url)
-        url.split('/')[-1]
+        url[COLLECTION_REGEX]
       end
     end
   end
