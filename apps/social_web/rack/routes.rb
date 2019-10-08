@@ -40,7 +40,7 @@ module SocialWeb
               locals: {
                 collection: collection,
                 items: load_collection(actor, collection)
-            }
+              }
           end
         end
 
