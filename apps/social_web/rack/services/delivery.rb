@@ -10,7 +10,7 @@ module SocialWeb
         }
       }
 
-      def self.call(uri, json, private_key: nil, public_key: nil)
+      def self.call(uri, json, public_key:, private_key:)
         request = ::HTTP.build_request(
           :post,
           uri.to_s,
@@ -18,10 +18,12 @@ module SocialWeb
           headers: DEFAULT_HEADERS.call
         )
 
-        if private_key && public_key
-          signature = Signature.call(request, private_key, public_key)
-          request.headers.merge!(signature: signature)
-        end
+        signature = Signature.call(
+          request,
+          prv_key: private_key,
+          pub_key: public_key
+        )
+        request.headers.merge!(signature: signature)
 
         client = ::HTTP::Client.new
         client.perform(request, client.default_options)
@@ -31,21 +33,21 @@ module SocialWeb
         'keyId="%<keyId>s",' \
         'signature="%<signature>s"'
 
-      Signature = ->(req, prv_key, pub_key) {
+      Signature = ->(request, public_key:, private_key:) {
         signing_headers = {
-          '(request-target)' => "#{req.verb.downcase} #{req.uri.path}"
-        }.merge(req.headers).transform_keys(&:downcase)
+          '(request-target)' => "#{request.verb.downcase} #{request.uri.path}"
+        }.merge(request.headers).transform_keys(&:downcase)
         signing_string = signing_headers.
           map { |field, value| "#{field}: #{value}" }.
           join("\n")
 
-        keypair = OpenSSL::PKey::RSA.new(prv_key)
+        keypair = OpenSSL::PKey::RSA.new(private_key)
         signature = keypair.sign(OpenSSL::Digest::SHA256.new, signing_string)
 
         format(
           'headers="%<headers>s",keyId="%<keyId>s",signature="%<signature>s"',
           headers: signing_headers.keys.join(' '),
-          keyId: pub_key,
+          keyId: public_key,
           signature: Base64.strict_encode64(signature)
         )
       }
