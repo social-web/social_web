@@ -12,13 +12,18 @@ module SocialWeb
           ActivityStreams.from_json(found[:json])
         end
 
-        def store(act, actor, collection)
-          SocialWeb::Rack.db[:social_web_actor_actors].insert(
-            collection: collection,
-            actor_iri: act.actor.id,
-            for_actor_iri: actor.id,
-            created_at: Time.now.utc
-          )
+        def store(actor)
+          SocialWeb::Rack.db.transaction do
+            SocialWeb::Rack.db[:social_web_actors].insert(
+              iri: actor.id,
+              json: actor.to_json,
+              created_at: Time.now.utc
+            )
+            Keys.generate_for_actor(actor)
+          end
+          true
+        rescue StandardError
+          false
         end
       end
     end
