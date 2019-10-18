@@ -8,7 +8,8 @@ module SocialWeb
         return unless SocialWeb.container['repositories.activities'].exists?(follow)
 
         SocialWeb.container['collections.following'].
-          add(accept.actor, follow.actor)
+          for_actor(follow.actor).
+          add(accept.actor)
       end
     end
   end
