@@ -68,6 +68,12 @@ module SocialWeb
       end
     end
 
+    class Dereference
+      def call(iri)
+        ActivityStreams.person(id: iri)
+      end
+    end
+
     namespace(:collections) do
       register(:following) { Following.new }
 
@@ -87,6 +93,7 @@ module SocialWeb
 
     namespace(:services) do
       register(:delivery) { ->(_) {} }
+      register(:dereference) { Dereference.new }
     end
   end
 end
