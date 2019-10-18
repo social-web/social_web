@@ -41,7 +41,7 @@ module SocialWeb
             }
           )
 
-          keys = SocialWeb.container['repositories.keys'].for_actor(actor)
+          keys = SocialWeb.container['repositories.keys'].for_actor_iri(activity.actor)
 
           signature = Signature.call(
             request,
