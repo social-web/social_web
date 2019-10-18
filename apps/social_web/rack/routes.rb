@@ -25,7 +25,7 @@ module SocialWeb
 
         actor = load_actor(r.url)
 
-        r.on(COLLECTION_REGEX) do
+        r.on(/.*#{COLLECTION_REGEX}/) do
           r.halt(404) unless actor
 
           activity_json = r.body.read
