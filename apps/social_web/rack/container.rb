@@ -14,10 +14,12 @@ module SocialWeb
       namespace(:repositories) do
         register(:activities) { Repositories::Activities.new }
         register(:actors) { Repositories::Actors.new }
+        register(:keys) { Repositories::Key.new }
       end
 
       namespace(:services) do
         register(:delivery) { Rack::Delivery }
+        register(:dereference) { Rack::Dereference.new }
       end
     end
   end
