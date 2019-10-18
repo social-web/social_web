@@ -7,6 +7,8 @@ module SocialWeb
         'keyId="%<keyId>s",' \
         'signature="%<signature>s"'
 
+      PUBLIC_INBOX = 'https://www.w3.org/ns/activitystreams#Public'
+
       Signature = ->(request, public_key:, private_key:) {
         signing_headers = {
           '(request-target)' => "#{request.verb.downcase} #{request.uri.path}"
@@ -57,17 +59,19 @@ module SocialWeb
 
       private
 
-      def parse_target(target)
-        case target
-        when URI.regexp then target
-        when Array then parse_target(target)
-        end
-      end
-
       def parse_recipients(activity)
-        %i[to bto cc bcc audience].map do |target|
-          parse_target(activity.public_send(target))
+        recipients = []
+        %i[to bto cc bcc audience].each do |target|
+          target_recipients = activity.public_send(target)
+
+          Array(target_recipients).each do |recipient|
+            next if recipient == PUBLIC_INBOX
+
+            recipients << SocialWeb.container['services.dereference'].call(recipient)
+          end
         end
+
+        recipients
       end
     end
   end
