@@ -36,7 +36,7 @@ module SocialWeb
 
             expect(SocialWeb).
               to receive(:process).
-              with(json, actor, collection)
+              with(json, actor.id, collection)
 
             post "/actors/1/#{collection}", json
           end

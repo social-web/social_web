@@ -23,16 +23,14 @@ module SocialWeb
       route do |r|
         r.on('.well-known') { r.run Routes::WellKnown }
 
-        actor = load_actor(r.url)
+        actor_iri = parse_actor_iri(r.url)
 
         r.on(/.*#{COLLECTION_REGEX}/) do
-          r.halt(404) unless actor
-
           activity_json = r.body.read
           collection = parse_collection(r.url)
 
           r.post do
-            SocialWeb.process(activity_json, actor, collection)
+            SocialWeb.process(activity_json, actor_iri, collection)
             response.status = 201
             ''
           end
@@ -41,23 +39,27 @@ module SocialWeb
             view 'collection',
               locals: {
                 collection: collection,
-                items: load_collection(actor, collection)
+                items: load_collection(actor_iri, collection)
               }
           end
         end
 
-        r.activity_json { actor.to_json }
+        r.activity_json do
+          actor = load_actor(actor_iri)
+          actor.to_json
+        end
       end
 
-      def load_actor(url)
-        actor_iri = parse_actor_iri(url)
-        SocialWeb.container['repositories.actors'].find_by(iri: actor_iri)
+      def load_actor(actor_iri)
+        SocialWeb.
+          container['repositories.actors'].
+          find_by(iri: actor_iri)
       end
 
-      def load_collection(actor, collection)
+      def load_collection(actor_iri, collection)
         SocialWeb.
           container['repositories.activities'].
-          for_actor_iri(actor.id, collection: collection).
+          for_actor_iri(actor_iri, collection: collection).
           items
       end
 
