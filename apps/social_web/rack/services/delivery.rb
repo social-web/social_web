@@ -9,7 +9,7 @@ module SocialWeb
 
       PUBLIC_INBOX = 'https://www.w3.org/ns/activitystreams#Public'
 
-      Signature = ->(request, public_key:, private_key:) {
+      Signature = ->(request, key_id:, private_key:) {
         signing_headers = {
           '(request-target)' => "#{request.verb.downcase} #{request.uri.path}"
         }.merge(request.headers).transform_keys(&:downcase)
@@ -24,7 +24,7 @@ module SocialWeb
         format(
           'headers="%<headers>s",keyId="%<keyId>s",signature="%<signature>s"',
           headers: signing_headers.keys.join(' '),
-          keyId: public_key,
+          keyId: key_id,
           signature: Base64.strict_encode64(signature)
         )
       }
@@ -45,10 +45,10 @@ module SocialWeb
 
           keys = SocialWeb.container['repositories.keys'].for_actor_iri(activity.actor)
 
-          signature = Signature.call(
+          signature = SocialWeb::Rack::Delivery::Signature.call(
             request,
             private_key: keys.fetch(:private),
-            public_key: keys.fetch(:public)
+            key_id: keys[:key_id]
           )
           request.headers.merge!(signature: signature)
 
