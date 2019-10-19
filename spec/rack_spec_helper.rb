@@ -34,7 +34,7 @@ class RackSpecContainer < SocialWeb::Rack::Container
   end
 end
 
-SocialWeb.config.container = RackSpecContainer
+SocialWeb.config.container = SocialWeb::Rack::Container.merge(RackSpecContainer)
 
 RSpec.configure do |config|
   config.include ::RackHelper
