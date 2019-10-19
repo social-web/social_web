@@ -14,7 +14,7 @@ module SocialWeb
       namespace(:repositories) do
         register(:activities) { Repositories::Activities.new }
         register(:actors) { Repositories::Actors.new }
-        register(:keys) { Repositories::Key.new }
+        register(:keys) { Repositories::Keys.new }
       end
 
       namespace(:services) do
