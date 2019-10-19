@@ -4,7 +4,7 @@ module SocialWeb
   class Inbox
     class Accept
       def call(accept)
-        follow = accept.activity.object
+        follow = accept.object
         return unless SocialWeb.container['repositories.activities'].exists?(follow)
 
         SocialWeb.container['collections.following'].
