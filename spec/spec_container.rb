@@ -28,16 +28,6 @@ module SocialWeb
       end
     end
 
-    class ActorsRepo
-      def store(act, actor, collection)
-        DB[:social_web_actor_actors].insert(
-          collection: collection,
-          actor_iri: act.actor.id,
-          for_actor_iri: actor.id
-        )
-      end
-    end
-
     class ActivitiesRepo
       def exists?(act)
         !DB[:social_web_activities].first(iri: act.id).nil?
@@ -88,7 +78,6 @@ module SocialWeb
 
     namespace(:repositories) do
       register(:activities) { ActivitiesRepo.new }
-      register(:actors) { ActorsRepo.new }
     end
 
     namespace(:services) do
