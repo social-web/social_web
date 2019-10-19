@@ -9,10 +9,10 @@ module SocialWeb
           { private: keys.private, public: keys.public }
         end
 
-        def generate_for_actor(actor)
+        def generate_for_actor(actor_iri)
           keypair = OpenSSL::PKey::RSA.new(2048)
           SocialWeb::Rack.db[:social_web_keys].insert(
-            actor_iri: actor.id,
+            actor_iri: actor_iri,
             private: keypair.to_pem,
             public: keypair.public_key.to_pem
           )
