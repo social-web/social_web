@@ -9,6 +9,7 @@ module ActivityStreams
         base.class_eval do
           property :inbox
           property :outbox
+          property :publicKey
         end
       end
     end

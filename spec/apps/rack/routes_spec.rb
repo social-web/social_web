@@ -8,6 +8,12 @@ module SocialWeb
       describe 'get /' do
         it 'returns actor' do
           actor = create_actor
+          keys = SocialWeb.container['repositories.keys'].for_actor_iri(actor.id)
+          actor.publicKey = {
+            id: keys[:key_id],
+            owner: actor.id,
+            publicKeyPem: keys[:public_key]
+          }
           header('Accept', 'application/activity+json')
           get '/actors/1'
           expect(last_response.body).to eq(actor.to_json)

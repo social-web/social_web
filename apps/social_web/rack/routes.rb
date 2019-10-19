@@ -46,6 +46,12 @@ module SocialWeb
 
         r.activity_json do
           actor = load_actor(actor_iri)
+          keys = SocialWeb.container['repositories.keys'].for_actor_iri(actor.id)
+          actor.publicKey = {
+            id: keys[:key_id],
+            owner: actor.id,
+            publicKeyPem: keys[:public_key]
+          }
           actor.to_json
         end
       end
