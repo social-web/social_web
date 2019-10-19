@@ -13,6 +13,7 @@ Sequel.migration do
       Time :updated_at, null: true
 
       index :actor_iri, unique: true
+      foreign_key :actor_iri, :social_web_actors, key: :iri
     end
   end
 end
