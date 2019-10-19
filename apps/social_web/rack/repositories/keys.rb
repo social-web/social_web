@@ -6,7 +6,7 @@ module SocialWeb
       class Keys
         def for_actor_iri(actor_iri)
           keys = SocialWeb::Rack.db[:social_web_keys].first(actor_iri: actor_iri)
-          { private: keys.private, public: keys.public }
+          { private: keys[:private], public: keys[:public] }
         end
 
         def generate_for_actor_iri(actor_iri)
