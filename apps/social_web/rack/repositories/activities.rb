@@ -13,7 +13,8 @@ module SocialWeb
           found = SocialWeb::Rack.
             db[:social_web_activities].
             join(:social_web_actor_activities, activity_iri: :iri).
-            where(Sequel[:social_web_actor_activities][:actor_iri] => actor_iri)
+            where(Sequel[:social_web_actor_activities][:actor_iri] => actor_iri).
+            order(Sequel.desc(Sequel[:social_web_actor_activities][:created_at]))
 
           found = found.where(collection: collection) if collection
 
