@@ -19,7 +19,7 @@ module SocialWeb
               json: actor.to_json,
               created_at: Time.now.utc
             )
-            Keys.generate_for_actor(actor)
+            SocialWeb.container['repositories.keys'].generate_for_actor_iri(actor.id)
           end
           true
         rescue StandardError
