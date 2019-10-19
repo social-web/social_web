@@ -36,18 +36,13 @@ module RackHelper
   end
 
   def create_actor
-    json = {
+    actor = ActivityStreams.from_json({
       '@context' => 'https://www.w3.org/ns/activitystreams',
       'id' => 'http://example.org/actors/1',
       'type' => 'Person'
-    }.to_json
+    }.to_json)
 
-    SocialWeb::Rack.db[:social_web_actors].insert(
-      iri: "http://example.org/actors/1",
-      json: json,
-      created_at: Time.now.utc
-    )
-
-    ActivityStreams.from_json(json)
+    SocialWeb.container['repositories.actors'].store(actor)
+    actor
   end
 end
