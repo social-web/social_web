@@ -46,7 +46,7 @@ module SocialWeb
           actor.publicKey = {
             id: keys[:key_id],
             owner: actor.id,
-            publicKeyPem: keys[:public_key]
+            publicKeyPem: keys[:public]
           }
           actor.to_json
         end
