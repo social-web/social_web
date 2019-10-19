@@ -12,7 +12,7 @@ module SocialWeb
           actor.publicKey = {
             id: keys[:key_id],
             owner: actor.id,
-            publicKeyPem: keys[:public_key]
+            publicKeyPem: keys[:public]
           }
           header('Accept', 'application/activity+json')
           get '/actors/1'
