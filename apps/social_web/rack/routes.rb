@@ -18,11 +18,7 @@ module SocialWeb
       plugin :type_routing,
         types: { activity_json: 'application/activity+json' }
 
-      require 'social_web/rack/routes/well_known'
-
       route do |r|
-        r.on('.well-known') { r.run Routes::WellKnown }
-
         actor_iri = parse_actor_iri(r.url)
 
         r.on(/.*#{COLLECTION_REGEX}/) do
