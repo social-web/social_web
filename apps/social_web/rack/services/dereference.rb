@@ -5,7 +5,7 @@ module SocialWeb
     # Dereference IRIs into ActivityStreams objects
     class Dereference
       def call(iri)
-        json = HTTP.get(iri)
+        json = HTTP.headers(accept: 'application/activity+json').get(iri)
         ActivityStreams.from_json(json)
       end
     end
