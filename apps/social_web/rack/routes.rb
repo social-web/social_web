@@ -70,7 +70,7 @@ module SocialWeb
       end
 
       def parse_actor_iri(url)
-        url.gsub(/\/#{COLLECTION_REGEX}/, '')
+        url.gsub(/\/#{COLLECTION_REGEX}/, '').gsub(/\/$/, '')
       end
 
       def parse_collection(url)
