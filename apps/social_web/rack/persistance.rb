@@ -9,5 +9,3 @@ module SocialWeb
     end
   end
 end
-
-SocialWeb::Rack.db.loggers << Logger.new($stdout)
