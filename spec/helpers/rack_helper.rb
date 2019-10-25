@@ -10,11 +10,15 @@ module RackHelper
 
   def create_activity(for_actor: nil, collection: nil)
     iri = "https://example.org/activities/#{Random.rand(1000)}"
-    json = {
-      '@context' => 'https://www.w3.org/ns/activitystreams',
-      'id' => iri,
-      'type' => 'Create'
-    }.to_json
+    json = %({
+      "@context": "https://www.w3.org/ns/activitystreams",
+      "id": "#{iri}",
+      "type": "Create",
+      "object": {
+        "id": "https://example.org/activities/2",
+        "type": "Note"
+      }
+    })
 
     id = SocialWeb::Rack.db[:social_web_activities].insert(
       iri: iri,
