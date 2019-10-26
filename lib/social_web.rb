@@ -3,6 +3,7 @@
 require 'bundler/setup'
 
 require_relative './activity_streams_extension'
+require 'social_web/collection'
 require 'social_web/configuration'
 require 'social_web/container'
 

@@ -1,12 +1,22 @@
 # frozen_string_literal: true
 
-require 'social_web/collections/outbox/activities/follow'
-require 'social_web/collections/inbox/activities/accept'
-require 'social_web/collections/inbox/activities/create'
+require 'social_web/collections/outbox.rb'
+require 'social_web/collections/inbox.rb'
+require 'social_web/collections/followers.rb'
+require 'social_web/collections/following.rb'
+require 'social_web/collections/liked.rb'
+require 'social_web/collections/likes.rb'
 
 module SocialWeb
   class Container
     extend Dry::Container::Mixin
+
+    register(:inbox) { Inbox }
+    register(:outbox) { Outbox }
+    register(:followers) { Followers }
+    register(:following) { Following }
+    register(:liked) { Liked }
+    register(:likes) { Likes }
 
     namespace(:repositories) do
       register(:activities) {}

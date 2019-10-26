@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-ENV['DATABASE_URL'] = 'sqlite://social_web_dev.sqlite3'
+ENV['SOCIAL_WEB_DATABASE_URL'] = 'sqlite://social_web_dev.sqlite3'
 
 require 'bundler/setup'
 require 'social_web'
