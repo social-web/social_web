@@ -46,7 +46,7 @@ module RackHelper
       'type' => 'Person'
     }.to_json)
 
-    SocialWeb.container['repositories.actors'].store(actor)
+    SocialWeb.container['actors'].store(actor)
     actor
   end
 end

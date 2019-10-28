@@ -5,7 +5,7 @@ module SocialWeb
     COLLECTION = 'outbox'
 
     def add(activity)
-      SocialWeb['repositories.activities'].store(activity, @actor, COLLECTION)
+      SocialWeb['activities'].store(activity, @actor, COLLECTION)
     end
   end
 end

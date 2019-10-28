@@ -5,11 +5,9 @@ module SocialWeb
     class Accept
       def call(accept)
         follow = accept.object
-        return unless SocialWeb.container['repositories.activities'].exists?(follow)
+        return unless SocialWeb['activities'].exists?(follow)
 
-        SocialWeb.container['collections.following'].
-          for_actor(follow.actor).
-          add(accept.actor)
+        SocialWeb['following'].for_actor(follow.actor).add(accept.actor)
       end
     end
   end

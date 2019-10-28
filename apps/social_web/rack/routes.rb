@@ -42,7 +42,7 @@ module SocialWeb
 
         r.activity_json do
           actor = load_actor(actor_iri)
-          keys = SocialWeb.container['repositories.keys'].for_actor_iri(actor.id)
+          keys = SocialWeb.container['keys'].for_actor_iri(actor.id)
           actor.publicKey = {
             id: keys[:key_id],
             owner: actor.id,
@@ -54,13 +54,13 @@ module SocialWeb
 
       def load_actor(actor_iri)
         SocialWeb.
-          container['repositories.actors'].
+          container['actors'].
           find_by(iri: actor_iri)
       end
 
       def load_collection(actor_iri, collection)
         SocialWeb.
-          container['repositories.activities'].
+          container['activities'].
           for_actor_iri(actor_iri, collection: collection).
           items
       end

@@ -13,10 +13,13 @@ Gem::Specification.new do |s|
   s.email = ['shane@shanecav.net']
   s.homepage = 'https://github.com/social-rack'
 
-  s.files = %w[README.md Rakefile LICENSE.txt] + Dir['{apps,lib}/**/*']
-  s.require_paths = %w[apps lib]
+  s.files = %w[README.md Rakefile LICENSE.txt] + Dir['{apps,lib,system}/**/*']
+  s.require_paths = %w[apps lib system]
 
   s.required_ruby_version = '>= 2.5.0'
+
+  s.add_dependency 'dry-container'
+  s.add_dependency 'dry-system'
 
   # Provides easy access to an HTTP client
   s.add_dependency 'http'
@@ -37,7 +40,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'bundler', '~> 2.0'
   s.add_development_dependency 'dry-auto_inject'
-  s.add_development_dependency 'dry-container'
   s.add_development_dependency 'factory_bot'
   s.add_development_dependency 'pg'
   s.add_development_dependency 'rack-test', '~> 1.0'

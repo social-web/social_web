@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'social_web'
+require 'social_web/boot'
 
 require 'rake'
 Rake.load_rakefile 'social_web/rack/tasks/db.rake'

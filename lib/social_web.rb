@@ -2,16 +2,11 @@
 
 require 'bundler/setup'
 
-require_relative './activity_streams_extension'
+require_relative './social_web/activity_streams_extension'
 require 'social_web/collection'
 require 'social_web/configuration'
-require 'social_web/container'
 
 module SocialWeb
-  def self.container
-    @container ||= SocialWeb::Container.merge(SocialWeb.config.container)
-  end
-
   def self.process(activity_json, actor_iri, collection)
     raise unless %w[inbox outbox].include?(collection)
 

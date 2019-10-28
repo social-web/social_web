@@ -5,9 +5,9 @@ module SocialWeb
     COLLECTION = 'following'
 
     def add(actor)
-      return if SocialWeb['repositories.actors'].exists?(actor)
+      return if SocialWeb['actors'].exists?(actor)
 
-      SocialWeb['repositories.actors'].store(actor, @actor, COLLECTION)
+      SocialWeb['actors'].store(actor, @actor, COLLECTION)
     end
   end
 end

@@ -5,9 +5,9 @@ module SocialWeb
     COLLECTION = 'likes'
 
     def add(object)
-      return if SocialWeb['repositories.objects'].exists?(object)
+      return if SocialWeb['objects'].exists?(object)
 
-      SocialWeb['repositories.objects'].store(object, @actor, COLLECTION)
+      SocialWeb['objects'].store(object, @actor, COLLECTION)
     end
   end
 end

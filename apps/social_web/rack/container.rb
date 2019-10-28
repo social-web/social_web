@@ -7,20 +7,17 @@ module SocialWeb
     class Container
       extend Dry::Container::Mixin
 
-      namespace(:collections) do
-        register(:following) { Collections::Following.new }
-      end
+      # Collections
+      register(:following) { Collections::Following }
 
-      namespace(:repositories) do
-        register(:activities) { Repositories::Activities.new }
-        register(:actors) { Repositories::Actors.new }
-        register(:keys) { Repositories::Keys.new }
-      end
+      # Repositories
+      register(:activities) { Repositories::Activities.new }
+      register(:actors) { Repositories::Actors.new }
+      register(:keys) { Repositories::Keys.new }
 
-      namespace(:services) do
-        register(:delivery) { Rack::Delivery.new }
-        register(:dereference) { Rack::Dereference.new }
-      end
+      # Services
+      register(:delivery) { Rack::Delivery.new }
+      register(:dereference) { Rack::Dereference }
     end
   end
 end

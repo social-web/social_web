@@ -8,7 +8,7 @@ module SocialWeb
       describe 'get /' do
         it 'returns actor' do
           actor = create_actor
-          keys = SocialWeb.container['repositories.keys'].for_actor_iri(actor.id)
+          keys = SocialWeb.container['keys'].for_actor_iri(actor.id)
           actor.publicKey = {
             id: keys[:key_id],
             owner: actor.id,

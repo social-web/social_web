@@ -5,9 +5,16 @@ module SocialWeb
     COLLECTION = 'inbox'
 
     def add(activity)
-      return if SocialWeb['repositories.activities'].exists?(activity)
+      return if SocialWeb['activities'].exists?(activity)
 
-      SocialWeb['repositories.activities'].store(activity, @actor, COLLECTION)
+      SocialWeb['activities'].store(activity, for_actor: @actor, in_collection: COLLECTION)
+    end
+
+    def receive(activity)
+      case activity.type
+      when 'Create' then add(activity)
+      when ''
+      end
     end
   end
 end
