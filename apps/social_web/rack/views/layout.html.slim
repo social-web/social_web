@@ -6,4 +6,13 @@ html
     script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
     script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"
   body
-    .container== yield
+    .container
+      .row
+        .col-3
+          h2 Collections
+          ul.nav.flex-column.nav-pills
+            - %w[inbox outbox following followers liked likes shared].each do |collection|
+              li.nav-item
+                a.nav-link href = collection
+                  = collection.capitalize
+        .col-9== yield

@@ -7,7 +7,7 @@ require 'tilt'
 module SocialWeb
   module Rack
     class Routes < Roda
-      COLLECTION_REGEX = /(?:inbox|outbox)$/.freeze
+      COLLECTION_REGEX = /(?:inbox|outbox|following|followers|liked|likes|shared)$/.freeze
 
       plugin :halt
       plugin :json
