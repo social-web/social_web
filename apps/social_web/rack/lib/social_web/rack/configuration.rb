@@ -11,7 +11,7 @@ module SocialWeb
     end
 
     class Configuration
-      attr_accessor :webfinger_resource
+      attr_accessor :logger
     end
   end
 end
