@@ -2,12 +2,6 @@
 
 require 'dry/system/container'
 
-class Dry::System::Container
-  def self.root
-    @root ||= config.root.is_a?(Pathname) ? config.root : config.root.call
-  end
-end
-
 module SocialWeb
   module Rack
     def self.[](key)
@@ -21,7 +15,7 @@ module SocialWeb
     class Container < Dry::System::Container
       configure do |config|
         config.auto_register = 'lib'
-        config.root = -> { Pathname(File.join(__dir__, '..')).realpath.freeze }
+        config.root = Pathname(File.join(__dir__, '..')).realpath.freeze
       end
 
       load_paths! 'lib'
