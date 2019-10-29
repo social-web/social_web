@@ -2,4 +2,6 @@
 
 require 'social_web/container'
 
-SocialWeb::Container.finalize!
+SocialWeb::Container.finalize! do |container|
+  container.start :activity_streams
+end

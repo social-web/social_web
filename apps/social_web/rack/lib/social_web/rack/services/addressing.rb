@@ -3,8 +3,6 @@
 module SocialWeb
   module Rack
     class Addressing
-      include Container['services.dereference']
-
       ADDRESS_FIELDS = %i[to bto cc bcc audience].freeze
 
       def call(activity)
@@ -12,7 +10,7 @@ module SocialWeb
           activity.public_send(field) if activity.respond_to?(field)
         end.
           reject { |address| ['', nil].include?(address) }.
-          map { |address| dereference.call(address) }
+          map { |address| SocialWeb::Rack['dereference'].call(address) }
       end
     end
   end
