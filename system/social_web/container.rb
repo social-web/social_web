@@ -8,7 +8,7 @@ module SocialWeb
   end
 
   def self.container
-    @container ||= Container.merge(SocialWeb.config.container)
+    @container ||= Container
   end
 
   class Container < Dry::System::Container
@@ -29,13 +29,13 @@ module SocialWeb
     register(:dereference) {}
 
     # Collections
-    register(:inbox) { Inbox }
-    register(:outbox) { Outbox }
+    register(:inbox) { ::SocialWeb::Inbox }
+    register(:outbox) { ::SocialWeb::Outbox }
 
-    register(:followers) { Followers }
-    register(:following) { Following }
+    register(:followers) { ::SocialWeb::Followers }
+    register(:following) { ::SocialWeb::Following }
 
-    register(:liked) { Liked }
-    register(:likes) { Likes }
+    register(:liked) { ::SocialWeb::Liked }
+    register(:likes) { ::SocialWeb::Likes }
   end
 end

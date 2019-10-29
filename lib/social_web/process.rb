@@ -2,7 +2,7 @@
 
 require 'bundler/setup'
 
-require_relative './social_web/activity_streams_extension'
+require 'social_web/activity_streams_extension'
 require 'social_web/collection'
 require 'social_web/configuration'
 
@@ -17,6 +17,6 @@ module SocialWeb
     handler = container.resolve(
       "collections.#{collection}.#{activity.type.downcase}"
     ) {}
-    handler&.call(activity)
+    handler&.for_actor(actor).call(activity)
   end
 end

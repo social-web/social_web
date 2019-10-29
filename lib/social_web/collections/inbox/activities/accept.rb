@@ -2,12 +2,9 @@
 
 module SocialWeb
   class Inbox
-    class Accept
+    class Accept < Activity
       def call(accept)
-        follow = accept.object
-        return unless SocialWeb['activities'].exists?(follow)
-
-        SocialWeb['following'].for_actor(follow.actor).add(accept.actor)
+        SocialWeb['following'].for_actor(@actor).add(accept.actor)
       end
     end
   end

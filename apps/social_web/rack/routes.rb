@@ -6,6 +6,10 @@ require 'tilt'
 
 module SocialWeb
   module Rack
+    def self.new(app, *args, &block)
+      SocialWeb::Rack::Routes.new(app, *args, &block)
+    end
+
     class Routes < Roda
       COLLECTION_REGEX = /(?:inbox|outbox|following|followers|liked|likes|shared)$/.freeze
 

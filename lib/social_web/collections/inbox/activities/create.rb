@@ -2,9 +2,9 @@
 
 module SocialWeb
   class Inbox
-    class Create
+    class Create < Activity
       def call(create)
-        SocialWeb['inbox'].for_actor().add(create)
+        SocialWeb['inbox'].for_actor(@actor).add(create)
       end
     end
   end

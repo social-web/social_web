@@ -2,7 +2,7 @@
 
 module SocialWeb
   class Outbox
-    class Follow
+    class Follow < Activity
       def call(follow)
         SocialWeb.container['services.delivery'].call(follow)
       end
