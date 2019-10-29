@@ -7,6 +7,7 @@ require 'tilt'
 module SocialWeb
   module Rack
     def self.new(app, *args, &block)
+      SocialWeb::Rack.start!
       SocialWeb::Rack::Routes.new(app, *args, &block)
     end
 
