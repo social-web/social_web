@@ -4,7 +4,6 @@ require 'bundler/setup'
 
 require 'social_web/activity_streams_extension'
 require 'social_web/collection'
-require 'social_web/configuration'
 
 module SocialWeb
   def self.process(activity_json, actor_iri, collection)
