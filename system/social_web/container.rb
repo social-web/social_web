@@ -14,7 +14,7 @@ module SocialWeb
   class Container < Dry::System::Container
     configure do |config|
       config.auto_register = 'lib'
-      config.root = -> { Pathname(File.join(__dir__, '..', '..')).realpath.freeze }
+      config.root = Pathname(File.join(__dir__, '..', '..')).realpath.freeze
       config.default_namespace = 'social_web'
       config.system_dir = 'system/social_web'
     end
