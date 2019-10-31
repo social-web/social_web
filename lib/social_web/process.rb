@@ -14,7 +14,7 @@ module SocialWeb
 
     container['activities'].store(activity, actor, collection)
     handler = container.resolve(
-      "collections.#{collection}.#{activity.type.downcase}"
+      "#{collection}.#{activity.type.downcase}"
     ) {}
     handler&.for_actor(actor).call(activity)
   end
