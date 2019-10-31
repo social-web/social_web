@@ -10,9 +10,9 @@ module SocialWeb
     raise unless %w[inbox outbox].include?(collection)
 
     activity = ActivityStreams.from_json(activity_json)
-    actor = SocialWeb.container['repositories.actors'].find_by(iri: actor_iri)
+    actor = SocialWeb.container['actors'].find_by(iri: actor_iri)
 
-    container['repositories.activities'].store(activity, actor, collection)
+    container['activities'].store(activity, actor, collection)
     handler = container.resolve(
       "collections.#{collection}.#{activity.type.downcase}"
     ) {}

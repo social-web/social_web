@@ -32,7 +32,15 @@ module SocialWeb
 
     # Collections
     register(:inbox) { ::SocialWeb::Inbox }
+    namespace(:inbox) do
+      register(:accept) { SocialWeb::Inbox::Accept }
+      register(:create) { SocialWeb::Inbox::Create }
+    end
+
     register(:outbox) { ::SocialWeb::Outbox }
+    namespace(:outbox) do
+      register(:follow) { SocialWeb::Inbox::Create }
+    end
 
     register(:followers) { ::SocialWeb::Followers }
     register(:following) { ::SocialWeb::Following }
