@@ -9,5 +9,11 @@ module SocialWeb
 
       SocialWeb['activities'].store(activity, @actor, COLLECTION)
     end
+
+    def remove(activity)
+      return unless SocialWeb['activities'].exists?(activity)
+
+      SocialWeb['activities'].delete(activity)
+    end
   end
 end
