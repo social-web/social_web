@@ -3,8 +3,8 @@
 module SocialWeb
   class Inbox
     class Delete < Activity
-      def call(create)
-        SocialWeb['inbox'].for_actor(@actor).remove(create)
+      def call(delete)
+        SocialWeb['inbox'].for_actor(@actor).remove(delete.object)
       end
     end
   end
