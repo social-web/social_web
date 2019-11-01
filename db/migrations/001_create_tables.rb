@@ -35,10 +35,14 @@ Sequel.migration do
       foreign_key :actor_iri,
         :social_web_actors,
         key: :iri,
+        on_delete: :cascade,
+        on_update: :cascade,
         type: String
       foreign_key :activity_iri,
         :social_web_activities,
         key: :iri,
+        on_delete: :cascade,
+        on_update: :cascade,
         type: String
 
       Time :created_at, null: false
@@ -55,10 +59,14 @@ Sequel.migration do
       foreign_key :actor_iri,
         :social_web_actors,
         key: :iri,
+        on_delete: :cascade,
+        on_update: :cascade,
         type: String
       foreign_key :for_actor_iri,
         :social_web_actors,
         key: :iri,
+        on_delete: :cascade,
+        on_update: :cascade,
         type: String
 
       Time :created_at, null: false
