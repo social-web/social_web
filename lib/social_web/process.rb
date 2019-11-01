@@ -16,6 +16,6 @@ module SocialWeb
     handler = container.resolve(
       "#{collection}.#{activity.type.downcase}"
     ) {}
-    handler&.for_actor(actor).call(activity)
+    handler&.for_actor(actor)&.call(activity)
   end
 end
