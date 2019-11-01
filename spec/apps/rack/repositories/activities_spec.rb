@@ -6,6 +6,14 @@ module SocialWeb
   module Rack
     module Repositories
       RSpec.describe Activities do
+        describe '#delete' do
+          it 'removes the activity' do
+            activity = create_activity
+            expect { described_class.new.delete(activity) }.
+              to change { SocialWeb::Rack.db[:social_web_activities].count }.by(-1)
+          end
+        end
+
         describe '#exists?' do
           it 'returns true if record is found' do
             activity = create_activity

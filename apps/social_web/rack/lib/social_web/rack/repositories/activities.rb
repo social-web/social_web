@@ -4,9 +4,14 @@ module SocialWeb
   module Rack
     module Repositories
       class Activities
+        def delete(act)
+          return unless exists?(act)
+
+          SocialWeb::Rack.db[:social_web_activities].where(iri: act.id).delete
+        end
+
         def exists?(act)
-          found = SocialWeb::Rack.db[:social_web_activities].first(iri: act.id)
-          !found.nil?
+          !get_by_iri(act.id).nil?
         end
 
         def for_actor_iri(actor_iri, collection: nil)
@@ -22,6 +27,11 @@ module SocialWeb
           collection.items = found.map { |act| ActivityStreams.from_json(act[:json]) }
           collection
         end
+
+        def get_by_iri(iri)
+          SocialWeb::Rack.db[:social_web_activities].first(iri: iri)
+        end
+
 
         def store(activity, actor, collection)
           return if exists?(activity)
