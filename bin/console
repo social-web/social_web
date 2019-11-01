@@ -5,11 +5,10 @@
 ENV['SOCIAL_WEB_DATABASE_URL'] = 'sqlite://social_web_dev.sqlite3'
 
 require 'bundler/setup'
-require_relative '../apps/social_web/rack.rb'
+require 'sequel'
+require 'social_web/rack'
 
-SocialWeb.configure do |config|
-  config.container = SocialWeb::Rack::Container
-end
+SocialWeb::Rack.start!
 
 Sequel.extension :migration
 Sequel::Migrator.run(
