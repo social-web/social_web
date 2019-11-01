@@ -34,6 +34,7 @@ module SocialWeb
     namespace(:inbox) do
       register(:accept) { SocialWeb::Inbox::Accept }
       register(:create) { SocialWeb::Inbox::Create }
+      register(:delete) { SocialWeb::Inbox::Delete }
     end
 
     register(:outbox) { ::SocialWeb::Outbox }

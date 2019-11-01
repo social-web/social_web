@@ -2,7 +2,7 @@
 
 module SocialWeb
   class Inbox
-    class Create < Activity
+    class Delete < Activity
       def call(create)
         SocialWeb['inbox'].for_actor(@actor).remove(create)
       end
