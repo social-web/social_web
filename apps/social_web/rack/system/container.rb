@@ -23,9 +23,6 @@ module SocialWeb
       require 'social_web/rack/configuration'
       require 'social_web/rack/routes'
 
-      require 'social_web/rack/collections/following'
-      register(:following) { Collections::Following }
-
       # Repositories
       require 'social_web/rack/repositories'
       register(:activities) { Repositories::Activities.new }
