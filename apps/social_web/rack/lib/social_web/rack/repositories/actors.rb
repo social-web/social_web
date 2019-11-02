@@ -6,8 +6,7 @@ module SocialWeb
       class Actors
         include Dry::Monads[:result]
 
-        def find_by(iri:)
-
+        def get_by_iri(iri)
           found = SocialWeb::Rack.db[:social_web_actors].first(iri: iri)
           return unless found
 

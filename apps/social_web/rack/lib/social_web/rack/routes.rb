@@ -58,7 +58,7 @@ module SocialWeb
       end
 
       def load_actor(actor_iri)
-        SocialWeb['actors'].find_by(iri: actor_iri)
+        SocialWeb['actors'].get_by_iri(actor_iri)
       end
 
       def load_collection(actor_iri, collection)

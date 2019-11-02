@@ -5,16 +5,11 @@ require_relative './rack/system/container'
 module SocialWeb
   module Rack
     def self.start!
-      SocialWeb::Rack::Container.finalize! do |container|
-        require 'rake'
-        Rake.load_rakefile 'social_web/rack/tasks/db.rake'
-
-        container.start :dry_monads
+      SocialWeb::Rack::Container.finalize!(freeze: false) do |container|
+        container.start :config
         container.start :persistance
-
-        container.init :social_web
-        SocialWeb::Container.merge(container)
         container.start :social_web
+        SocialWeb::Container.merge(container)
       end
     end
   end

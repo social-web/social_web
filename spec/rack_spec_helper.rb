@@ -3,9 +3,10 @@
 ENV['SOCIAL_WEB_DATABASE_URL'] = 'postgresql://localhost/social_web_test'
 
 require 'rack/test'
-require 'social_web/rack'
 
 require_relative './rack_spec_container'
+RackSpecContainer.finalize!
+
 require_relative './helpers/rack_helper'
 
 RSpec.configure do |config|
