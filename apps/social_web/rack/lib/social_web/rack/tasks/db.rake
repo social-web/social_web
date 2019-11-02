@@ -21,20 +21,22 @@ namespace :social_web do
       SocialWeb::Rack.db.transaction do
         SocialWeb::Rack.db.drop_table?(*tables,  cascade: true)
         puts 'Removed SocialWeb tables. ' \
-        'Run `rake sequel:db:migrate` to add them.'
+          'Run `rake sequel:db:migrate` to add them.'
       end
     end
 
     desc 'Create SocialWeb tables'
     task :migrate do
       Sequel.extension :migration, :core_extensions
-      Sequel::Migrator.run(
-        SocialWeb::Rack.db,
-        migrations_path,
-        table: :social_web_schema_migrations
-      )
-      puts 'Created SocialWeb tables. ' \
-        'Run `rake sequel:db:drop_tables` to remove them.'
+      SocialWeb::Rack.db.transaction do
+        Sequel::Migrator.run(
+          SocialWeb::Rack.db,
+          migrations_path,
+          table: :social_web_schema_migrations
+        )
+        puts 'Created SocialWeb tables. ' \
+          'Run `rake sequel:db:drop_tables` to remove them.'
+      end
     end
 
     desc 'Print SocialWeb migrations'
