@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.5.0'
 
   s.add_dependency 'dry-container'
+  s.add_dependency 'dry-monads'
   s.add_dependency 'dry-system'
 
   # Provides easy access to an HTTP client

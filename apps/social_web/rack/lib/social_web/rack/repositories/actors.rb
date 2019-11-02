@@ -4,6 +4,8 @@ module SocialWeb
   module Rack
     module Repositories
       class Actors
+        include Dry::Monads[:result]
+
         def find_by(iri:)
 
           found = SocialWeb::Rack.db[:social_web_actors].first(iri: iri)
@@ -21,9 +23,9 @@ module SocialWeb
             )
             SocialWeb.container['keys'].generate_for_actor_iri(actor.id)
           end
-          true
-        rescue StandardError
-          false
+          Success()
+        rescue StandardError => e
+          Failure(e)
         end
       end
     end

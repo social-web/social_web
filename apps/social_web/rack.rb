@@ -9,6 +9,7 @@ module SocialWeb
         require 'rake'
         Rake.load_rakefile 'social_web/rack/tasks/db.rake'
 
+        container.start :dry_monads
         container.start :persistance
 
         container.init :social_web
