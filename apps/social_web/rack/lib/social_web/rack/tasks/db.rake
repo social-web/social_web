@@ -19,7 +19,7 @@ namespace :social_web do
     desc 'Remove SocialWeb tables'
     task :drop_tables do
       SocialWeb::Rack.db.transaction do
-        SocialWeb::Rack.db.drop_table(*tables,  cascade: true)
+        SocialWeb::Rack.db.drop_table?(*tables,  cascade: true)
         puts 'Removed SocialWeb tables. ' \
         'Run `rake sequel:db:migrate` to add them.'
       end
