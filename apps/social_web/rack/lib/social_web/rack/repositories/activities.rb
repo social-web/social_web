@@ -36,6 +36,9 @@ module SocialWeb
         def store(activity, actor, collection)
           return if exists?(activity)
 
+          activity = SocialWeb::Rack['dereference'].call(activity.id)
+          actor = SocialWeb::Rack['dereference'].call(actor.id)
+
           SocialWeb::Rack.db.transaction do
             now = Time.now.utc
 
