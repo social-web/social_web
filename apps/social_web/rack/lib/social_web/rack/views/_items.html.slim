@@ -1,27 +1,23 @@
 
-table.table
-  thead
-    th ID
-    th Type
-    th Domain
-    th JSON
-  tbody
-    - items.each do |item|
-      - id = "json#{item.hash}"
-      tr
-        td= item.id
-        td= item.type
-        td= URI(item.id).host
-        td
-          button class="btn btn-primary" type="button" data-toggle="modal" data-target="##{id}"
+- items.each do |item|
+  - id = "json#{item.hash}"
+  - if item.object.is_a?(String)
+    .mt-4.mb-4= item.object
+  - else
+    .card.mt-4.mb-4
+      .card-body
+        .card-text
+          == render "activities/#{item.object.type.downcase}", locals: { activity: item.object }
+      .card-footer
+        .d-inline-block.mr-2
+          =item.actor
+        .d-inline-block.mr-2
+          h5= item.type
+        .d-inline-block
+          h6= URI(item.id).host
+        .d-inline-block
+          button class="btn btn-primary card-link" type="button" data-toggle="collapse" data-target="##{id}"
             'JSON
-
-      .modal id=id
-        .modal-dialog.modal-dialog-centered
-          .modal-content
-            .modal-header
-              h5.modal-title JSON
-              button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                span aria-hidden="true" &times;
-            .modal-body
-              pre= JSON.pretty_generate(item.to_h)
+        .mt-2.p-3.collapse id=id
+          pre.text-bold
+            = JSON.pretty_generate(item.to_h)
