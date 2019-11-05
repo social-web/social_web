@@ -16,4 +16,18 @@ module ActivityStreams
   end
 end
 
-ActivityStreams::Model.include ActivityStreams::Extensions::ActivityPub
+module ActivityStreams
+  module Extensions
+    module ActivityPub
+      module Collection
+        def self.included(base)
+          base.class_eval do
+            property :inbox
+            property :outbox
+            property :publicKey
+          end
+        end
+      end
+    end
+  end
+end

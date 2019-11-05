@@ -3,5 +3,11 @@
 SocialWeb::Container.boot :activity_streams do
   init do
     require 'activity_streams'
+    require 'social_web/ext/activity_streams_extension'
+  end
+
+  start do
+    ActivityStreams::Model.include ActivityStreams::Extensions::ActivityPub
+    ActivityStreams::Collection.include ActivityStreams::Extensions::ActivityPub::Collection
   end
 end
