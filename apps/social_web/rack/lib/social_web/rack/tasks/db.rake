@@ -7,10 +7,10 @@ migrations_path = File.join(
 )
 
 tables = %i[
-  social_web_actors
-  social_web_activities
-  social_web_actor_actors
-  social_web_actor_activities
+  social_web_collections
+  social_web_keys
+  social_web_objects
+  social_web_relationships
   social_web_schema_migrations
 ]
 
