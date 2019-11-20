@@ -61,7 +61,6 @@ module SocialWeb
             json: obj.to_json,
             created_at: now
           )
-        rescue Sequel::UniqueConstraintViolation
         end
 
         def insert_relationship(parent:, child:, prop:)
