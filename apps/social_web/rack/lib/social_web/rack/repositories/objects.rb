@@ -6,6 +6,10 @@ module SocialWeb
       class Objects
         DEREFERENCEABLE_PROPS = %i[actor inReplyTo object target tag].freeze
 
+        def stored?(iri)
+          !get_from_cache(iri).nil?
+        end
+
         def get_by_iri(iri)
           found = get_from_cache(iri) || get_fresh(iri)
           return unless found
@@ -47,6 +51,8 @@ module SocialWeb
         end
 
         def insert_object(obj)
+          return if stored?(obj.id)
+
           now = Time.now.utc
 
           SocialWeb::Rack.db[:social_web_objects].insert(
