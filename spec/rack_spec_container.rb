@@ -6,13 +6,13 @@ class RackSpecContainer < Dry::System::Container
   register(:dereference) do
     dereference = Object.new
     def dereference.call(iri)
-      SocialWeb::Rack['actors'].get_by_iri(iri) ||
-        SocialWeb::Rack['activities'].get_by_iri(iri) ||
+      iri = iri.respond_to?(:id) ? iri.id : iri
+      SocialWeb::Rack['objects'].get_by_iri(iri) ||
         begin
-          obj = OpenStruct.new
-          obj.id = iri
-          obj.type = 'Some Type'
-          obj
+          ActivityStreams.new {
+            id iri
+            type 'Some Type'
+          }
         end
     end
     dereference

@@ -19,6 +19,12 @@ module SocialWeb
       end
 
       load_paths! 'lib'
+
+      require 'social_web/rack/repositories/collections'
+      register(:collections) { SocialWeb::Rack::Repositories::Collections.new }
+
+      require 'social_web/rack/services/traverse'
+      register(:traverse) { SocialWeb::Rack::Traverse.new }
     end
   end
 end

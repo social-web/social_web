@@ -22,9 +22,10 @@ module ActivityStreams
       module Collection
         def self.included(base)
           base.class_eval do
-            property :inbox
-            property :outbox
-            property :publicKey
+            def next
+              @next_iri = super
+              SocialWeb['collections'].get(@next_iri)
+            end
           end
         end
       end

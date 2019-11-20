@@ -9,6 +9,9 @@ require 'sequel'
 require 'social_web/rack'
 
 SocialWeb::Rack.start!
+SocialWeb::Rack.configure do |config|
+  config.logger = true
+end
 
 Sequel.extension :migration
 Sequel::Migrator.run(

@@ -2,68 +2,45 @@
 
 Sequel.migration do
   change do
-    create_table(:social_web_actors) do
+    create_table(:social_web_objects) do
       primary_key :id
 
       String :iri, null: false
+      index :iri, unique: true
+
       String :json, null: false
 
-      Time :created_at, null: false
-      Time :updated_at, null: true
-
-      index :iri, unique: true
-    end
-
-    create_table(:social_web_activities) do
-      primary_key :id
-
-      String :iri, null: false
       String :type, null: false
-      String :json, null: false
+      index :type
 
       Time :created_at, null: false
       Time :updated_at, null: true
-
-      index :iri, unique: true
     end
 
-    create_table(:social_web_actor_activities) do
+    create_table(:social_web_relationships) do
       primary_key :id
 
-      String :collection, null: false
+      String :parent_iri, null: false
+      String :child_iri, null: false
 
-      foreign_key :actor_iri,
-        :social_web_actors,
-        key: :iri,
-        on_delete: :cascade,
-        on_update: :cascade,
-        type: String
-      foreign_key :activity_iri,
-        :social_web_activities,
-        key: :iri,
-        on_delete: :cascade,
-        on_update: :cascade,
-        type: String
+      String :type, null: false
 
       Time :created_at, null: false
       Time :updated_at, null: true
-
-      index %i[actor_iri activity_iri], unique: true
     end
 
-    create_table(:social_web_actor_actors) do
+    create_table(:social_web_collections) do
       primary_key :id
 
-      String :collection, null: false
-
+      String :type, null: false
       foreign_key :actor_iri,
-        :social_web_actors,
+        :social_web_objects,
         key: :iri,
         on_delete: :cascade,
         on_update: :cascade,
         type: String
-      foreign_key :for_actor_iri,
-        :social_web_actors,
+      foreign_key :object_iri,
+        :social_web_objects,
         key: :iri,
         on_delete: :cascade,
         on_update: :cascade,
@@ -71,8 +48,6 @@ Sequel.migration do
 
       Time :created_at, null: false
       Time :updated_at, null: true
-
-      index %i[actor_iri for_actor_iri], unique: true
     end
   end
 end

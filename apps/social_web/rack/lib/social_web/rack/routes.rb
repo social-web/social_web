@@ -40,14 +40,17 @@ module SocialWeb
             view 'collection',
               locals: {
                 collection: collection,
-                items: load_collection(actor_iri, collection)
+                items: load_collection(actor_iri, collection).items
               }
           end
         end
 
         r.activity_json do
           actor = load_actor(actor_iri)
+          r.halt(404) unless actor
+
           keys = SocialWeb['keys'].for_actor_iri(actor.id)
+
           actor.publicKey = {
             id: keys[:key_id],
             owner: actor.id,
@@ -58,13 +61,11 @@ module SocialWeb
       end
 
       def load_actor(actor_iri)
-        SocialWeb['actors'].get_by_iri(actor_iri)
+        SocialWeb['objects'].get_by_iri(actor_iri)
       end
 
       def load_collection(actor_iri, collection)
-        SocialWeb['activities'].
-          for_actor_iri(actor_iri, collection: collection).
-          items
+        SocialWeb['collections'].get_collection_by_iri(collection: collection, iri: actor_iri)
       end
 
       def parse_actor_iri(url)

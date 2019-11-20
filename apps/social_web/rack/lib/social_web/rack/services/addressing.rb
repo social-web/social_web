@@ -10,7 +10,7 @@ module SocialWeb
           activity.public_send(field) if activity.respond_to?(field)
         end.
           reject { |address| ['', nil].include?(address) }.
-          map { |address| SocialWeb::Rack['dereference'].call(address) }
+          map { |address| SocialWeb::Rack['objects'].get_by_iri(address) }
       end
     end
   end

@@ -2,7 +2,6 @@
 
 require 'bundler/setup'
 
-require 'social_web/activity_streams_extension'
 require 'social_web/collection'
 
 module SocialWeb
@@ -10,12 +9,14 @@ module SocialWeb
     raise unless %w[inbox outbox].include?(collection)
 
     activity = ActivityStreams.from_json(activity_json)
-    actor = SocialWeb.container['actors'].find_by(iri: actor_iri)
+    actor = container['objects'].get_by_iri(actor_iri)
 
-    container['activities'].store(activity, actor, collection)
-    handler = container.resolve(
-      "#{collection}.#{activity.type.downcase}"
-    ) {}
-    handler&.for_actor(actor)&.call(activity)
+    [activity, actor].each { |obj| container['objects'].store(obj) }
+
+    container['collections'].store_object_in_collection_for_iri(
+      object: activity,
+      collection: collection,
+      iri: actor_iri
+    )
   end
 end

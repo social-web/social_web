@@ -11,8 +11,8 @@ Sequel.migration do
       Time :created_at, null: false
       Time :updated_at, null: true
 
-      index :actor_iri, unique: true
-      foreign_key :actor_iri, :social_web_actors, key: :iri, type: String
+      foreign_key :object_iri, :social_web_objects, key: :iri, type: String
+      index :object_iri, unique: true
     end
   end
 end
