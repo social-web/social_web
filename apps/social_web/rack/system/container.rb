@@ -20,6 +20,9 @@ module SocialWeb
 
       load_paths! 'lib'
 
+      require 'social_web/rack/repositories/keys'
+      register(:keys) { SocialWeb::Rack::Repositories::Keys.new }
+
       require 'social_web/rack/repositories/collections'
       register(:collections) { SocialWeb::Rack::Repositories::Collections.new }
 

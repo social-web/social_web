@@ -5,7 +5,7 @@ module SocialWeb
     module Repositories
       class Keys
         def for_actor_iri(actor_iri)
-          keys = SocialWeb::Rack.db[:social_web_keys].first(actor_iri: actor_iri)
+          keys = SocialWeb::Rack.db[:social_web_keys].first(object_iri: actor_iri)
           timestamp = keys[:updated_at].iso8601
           {
             key_id: "#{actor_iri}/#key-#{timestamp}",
@@ -17,7 +17,7 @@ module SocialWeb
         def generate_for_actor_iri(actor_iri)
           keypair = OpenSSL::PKey::RSA.new(2048)
           SocialWeb::Rack.db[:social_web_keys].insert(
-            actor_iri: actor_iri,
+            object_iri: actor_iri,
             private: keypair.to_pem,
             public: keypair.public_key.to_pem,
             created_at: Time.now.utc,
