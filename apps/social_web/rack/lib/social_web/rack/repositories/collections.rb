@@ -11,7 +11,11 @@ module SocialWeb
               :social_web_collections,
               { object_iri: :iri }
             ).
-            where(Sequel[:social_web_collections][:actor_iri] => iri)
+            where(
+              Sequel[:social_web_collections][:actor_iri] => iri,
+              Sequel[:social_web_collections][:type] => collection,
+            ).
+            order(Sequel.desc(Sequel[:social_web_objects][:created_at]))
           return unless found
 
           collection = ActivityStreams.collection
