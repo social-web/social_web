@@ -1,23 +1,25 @@
 
-- items.each do |item|
-  - id = "json#{item.hash}"
-  - if item.object.is_a?(String)
-    .mt-4.mb-4= item.object
-  - else
-    .card.mt-4.mb-4
-      .card-body
-        .card-text
-          == render "activities/#{item.object.type.downcase}", locals: { activity: item.object }
-      .card-footer
-        .d-inline-block.mr-2
-          =item.actor
-        .d-inline-block.mr-2
-          h5= item.type
-        .d-inline-block
-          h6= URI(item.id).host
-        .d-inline-block
-          button class="btn btn-primary card-link" type="button" data-toggle="collapse" data-target="##{id}"
-            'JSON
-        .mt-2.p-3.collapse id=id
-          pre.text-bold
-            = JSON.pretty_generate(item.to_h)
+table.table
+  thead
+    tr
+      th Type
+      th Host
+      th Published
+      th JSON
+  - items.each do |item|
+    - id = "json#{item.hash}"
+    - if item.object.is_a?(String)
+      .mt-4.mb-4= item.object
+    - else
+      tbody
+        tr
+          td.align-middle= item.type
+          td.align-middle= URI(item.id).host
+          td.align-middle= item.published
+          td.align-middle
+            button class="btn btn-primary card-link" type="button" data-toggle="collapse" data-target="##{id}"
+              'JSON
+        tr.collapse.overflow-hidden id=id
+          td colspan=4
+            pre.text-bold.overflow-hidden.d-inline style="white-space: pre-wrap;"
+              = JSON.pretty_generate(item.to_h)
