@@ -43,6 +43,7 @@ module SocialWeb
         end
 
         def get_fresh(iri)
+          puts "SocialWeb HTTP: #{iri}"
           # TODO: Replace with custom HTTP fetcher
           found = HTTP.headers(accept: 'application/activity+json').get(iri)
           return unless found
