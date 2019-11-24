@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative './rack/system/container'
+require 'social_web/rack/configuration'
 
 module SocialWeb
   module Rack
