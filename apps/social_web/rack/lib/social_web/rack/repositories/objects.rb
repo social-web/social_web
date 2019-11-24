@@ -49,7 +49,9 @@ module SocialWeb
           found = HTTP.headers(accept: 'application/activity+json').get(iri)
           return unless found
 
-          ActivityStreams.from_json(found.body.to_s)
+          obj = ActivityStreams.from_json(found.body.to_s)
+          store(obj)
+          obj
         end
 
         def insert_object(obj)
