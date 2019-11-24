@@ -13,7 +13,7 @@ module SocialWeb
 
         tree = { obj => nil }
 
-        while !queue.empty? && loop_count <= 3
+        while !queue.empty? && loop_count <= 20
           RELATIONSHIPS.each do |rel|
             child = obj.respond_to?(rel) ? obj.public_send(rel) : nil
             next unless child
