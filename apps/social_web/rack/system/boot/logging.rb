@@ -8,6 +8,7 @@ SocialWeb::Rack::Container.boot :logging do
       SocialWeb::Rack.db.extension :caller_logging
       SocialWeb::Rack.db.loggers << logger
 
+      require 'social_web/rack/routes'
       SocialWeb::Rack::Routes.plugin :common_logger, logger
     end
   end
