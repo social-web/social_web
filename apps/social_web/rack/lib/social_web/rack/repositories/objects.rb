@@ -49,7 +49,7 @@ module SocialWeb
           res = HTTP.headers(accept: 'application/activity+json').get(iri)
           raise "SocialWebHTTP: Failed req: #{res.to_a}" unless res.status.success?
 
-          obj = ActivityStreams.from_json(found.body.to_s)
+          obj = ActivityStreams.from_json(res.body.to_s)
           store(obj)
           obj
         end
