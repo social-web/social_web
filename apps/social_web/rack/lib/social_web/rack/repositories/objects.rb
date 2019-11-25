@@ -47,7 +47,10 @@ module SocialWeb
           # TODO: Replace with custom HTTP fetcher
           sleep 0.5
           res = HTTP.headers(accept: 'application/activity+json').get(iri)
-          raise "SocialWebHTTP: Failed req: #{res.to_a}" unless res.status.success?
+          unless res.status.success?
+            puts "SocialWeb HTTP: Failed req: #{res.to_a}"
+            return
+          end
 
           obj = ActivityStreams.from_json(res.body.to_s)
           store(obj)
