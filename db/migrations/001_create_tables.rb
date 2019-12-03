@@ -27,6 +27,8 @@ Sequel.migration do
 
       Time :created_at, null: false
       Time :updated_at, null: true
+
+      index %i[child_iri parent_iri type], unique: true
     end
 
     create_table(:social_web_collections) do
@@ -48,6 +50,8 @@ Sequel.migration do
 
       Time :created_at, null: false
       Time :updated_at, null: true
+
+      index %i[type actor_iri object_iri], unique: true
     end
   end
 end
