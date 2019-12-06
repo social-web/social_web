@@ -4,7 +4,7 @@ module SocialWeb
   module Rack
     module Repositories
       class Collections
-        def get_collection_by_iri(collection:, iri:)
+        def get_collection_for_iri(collection:, iri:)
           found = SocialWeb::Rack.db[:social_web_objects].
             join_table(
               :inner,

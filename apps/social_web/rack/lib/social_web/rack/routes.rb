@@ -65,7 +65,7 @@ module SocialWeb
       end
 
       def load_collection(actor_iri, collection)
-        SocialWeb['collections'].get_collection_by_iri(collection: collection, iri: actor_iri)
+        SocialWeb['collections'].get_collection_for_iri(collection: collection, iri: actor_iri)
       end
 
       def parse_actor_iri(url)
