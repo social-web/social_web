@@ -2,12 +2,14 @@
 
 module SocialWeb
   module Rack
-    # Take an ActivityStreams object and traverse its relationships,
-    # returning a hash that maps the relationships among the objects
-    # and its child nodes. Call the given block with any relationship found.
     class Traverse
       RELATIONSHIPS = %i[actor inReplyTo object target tag].freeze
 
+      # Take an ActivityStreams object and traverse its relationships. Call the given block with
+      # any relationship found.
+      # @params
+      #   obj: an ActivityStreams object
+      #   blk: block to call on any relationship found
       def call(obj, &blk)
         queue = RELATIONSHIPS.map { |rel| obj.public_send(rel) if obj.respond_to?(rel) }.compact
 
