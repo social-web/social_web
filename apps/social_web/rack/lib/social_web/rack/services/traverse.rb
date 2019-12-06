@@ -13,8 +13,6 @@ module SocialWeb
       def call(obj, &blk)
         queue = RELATIONSHIPS.map { |rel| obj.public_send(rel) if obj.respond_to?(rel) }.compact
 
-        tree = { obj => nil }
-
         while !queue.empty? && loop_count <= 20
           RELATIONSHIPS.each do |rel|
             child = obj.respond_to?(rel) ? obj.public_send(rel) : nil
@@ -37,8 +35,6 @@ module SocialWeb
           obj = queue.pop
           @loop_count += 1
         end
-
-        tree
       end
 
       private
