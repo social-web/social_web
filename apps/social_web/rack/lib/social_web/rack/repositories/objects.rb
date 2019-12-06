@@ -10,6 +10,46 @@ module SocialWeb
           !get_from_cache(iri).nil?
         end
 
+        def thread_for_iri(iri, depth: 1)
+          SocialWeb::Rack.db.transaction do
+            selects = [
+            ]
+
+            SocialWeb::Rack.db.run("set statement_timeout to '10s'")
+            SocialWeb::Rack.db[:threads].
+              with_recursive(
+                :threads,
+                SocialWeb::Rack.db[:social_web_objects].
+                  select(
+                    Sequel[:social_web_objects][:iri],
+                    Sequel[:children][:iri],
+                    Sequel[:children][:json],
+                    Sequel[:social_web_relationships][:type],
+                    Sequel[:social_web_objects][:created_at]
+                  ) { 1 }.
+                  join(:social_web_relationships, { child_iri: :iri }).
+                  join(Sequel[:social_web_objects].as(:children), { iri: :parent_iri }).
+                  where(Sequel[:social_web_relationships][:parent_iri] => iri),
+
+                SocialWeb::Rack.db[:social_web_objects].
+                  select(
+                    Sequel[:social_web_objects][:iri],
+                    Sequel[:children][:iri],
+                    Sequel[:children][:json],
+                    Sequel[:social_web_relationships][:type],
+                    Sequel[:social_web_objects][:created_at]
+                  ) { Sequel[:_depth] + 1 }.
+                  join(:social_web_relationships, { child_iri: :iri }).
+                  join(Sequel[:social_web_objects].as(:children), { iri: :parent_iri }).
+                  join(:threads, Sequel[:threads][:child_iri] => Sequel[:social_web_objects][:iri]).
+                  where { Sequel[:_depth] <= depth },
+
+                args: [:parent_iri, :child_iri, :child_json, :rel_type, :created_at, :_depth],
+                union_all: false
+              )
+          end
+        end
+
         def get_by_iri(iri)
           found = get_from_cache(iri) || get_fresh(iri)
           return unless found
