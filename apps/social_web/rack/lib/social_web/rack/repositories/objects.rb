@@ -65,13 +65,9 @@ module SocialWeb
           SocialWeb::Rack.db.transaction do
             insert_object(obj)
 
-            SocialWeb::Rack['traverse'].call(obj) do |objRel|
-              o = objRel.keys.first
-              rel = objRel[o].keys.first
-              child = objRel[o][rel]
-
-              insert_object(o)
-              insert_relationship(parent: o, prop: rel, child: child)
+            SocialWeb::Rack['traverse'].call(obj) do |parent, rel, child|
+              insert_object(parent)
+              SocialWeb['relationships'].store(parent: parent, prop: rel, child: child)
             end
           end
         end
