@@ -29,8 +29,7 @@ module SocialWeb
               raise 'Expected an array or ActivityStreams::Model'
             end
 
-            relationship = { obj => { rel => child } }
-            blk.call(relationship) if blk
+            blk.call(obj, rel, child) if blk
           end
 
           obj = queue.pop
