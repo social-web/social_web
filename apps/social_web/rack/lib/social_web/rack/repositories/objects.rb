@@ -53,6 +53,11 @@ module SocialWeb
         def get_by_iri(iri)
           found = get_from_cache(iri) || get_fresh(iri)
           return unless found
+
+          SocialWeb::Rack['traverse'].call(found) do |parent, rel, child|
+            parent.public_send("#{rel}=", child)
+          end
+
           found
         end
 
