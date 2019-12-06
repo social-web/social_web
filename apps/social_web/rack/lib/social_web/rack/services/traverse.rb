@@ -3,7 +3,7 @@
 module SocialWeb
   module Rack
     class Traverse
-      RELATIONSHIPS = %i[actor inReplyTo object target tag].freeze
+      RELATIONSHIPS = %i[actor attributedTo inReplyTo object target tag].freeze
 
       # Take an ActivityStreams object and traverse its relationships. Call the given block with
       # any relationship found.
