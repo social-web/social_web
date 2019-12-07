@@ -15,20 +15,3 @@ module ActivityStreams
     end
   end
 end
-
-module ActivityStreams
-  module Extensions
-    module ActivityPub
-      module Collection
-        def self.included(base)
-          base.class_eval do
-            def next
-              @next_iri = super
-              SocialWeb['collections'].get(@next_iri)
-            end
-          end
-        end
-      end
-    end
-  end
-end

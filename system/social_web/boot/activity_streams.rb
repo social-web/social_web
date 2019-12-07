@@ -8,6 +8,5 @@ SocialWeb::Container.boot :activity_streams do
 
   start do
     ActivityStreams::Model.include ActivityStreams::Extensions::ActivityPub
-    ActivityStreams::Collection.include ActivityStreams::Extensions::ActivityPub::Collection
   end
 end
