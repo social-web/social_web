@@ -55,14 +55,16 @@ module SocialWeb
           found = get_from_cache(iri) || get_fresh(iri)
           return unless found
 
+          found
+        end
+
+        def reconstitute(obj)
           RELATIONSHIPS.each do |rel|
             SocialWeb::Rack['traverse'].call(
-              found,
+              obj,
               relationship: rel
             ) { |parent, rel, child| parent.public_send("#{rel}=", child) }
           end
-
-          found
         end
 
         def store(obj)
