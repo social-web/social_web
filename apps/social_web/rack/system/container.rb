@@ -31,6 +31,9 @@ module SocialWeb
 
       require 'social_web/rack/services/traverse'
       register(:traverse) { SocialWeb::Rack::Traverse.new }
+
+      require 'social_web/rack/services/traverse_collection'
+      register(:traverse_collection) { SocialWeb::Rack::TraverseCollection.new }
     end
   end
 end
