@@ -5,6 +5,7 @@ module SocialWeb
     module Repositories
       class Objects
         DEREFERENCEABLE_PROPS = %i[actor inReplyTo object target tag].freeze
+        RELATIONSHIPS = %i[actor attributedTo inReplyTo object target tag].freeze
 
         def stored?(iri)
           !get_from_cache(iri).nil?
@@ -54,8 +55,11 @@ module SocialWeb
           found = get_from_cache(iri) || get_fresh(iri)
           return unless found
 
-          SocialWeb::Rack['traverse'].call(found) do |parent, rel, child|
-            parent.public_send("#{rel}=", child)
+          RELATIONSHIPS.each do |rel|
+            SocialWeb::Rack['traverse'].call(
+              found,
+              relationship: rel
+            ) { |parent, rel, child| parent.public_send("#{rel}=", child) }
           end
 
           found
@@ -65,9 +69,14 @@ module SocialWeb
           SocialWeb::Rack.db.transaction do
             insert_object(obj)
 
-            SocialWeb::Rack['traverse'].call(obj) do |parent, rel, child|
-              insert_object(parent)
-              SocialWeb['relationships'].store(parent: parent, prop: rel, child: child)
+            RELATIONSHIPS.each do |rel|
+              SocialWeb::Rack['traverse'].call(
+                obj,
+                relationship: rel
+              ) do |parent, rel, child|
+                insert_object(parent)
+                SocialWeb['relationships'].store(parent: parent, prop: rel, child: child)
+              end
             end
           end
         end
