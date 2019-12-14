@@ -4,10 +4,6 @@ module SocialWeb
   module Rack
     module Repositories
       class Objects
-        COLLECTIONS = %i[replies].freeze
-        DEREFERENCEABLE_PROPS = %i[actor inReplyTo object target tag].freeze
-        RELATIONSHIPS = %i[actor attributedTo inReplyTo object target tag].freeze
-
         def stored?(iri)
           !get_from_cache(iri).nil?
         end
@@ -60,19 +56,6 @@ module SocialWeb
         end
 
         def reconstitute(obj)
-          COLLECTIONS.each do |col|
-            SocialWeb['traverse_collection'].call(
-              obj,
-              collection: col
-            ) { |o, collection, items| o[collection][:items] ||= items }
-          end
-
-          RELATIONSHIPS.each do |rel|
-            SocialWeb::Rack['traverse'].call(
-              obj,
-              relationship: rel
-            ) { |parent, rel, child| parent[rel] = child }
-          end
         end
 
         def store(obj)
@@ -81,7 +64,7 @@ module SocialWeb
 
             COLLECTIONS.each do |col|
               if obj[col]
-                obj[col] = SocialWeb['traverse_collection'].call(obj[col])
+                obj[col] = SocialWeb['traverse_collection'].call(obj, collection: col)
               end
             end
 

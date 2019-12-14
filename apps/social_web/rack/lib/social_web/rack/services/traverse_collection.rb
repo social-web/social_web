@@ -18,18 +18,17 @@ module SocialWeb
           col = obj[collection]
           next unless col
 
+          items = []
+
           col = SocialWeb['objects'].get_by_iri(col) if col.is_a?(String)
+          items += col[:items] if col[:items]
 
           if col[:first]
+            items += get_items(col[:first])
             col = SocialWeb['objects'].get_by_iri(col[:first][:next])
           end
 
-          items = case col[:type]
-          when 'Collection', 'CollectionPage'
-            col[:items]
-          when 'OrderedCollection', 'OrderedCollectionPage'
-            col[:ordered_items]
-          end
+          items += get_items(col)
 
           next unless items
 
@@ -41,13 +40,20 @@ module SocialWeb
 
           queue += items
         end
-
-        collection
       end
 
       private
 
       attr_accessor :loop_count
+
+      def get_items(collection)
+        case collection[:type]
+        when 'Collection', 'CollectionPage'
+          collection[:items]
+        when 'OrderedCollection', 'OrderedCollectionPage'
+          collection[:ordered_items]
+        end
+      end
 
       def loop_count
         @loop_count ||= 0
