@@ -52,9 +52,6 @@ module SocialWeb
           found
         end
 
-        def reconstitute(obj)
-        end
-
         def store(obj)
           SocialWeb::Rack.db.transaction do
             insert_object(obj)
