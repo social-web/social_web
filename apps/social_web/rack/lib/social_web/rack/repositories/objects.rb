@@ -10,9 +10,6 @@ module SocialWeb
 
         def thread_for_iri(iri, depth: 1)
           SocialWeb::Rack.db.transaction do
-            selects = [
-            ]
-
             SocialWeb::Rack.db.run("set statement_timeout to '10s'")
             SocialWeb::Rack.db[:threads].
               with_recursive(
