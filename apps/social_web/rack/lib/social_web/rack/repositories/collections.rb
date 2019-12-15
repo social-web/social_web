@@ -5,21 +5,39 @@ module SocialWeb
     module Repositories
       class Collections
         def get_collection_for_iri(collection:, iri:)
-          found = SocialWeb::Rack.db[:social_web_objects].
+          deleted = SocialWeb::Rack.
+            db[:social_web_objects].
+            select(:child_iri).
             join_table(
               :inner,
-              :social_web_collections,
-              { object_iri: :iri }
+              :social_web_relationships,
+              { parent_iri: :iri }
             ).
             where(
-              Sequel[:social_web_collections][:actor_iri] => iri,
-              Sequel[:social_web_collections][:type] => collection,
+              Sequel[:social_web_objects][:type] => 'Delete',
+              Sequel[:social_web_relationships][:type] => 'object'
+            )
+
+          found = SocialWeb::Rack.
+            db[:social_web_objects].
+            join_table(
+              :inner,
+              :social_web_relationships,
+              { parent_iri: :iri }
+            ).
+            where(
+              Sequel[:social_web_objects][:type] => 'Create',
+              Sequel[:social_web_relationships][:type] => 'object'
             ).
             order(Sequel.desc(Sequel[:social_web_objects][:created_at]))
-          return unless found
 
           collection = ActivityStreams.collection
-          collection.items = found.map { |obj| ActivityStreams.from_json(obj[:json]) }
+          collection.items = found.map do |record|
+            obj = ActivityStreams.from_json(record[:json])
+            SocialWeb['reconstitute'].call(obj)
+            obj
+          end
+
           collection
         end
 
