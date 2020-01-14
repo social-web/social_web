@@ -16,7 +16,7 @@ SocialWeb::Rack::Container.boot :persistance do
     register(:keys) { SocialWeb::Rack::Repositories::Keys.new }
 
     require 'social_web/rack/repositories/collections'
-    register(:collections) { SocialWeb::Rack::Repositories::Collections.new }
+    register(:collections_repo) { SocialWeb::Rack::Repositories::Collections.new }
 
     require 'social_web/rack/services/reconstitute'
     register(:reconstitute) { SocialWeb::Rack::Reconstitute.new }
