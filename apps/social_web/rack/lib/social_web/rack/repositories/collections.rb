@@ -17,12 +17,16 @@ module SocialWeb
 
         private
 
+        def collections
+          SocialWeb['collections_rel']
+        end
+
         def stored?(object:, collection:, actor:)
           found = collections.
             by_object_iri(object.id).
             by_actor_iri(actor.id).
             by_type(collection).
-            one
+            first
           !found.nil?
         end
       end
