@@ -18,6 +18,7 @@ module SocialWeb
 
         while !queue.empty? && loop_count <= depth
           o = queue.shift
+          next unless o
 
           relationships.each do |rel|
             child = o[rel]
