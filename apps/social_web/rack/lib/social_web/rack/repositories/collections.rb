@@ -23,9 +23,11 @@ module SocialWeb
 
         def stored?(object:, collection:, actor:)
           found = collections.
-            by_object_iri(object.id).
-            by_actor_iri(actor.id).
-            by_type(collection).
+            where(
+              actor_iri: actor.id,
+              object_iri: object.id,
+              type: collection
+            ).
             first
           !found.nil?
         end
