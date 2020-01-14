@@ -4,116 +4,94 @@ module SocialWeb
   module Rack
     module Repositories
       class Objects
-        def stored?(iri)
-          !get_from_cache(iri).nil?
+        def add(obj)
+          return obj if stored?(obj)
+
+          objects.insert(
+            iri: obj.id,
+            type: obj.type,
+            json: obj.to_json,
+            created_at: Time.now.utc
+          )
+
+          obj
         end
 
-        def thread_for_iri(iri, depth: 1)
-          SocialWeb::Rack.db.transaction do
-            SocialWeb::Rack.db.run("set statement_timeout to '10s'")
-            SocialWeb::Rack.db[:threads].
-              with_recursive(
-                :threads,
-                SocialWeb::Rack.db[:social_web_objects].
-                  select(
-                    Sequel[:social_web_objects][:iri],
-                    Sequel[:children][:iri],
-                    Sequel[:children][:json],
-                    Sequel[:social_web_relationships][:type],
-                    Sequel[:social_web_objects][:created_at]
-                  ) { 1 }.
-                  join(:social_web_relationships, { child_iri: :iri }).
-                  join(Sequel[:social_web_objects].as(:children), { iri: :parent_iri }).
-                  where(Sequel[:social_web_relationships][:parent_iri] => iri),
+        def deep_add(obj)
+          add(obj)
 
-                SocialWeb::Rack.db[:social_web_objects].
-                  select(
-                    Sequel[:social_web_objects][:iri],
-                    Sequel[:children][:iri],
-                    Sequel[:children][:json],
-                    Sequel[:social_web_relationships][:type],
-                    Sequel[:social_web_objects][:created_at]
-                  ) { Sequel[:_depth] + 1 }.
-                  join(:social_web_relationships, { child_iri: :iri }).
-                  join(Sequel[:social_web_objects].as(:children), { iri: :parent_iri }).
-                  join(:threads, Sequel[:threads][:child_iri] => Sequel[:social_web_objects][:iri]).
-                  where { Sequel[:_depth] <= depth },
+          SocialWeb['rack.traverse_relationships'].call(obj) do |parent, rel, child|
+            if child.is_a?(String) && child.match?(/^#{URI.regexp}$/)
+              child = get_by_iri(child)
+            end
 
-                args: [:parent_iri, :child_iri, :child_json, :rel_type, :created_at, :_depth],
-                union_all: false
-              )
+            if child.is_a?(ActivityStreams)
+              add(child)
+              insert_relationship(parent: parent, child: child, prop: rel)
+            end
+
+            parent[rel] = child
           end
+
+          obj
         end
 
         def get_by_iri(iri)
           found = get_from_cache(iri) || get_fresh(iri)
-          return unless found
+          return if found.nil?
 
-          found
+          ActivityStreams.from_json(found)
         end
 
-        def store(obj)
-          SocialWeb::Rack.db.transaction do
-            insert_object(obj)
-
-            COLLECTIONS.each do |col|
-              if obj[col]
-                obj[col] = SocialWeb['traverse_collection'].call(obj, collection: col)
-              end
+        def reconstitute(obj)
+          SocialWeb['rack.traverse_relationships'].call(obj) do |parent, rel, child|
+            if child.is_a?(String) && child.match?(/^#{URI.regexp}$/)
+              child = get_by_iri(child)
             end
 
-            RELATIONSHIPS.each do |rel|
-              SocialWeb::Rack['traverse'].call(
-                obj,
-                relationship: rel
-              ) do |parent, rel, child|
-                insert_object(parent)
-                SocialWeb['relationships'].store(parent: parent, prop: rel, child: child)
-              end
-            end
+            parent[rel] = child
           end
+        end
+
+        def remove(obj)
+          by_iri(obj.id).delete
         end
 
         private
 
-        attr_accessor :loop_count
-
         def get_from_cache(iri)
-          found = SocialWeb::Rack.db[:social_web_objects].first(iri: iri)
-          return unless found
+          found = objects.by_iri(iri).first
+          return if found.nil?
 
-          ActivityStreams.from_json(found[:json])
+          found[:json]
         end
 
         def get_fresh(iri)
-          puts "SocialWeb HTTP: #{iri}"
+          puts "SocialWeb HTTP GET: #{iri}"
+
           # TODO: Replace with custom HTTP fetcher
           sleep 0.5
+
           res = HTTP.headers(accept: 'application/activity+json').get(iri)
           unless res.status.success?
             puts "SocialWeb HTTP: Failed req: #{res.to_a}"
             return
           end
 
-          obj = ActivityStreams.from_json(res.body.to_s)
-          store(obj)
-          obj
+          json = res.body.to_s
+          obj = ActivityStreams.from_json(json)
+          add(obj)
+          json
         end
 
-        def insert_object(obj)
-          return if stored?(obj.id)
-
-          now = Time.now.utc
-
-          SocialWeb::Rack.db[:social_web_objects].insert(
-            iri: obj.id,
-            type: obj.type,
-            json: obj.to_json,
-            created_at: now
-          )
-        end
-
+        # { parent => prop => child }
+        # e.g. { obj1 => inReplyTo => obj2 }
         def insert_relationship(parent:, child:, prop:)
+          found = SocialWeb::Rack.db[:social_web_relationships].where(
+            parent_iri: parent.id, child_iri: child.id, type: prop.to_s
+          ).first
+          return if found
+
           SocialWeb::Rack.db[:social_web_relationships].insert(
             type: prop.to_s,
             parent_iri: parent.id,
@@ -122,8 +100,13 @@ module SocialWeb
           )
         end
 
-        def loop_count
-          @loop_count ||= 0
+        def objects
+          SocialWeb['objects_rel']
+        end
+
+        def stored?(obj)
+          found = objects.by_iri(obj.id).first
+          !found.nil?
         end
       end
     end

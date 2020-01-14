@@ -4,32 +4,26 @@ module SocialWeb
   module Rack
     module Repositories
       class Collections
-        def get_collection_for_iri(collection:, iri:)
-          found = SocialWeb::Rack.db[:social_web_objects].
-            join_table(
-              :inner,
-              :social_web_collections,
-              { object_iri: :iri }
-            ).
-            where(
-              Sequel[:social_web_collections][:actor_iri] => iri,
-              Sequel[:social_web_collections][:type] => collection,
-            ).
-            order(Sequel.desc(Sequel[:social_web_objects][:created_at]))
-          return unless found
+        def store_object_in_collection_for_iri(object:, collection:, actor:)
+          return if stored?(object: object, collection: collection, actor: actor)
 
-          collection = ActivityStreams.collection
-          collection.items = found.map { |obj| ActivityStreams.from_json(obj[:json]) }
-          collection
-        end
-
-        def store_object_in_collection_for_iri(object:, collection:, iri:)
-          SocialWeb::Rack.db[:social_web_collections].insert(
+          collections.insert(
             type: collection,
-            actor_iri: iri,
             object_iri: object.id,
+            actor_iri: actor.id,
             created_at: Time.now.utc
           )
+        end
+
+        private
+
+        def stored?(object:, collection:, actor:)
+          found = collections.
+            by_object_iri(object.id).
+            by_actor_iri(actor.id).
+            by_type(collection).
+            one
+          !found.nil?
         end
       end
     end
