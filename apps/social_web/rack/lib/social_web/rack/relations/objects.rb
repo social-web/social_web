@@ -3,15 +3,8 @@
 module SocialWeb
   module Rack
     module Relations
-      class Objects < Sequel::Model(SocialWeb::Rack.db[:social_web_objects])
+      class Objects < Sequel::Model(SocialWeb::Rack.db[:social_web_objects].as(:objects))
         set_primary_key :iri
-
-        many_to_many :collections,
-          class: self,
-          graph_join_type: :inner,
-          join_table: :social_web_collections,
-          left_key: :actor_iri,
-          right_key: :object_iri
 
         many_to_many :children,
           class: self,

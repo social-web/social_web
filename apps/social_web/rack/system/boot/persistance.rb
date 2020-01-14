@@ -27,6 +27,9 @@ SocialWeb::Rack::Container.boot :persistance do
     require 'social_web/rack/repositories/objects'
     register(:objects_repo) { SocialWeb::Rack::Repositories::Objects.new }
 
+    require 'social_web/rack/models/actor'
+    register(:actor) { SocialWeb::Rack::Models::Actor }
+
   end
 
   start do
