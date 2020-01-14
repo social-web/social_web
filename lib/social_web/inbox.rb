@@ -11,6 +11,7 @@ module SocialWeb
     end
 
     def remove(activity)
+
       return unless SocialWeb['activities'].exists?(activity)
 
       SocialWeb['activities'].delete(activity)

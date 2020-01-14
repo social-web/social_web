@@ -13,13 +13,6 @@ SocialWeb::Rack.configure do |config|
 end
 SocialWeb::Rack.start!
 
-Sequel.extension :migration
-Sequel::Migrator.run(
-  SocialWeb::Rack.db,
-  './db/migrations',
-  table: :social_web_schema_migrations
-)
-
 require 'factory_bot'
 FactoryBot.find_definitions
 

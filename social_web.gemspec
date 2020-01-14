@@ -31,8 +31,11 @@ Gem::Specification.new do |s|
   # Provides a framework for efficient routing of requests
   s.add_dependency 'roda'
 
-  # Provides a database toolkit for persistance
-  s.add_dependency 'sequel'
+  # Provides repository interfacing
+  s.add_dependency 'pg'
+  s.add_dependency 'sequel_pg'
+  s.add_dependency 'rom'
+  s.add_dependency 'rom-sql'
 
   # Provides simple templating of HTML documents
   s.add_dependency 'slim'

@@ -2,11 +2,8 @@
 
 module SocialWeb
   class Collection
-    def self.for_actor(actor)
-      new(actor)
-    end
-
-    def initialize(actor)
+    def initialize(type, actor)
+      @type = type
       @actor = actor
     end
   end

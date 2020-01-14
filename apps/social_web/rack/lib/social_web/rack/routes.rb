@@ -61,11 +61,11 @@ module SocialWeb
       end
 
       def load_actor(actor_iri)
-        SocialWeb['objects'].get_by_iri(actor_iri)
+        SocialWeb['objects_repo'].get_by_iri(actor_iri)
       end
 
       def load_collection(actor_iri, collection)
-        SocialWeb['collections'].get_collection_for_iri(collection: collection, iri: actor_iri)
+        SocialWeb['collections_repo'].get_collection_for_iri(collection: collection, iri: actor_iri)
       end
 
       def parse_actor_iri(url)

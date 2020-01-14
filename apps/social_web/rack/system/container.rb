@@ -23,17 +23,14 @@ module SocialWeb
       require 'social_web/rack/repositories/keys'
       register(:keys) { SocialWeb::Rack::Repositories::Keys.new }
 
-      require 'social_web/rack/repositories/collections'
-      register(:collections) { SocialWeb::Rack::Repositories::Collections.new }
-
       require 'social_web/rack/services/reconstitute'
       register(:reconstitute) { SocialWeb::Rack::Reconstitute.new }
 
-      require 'social_web/rack/repositories/relationships'
-      register(:relationships) { SocialWeb::Rack::Repositories::Relationships.new }
+      #require 'social_web/rack/repositories/relationships'
+      #register(:relationships) { SocialWeb::Rack::Repositories::Relationships.new }
 
-      require 'social_web/rack/services/traverse'
-      register(:traverse) { SocialWeb::Rack::Traverse.new }
+      require 'social_web/rack/services/traverse_relationships'
+      register('rack.traverse_relationships') { SocialWeb::Rack::TraverseRelationships.new }
 
       require 'social_web/rack/services/traverse_collection'
       register(:traverse_collection) { SocialWeb::Rack::TraverseCollection.new }

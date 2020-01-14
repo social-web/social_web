@@ -2,61 +2,41 @@
 
 module SocialWeb
   module Rack
-    class TraverseCollection
-      DEFAULT_DEPTH = 20
+    class TraverseCollections
+      COLLECTIONS = %i[inbox outbox replies].freeze
 
-      # Take an ActivityStreams object and traverse its relationships. Call the given block with
-      # any relationship found.
-      # @params
-      #   obj: an ActivityStreams object
-      #   blk: block to call on any relationship found
-      def call(obj, collection:, depth: DEFAULT_DEPTH, &blk)
-        queue = [obj]
+      def call(obj, collections: COLLECTIONS)
+        loop_count = 0
+        queue = [col]
+        items = []
+        cols = Set.new
 
-        while !queue.empty? && loop_count <= DEFAULT_DEPTH
-          obj = queue.pop
-          col = obj[collection]
-          next unless col
+        while !queue.empty? && loop_count <= 20
+          col = queue.shift
+          break if cols.include?(col) || !col
 
-          items = []
+          collections.each do |col|
+            if col.is_a?(String)
+              col = SocialWeb['objects'].get_by_iri(col)
+            end
+            cols << col[:id]
 
-          col = SocialWeb['objects'].get_by_iri(col) if col.is_a?(String)
-          items += col[:items] if col[:items]
+            case col[:type]
+            when 'Collection', 'OrderedCollection'
+              if first = col[:first]
+                queue << first
+              end
+            when 'CollectionPage', 'OrderedCollectionPage'
+              if nxt = col[:next]
+                queue << nxt
+              end
+            end
 
-          if col[:first]
-            items += get_items(col[:first])
-            col = SocialWeb['objects'].get_by_iri(col[:first][:next])
+            items += Array(col[:items])
           end
-
-          items += get_items(col)
-
-          next unless items
-
-          items = items.map do |itm|
-            itm.is_a?(String) ? SocialWeb['objects'].get_by_iri(itm) : itm
-          end
-
-          blk.call(obj, collection, items) if blk
-
-          queue += items
         end
-      end
 
-      private
-
-      attr_accessor :loop_count
-
-      def get_items(collection)
-        case collection[:type]
-        when 'Collection', 'CollectionPage'
-          collection[:items]
-        when 'OrderedCollection', 'OrderedCollectionPage'
-          collection[:ordered_items]
-        end
-      end
-
-      def loop_count
-        @loop_count ||= 0
+        items
       end
     end
   end

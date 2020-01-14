@@ -9,14 +9,14 @@ module SocialWeb
     raise unless %w[inbox outbox].include?(collection)
 
     activity = ActivityStreams.from_json(activity_json)
-    actor = container['objects'].get_by_iri(actor_iri)
+    actor = container['objects_repo'].get_by_iri(actor_iri)
 
-    [activity, actor].each { |obj| container['objects'].store(obj) }
+    [activity, actor].each { |obj| container['objects_repo'].deep_add(obj) }
 
-    container['collections'].store_object_in_collection_for_iri(
+    container['collections_repo'].store_object_in_collection_for_iri(
       object: activity,
       collection: collection,
-      iri: actor_iri
+      actor: actor
     )
   end
 end
