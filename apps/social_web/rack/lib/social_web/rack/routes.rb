@@ -22,6 +22,8 @@ module SocialWeb
         views: File.join(__dir__, 'views')
       plugin :type_routing,
         types: { activity_json: 'application/activity+json' }
+      plugin :default_headers,
+        'Content-Type' => 'text/html; charset=utf-8'
 
       route do |r|
         actor_iri = parse_actor_iri(r.url)
