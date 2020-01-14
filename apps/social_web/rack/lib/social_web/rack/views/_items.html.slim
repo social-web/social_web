@@ -4,7 +4,10 @@
     .card-header
       .row
         .col
-          .name= obj[:attributedTo][:name]
+          .name
+            a href=obj[:attributedTo][:url] target="_blank"
+              = obj[:attributedTo][:name]
+            =< "(#{URI(obj[:attributedTo][:url]).host})"
         .col.text-right
           .date
             a href = obj[:id] target="_blank"
