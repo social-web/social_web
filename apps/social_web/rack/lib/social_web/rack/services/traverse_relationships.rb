@@ -17,14 +17,14 @@ module SocialWeb
         loop_count = 0
 
         while !queue.empty? && loop_count <= depth
-          o = queue.shift
-          next unless o
+          parent = queue.shift
+          next unless parent
 
           relationships.each do |rel|
-            child = o[rel]
+            child = parent[rel]
             next unless child
 
-            child = blk.call(o, rel, child) if blk
+            child = blk.call(parent, rel, child) if blk
 
             case child
             when Array then queue += child.compact
