@@ -12,7 +12,7 @@ module SocialWeb
         def inbox
           deleted = objects.select(Sequel[:child_iri].as(:iri)).
             association_join(:children).
-            where(Sequel[:objects][:type] => 'Delete').
+            where(Sequel[:social_web_objects][:type] => 'Delete').
             where(Sequel[:social_web_relationships][:type] => 'object')
           replies = objects.select(Sequel[:parent_iri].as(:iri)).
             association_join(:children).
@@ -22,13 +22,13 @@ module SocialWeb
             join(
               :social_web_collections,
               actor_iri: @iri,
-              object_iri: Sequel[:objects][:iri],
+              object_iri: Sequel[:social_web_objects][:iri],
               type: 'inbox'
             ).
-            where(Sequel[:objects][:type] => 'Create').
-            exclude(Sequel[:objects][:iri] => deleted).
-            exclude(Sequel[:objects][:iri] => replies).
-            order(Sequel.desc(Sequel[:objects][:created_at]))
+            where(Sequel[:social_web_objects][:type] => 'Create').
+            exclude(Sequel[:social_web_objects][:iri] => deleted).
+            exclude(Sequel[:social_web_objects][:iri] => replies).
+            order(Sequel.desc(Sequel[:social_web_objects][:created_at]))
 
           ActivityStreams.ordered_collection(
             items: items.map do |item|

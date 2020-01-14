@@ -3,7 +3,7 @@
 module SocialWeb
   module Rack
     module Relations
-      class Objects < Sequel::Model(SocialWeb::Rack.db[:social_web_objects].as(:objects))
+      class Objects < Sequel::Model(SocialWeb::Rack.db[:social_web_objects])
         set_primary_key :iri
 
         many_to_many :children,
