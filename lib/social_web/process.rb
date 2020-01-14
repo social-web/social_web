@@ -18,7 +18,7 @@ module SocialWeb
     container['collections_repo'].store_object_in_collection_for_iri(
       object: activity,
       collection: collection,
-      iri: actor_iri
+      actor: actor
     )
   end
 end
