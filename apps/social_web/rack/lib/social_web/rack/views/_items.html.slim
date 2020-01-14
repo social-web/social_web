@@ -9,4 +9,8 @@
           .date
             a href = obj[:id] target="_blank"
               = Date.parse(obj[:published]).strftime('%Y-%m-%d')
-    .card-body== obj[:content]
+    .card-body
+      .content== obj[:content]
+      .attachments
+        - Array(obj[:attachment]).each do |attachment|
+          img src=attachment[:url] style="max-width: 100%"
