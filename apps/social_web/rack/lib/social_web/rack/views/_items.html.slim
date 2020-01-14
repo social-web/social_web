@@ -1,25 +1,12 @@
-
-table.table
-  thead
-    tr
-      th Type
-      th Host
-      th Published
-      th JSON
-  - items.each do |item|
-    - id = "json#{item.hash}"
-    - if item.object.is_a?(String)
-      .mt-4.mb-4= item.object
-    - else
-      tbody
-        tr
-          td.align-middle= item.type
-          td.align-middle= URI(item.id).host
-          td.align-middle= item.published
-          td.align-middle
-            button class="btn btn-primary card-link" type="button" data-toggle="collapse" data-target="##{id}"
-              'JSON
-        tr.collapse.overflow-hidden id=id
-          td colspan=4
-            pre.text-bold.overflow-hidden.d-inline style="white-space: pre-wrap;"
-              = JSON.pretty_generate(item.to_h)
+- items.each do |item|
+  - obj = item[:object]
+  .card.mb-5
+    .card-header
+      .row
+        .col
+          .name= obj[:attributedTo][:name]
+        .col.text-right
+          .date
+            a href = obj[:id] target="_blank"
+              = Date.parse(obj[:published]).strftime('%Y-%m-%d')
+    .card-body== obj[:content]

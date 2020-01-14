@@ -25,6 +25,7 @@ module SocialWeb
 
       route do |r|
         actor_iri = parse_actor_iri(r.url)
+        actor = SocialWeb['actor'].new(actor_iri)
 
         r.on(/.*#{COLLECTION_REGEX}/) do
           activity_json = r.body.read
@@ -40,7 +41,7 @@ module SocialWeb
             view 'collection',
               locals: {
                 collection: collection,
-                items: load_collection(actor_iri, collection).items
+                items: actor.public_send(collection).items
               }
           end
         end
@@ -58,10 +59,6 @@ module SocialWeb
           }
           actor.to_json
         end
-      end
-
-      def load_actor(actor_iri)
-        SocialWeb['objects'].get_by_iri(actor_iri)
       end
 
       def load_collection(actor_iri, collection)
