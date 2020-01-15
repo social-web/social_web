@@ -10,7 +10,7 @@ module SocialWeb
         end
 
         def inbox
-          deleted = objects.select(Sequel[:child_iri].as(:iri)).
+          deleted = objects.select(Sequel[:child_iri]).
             association_join(:children).
             where(Sequel[:social_web_objects][:type] => 'Delete').
             where(Sequel[:social_web_relationships][:type] => 'object')
