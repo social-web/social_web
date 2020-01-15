@@ -20,10 +20,20 @@ Sequel.migration do
     create_table(:social_web_relationships) do
       primary_key :id
 
-      String :parent_iri, null: false
-      String :child_iri, null: false
-
       String :type, null: false
+      foreign_key :parent_iri,
+        :social_web_objects,
+        key: :iri,
+        on_delete: :cascade,
+        on_update: :cascade,
+        type: String
+      foreign_key :child_iri,
+        :social_web_objects,
+        key: :iri,
+        on_delete: :cascade,
+        on_update: :cascade,
+        type: String
+
 
       Time :created_at, null: false
       Time :updated_at, null: true
