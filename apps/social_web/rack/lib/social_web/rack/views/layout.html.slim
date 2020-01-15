@@ -15,7 +15,7 @@ html
         .col-3
           h2 Collections
           ul.nav.flex-column.nav-pills
-            - %w[inbox outbox following followers liked likes shared].each do |collection|
+            - %w[timeline inbox outbox following followers liked likes shared].each do |collection|
               li.nav-item
                 a.nav-link href = collection
                   = collection.capitalize

@@ -13,6 +13,7 @@ module SocialWeb
 
     class Routes < Roda
       COLLECTION_REGEX = /(?:inbox|outbox|following|followers|liked|likes|shared)$/.freeze
+      TIMELINE = 'timeline'
 
       plugin :halt
       plugin :json
@@ -28,6 +29,16 @@ module SocialWeb
       route do |r|
         actor_iri = parse_actor_iri(r.url)
         actor = SocialWeb['actor'].new(actor_iri)
+
+        r.on (TIMELINE) do
+          r.get do
+            view TIMELINE,
+              locals: {
+                collection: TIMELINE,
+                items: actor.public_send(TIMELINE).items
+              }
+          end
+        end
 
         r.on(/.*#{COLLECTION_REGEX}/) do
           activity_json = r.body.read
@@ -68,7 +79,7 @@ module SocialWeb
       end
 
       def parse_actor_iri(url)
-        url.gsub(/\/#{COLLECTION_REGEX}/, '').gsub(/\/$/, '')
+        url.gsub(/\/#{COLLECTION_REGEX}|#{TIMELINE}/, '').gsub(/\/$/, '')
       end
 
       def parse_collection(url)

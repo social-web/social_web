@@ -1,0 +1,22 @@
+h2 Timeline
+
+- items.each do |item|
+  - obj = item[:object]
+  .card.mb-5
+    .card-header
+      .row
+        .col
+          .name
+            => item.type
+            a href=obj[:attributedTo][:url] target="_blank"
+              = obj[:attributedTo][:name]
+            =< "(#{URI(obj[:attributedTo][:url]).host})"
+        .col.text-right
+          .date
+            a href = obj[:id] target="_blank"
+              = Date.parse(obj[:published]).strftime('%Y-%m-%d')
+    .card-body
+      .content== obj[:content]
+      .attachments
+        - Array(obj[:attachment]).each do |attachment|
+          img src=attachment[:url] style="max-width: 100%"
