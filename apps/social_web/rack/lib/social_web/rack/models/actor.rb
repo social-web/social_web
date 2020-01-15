@@ -14,9 +14,15 @@ module SocialWeb
             association_join(:children).
             where(Sequel[:social_web_objects][:type] => 'Delete').
             where(Sequel[:social_web_relationships][:type] => 'object')
-          replies = objects.select(Sequel[:parent_iri].as(:iri)).
-            association_join(:children).
-            where(Sequel[:social_web_relationships][:type] => 'inReplyTo')
+
+          replies = objects.select(Sequel[:reply_activities][:iri]).
+            association_join(
+              Sequel[:parents].as(:reply_objects) =>
+                Sequel[:parents].as(:reply_activities)
+            ).
+            where(Sequel[:social_web_relationships][:type] => 'inReplyTo').
+            where(Sequel[:social_web_relationships_0][:type] => 'object').
+            where(Sequel[:reply_activities][:type] => 'Create')
 
           items = objects.
             join(
