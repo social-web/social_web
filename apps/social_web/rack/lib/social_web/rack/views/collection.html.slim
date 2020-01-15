@@ -1,3 +1,25 @@
 h2= collection.capitalize
 
-== render '_items', locals: { items: items }
+table.table
+  thead
+    tr
+      th Type
+      th Host
+      th Published
+      th JSON
+  - items.each do |item|
+    - id = "json#{item.hash}"
+    tbody
+      tr
+        td.align-middle= item.type
+        td.align-middle
+          a href=item.id target="_blank"
+            = URI(item.id).host
+        td.align-middle= item.published
+        td.align-middle
+          button class="btn btn-primary card-link" type="button" data-toggle="collapse" data-target="##{id}"
+            'JSON
+      tr.collapse.overflow-hidden id=id
+        td colspan=4
+          pre.text-bold.overflow-hidden.d-inline style="white-space: pre-wrap;"
+            = JSON.pretty_generate(item.to_h)
