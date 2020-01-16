@@ -40,7 +40,7 @@ module SocialWeb
               object_iri: Sequel[:social_web_objects][:iri],
               type: 'inbox'
             ).
-            where(Sequel[:social_web_objects][:type] => 'Create').
+            where(Sequel[:social_web_objects][:type] => %w[Announce Create]).
             exclude(Sequel[:social_web_objects][:iri] => deleted).
             exclude(Sequel[:social_web_objects][:iri] => replies).
             order(Sequel.desc(Sequel[:social_web_objects][:created_at]))
