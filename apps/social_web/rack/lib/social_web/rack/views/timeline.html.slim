@@ -14,7 +14,7 @@ h2 Timeline
         .col.text-right
           .date
             a href = obj[:id] target="_blank"
-              = Date.parse(obj[:published]).strftime('%Y-%m-%d')
+              = Time::iso8601(obj[:published]).localtime.strftime('%F %r')
     .card-body
       .content== obj[:content]
       .attachments
