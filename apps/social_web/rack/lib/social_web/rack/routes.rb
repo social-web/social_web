@@ -35,7 +35,7 @@ module SocialWeb
             view TIMELINE,
               locals: {
                 collection: TIMELINE,
-                items: actor.public_send(TIMELINE).items
+                items: actor.public_send(TIMELINE)[:items]
               }
           end
         end
@@ -54,7 +54,7 @@ module SocialWeb
             view 'collection',
               locals: {
                 collection: collection,
-                items: actor.public_send(collection).items
+                items: actor.public_send(collection)[:items]
               }
           end
         end
