@@ -57,6 +57,39 @@ module SocialWeb
           by_iri(obj.id).delete
         end
 
+        def replies_for_iri(iri)
+          cache = {}
+
+          objects.traverse(iri).where(rel_type: 'inReplyTo').map do |record|
+            parent_iri = record[:parent_iri]
+            child_iri = record[:child_iri]
+            parent_json = record[:parent_json]
+            child_json = record[:child_json]
+            rel_type = record[:rel_type]
+
+            if cache[parent_iri]
+              parent = cache[parent_iri]
+            else
+              parent = ActivityStreams.from_json(parent_json)
+              cache[parent[:id]] = parent
+            end
+
+            if cache[child_iri]
+              child = cache[child_iri]
+            else
+              child = ActivityStreams.from_json(child_json)
+              cache[child[:id]] = child
+            end
+
+            parent[rel_type] = child
+
+            child[:replies][:items] ||= []
+            child[:replies][:items] << parent
+
+            parent
+          end
+        end
+
         private
 
         def get_from_cache(iri)
