@@ -25,6 +25,10 @@ module SocialWeb
             where(iri: iri)
           end
 
+          def by_type(type)
+            where(type: type)
+          end
+
           def traverse(iri)
             SocialWeb::Rack.db[:threads].
               with_recursive(
