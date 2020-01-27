@@ -54,7 +54,7 @@ module SocialWeb
         end
 
         def remove(obj)
-          by_iri(obj.id).delete
+          objects.by_iri(obj.id).delete
         end
 
         def replies_for_iri(iri)
