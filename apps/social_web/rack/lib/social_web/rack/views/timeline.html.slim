@@ -21,3 +21,7 @@ h2 Timeline
       .attachments
         - Array(obj[:attachment]).each do |attachment|
           img src=attachment[:url] style="max-width: 100%"
+    .card-footer
+      .row
+        - if obj[:replies] && obj[:replies][:items]
+          .col #{obj[:replies][:items].count} replies
