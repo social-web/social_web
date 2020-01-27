@@ -11,8 +11,6 @@ module SocialWeb
     activity = ActivityStreams.from_json(activity_json)
     actor = container['objects_repo'].get_by_iri(actor_iri)
 
-    binding.irb
-
     [activity, actor].each { |obj| container['objects_repo'].deep_add(obj) }
 
     container['collections_repo'].store_object_in_collection_for_iri(
