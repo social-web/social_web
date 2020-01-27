@@ -25,35 +25,37 @@ module SocialWeb
             where(iri: iri)
           end
 
-          def traverse
-            dataset[:threads].
+          def traverse(iri)
+            SocialWeb::Rack.db[:threads].
               with_recursive(
                 :threads,
-                dataset[:social_web_objects].
-                  select(
-                    Sequel[:social_web_objects][:iri],
-                    Sequel[:parents][:iri],
-                    Sequel[:parents][:json],
-                    Sequel[:social_web_relationships][:type],
-                    Sequel[:social_web_objects][:created_at]
-                  ) { 1 }.
+                select(
+                  Sequel[:social_web_objects][:iri],
+                  Sequel[:parents][:iri],
+                  Sequel[:social_web_objects][:json],
+                  Sequel[:parents][:json],
+                  Sequel[:social_web_relationships][:type],
+                  Sequel[:social_web_objects][:created_at]
+                ) { 1 }.
                   join(:social_web_relationships, { child_iri: :iri }).
-                  join(Sequel[:social_web_objects].as(:parents), { iri: :parent_iri }),
+                  join(Sequel[:social_web_objects].as(:parents), { iri: :parent_iri }).
+                  order(Sequel[:social_web_relationships][:created_at]).
+                  where(Sequel[:social_web_objects][:iri] => iri),
 
-                dataset[:social_web_objects].
-                  select(
-                    Sequel[:social_web_objects][:iri],
-                    Sequel[:parents][:iri],
-                    Sequel[:parents][:json],
-                    Sequel[:social_web_relationships][:type],
-                    Sequel[:social_web_objects][:created_at]
-                  ) { Sequel[:_depth] + 1 }.
+                select(
+                  Sequel[:social_web_objects][:iri],
+                  Sequel[:parents][:iri],
+                  Sequel[:social_web_objects][:json],
+                  Sequel[:parents][:json],
+                  Sequel[:social_web_relationships][:type],
+                  Sequel[:social_web_objects][:created_at]
+                ) { Sequel[:distance] + 1 }.
                   join(:social_web_relationships, { child_iri: :iri }).
                   join(Sequel[:social_web_objects].as(:parents), { iri: :parent_iri }).
                   join(:threads, Sequel[:threads][:parent_iri] => Sequel[:social_web_objects][:iri]).
-                  where { Sequel[:_depth] <= 100 },
+                  order(Sequel[:social_web_relationships][:created_at]),
 
-                args: [:child_iri, :parent_iri, :child_json, :rel_type, :created_at, :_depth],
+                args: [:child_iri, :parent_iri, :child_json, :parent_json, :rel_type, :created_at, :distance],
                 union_all: false
               )
           end
