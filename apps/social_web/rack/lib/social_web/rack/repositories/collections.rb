@@ -9,8 +9,8 @@ module SocialWeb
 
           collections.insert(
             type: collection,
-            object_iri: object.id,
-            actor_iri: actor.id,
+            object_iri: object[:id],
+            actor_iri: actor[:id],
             created_at: Time.now.utc
           )
         end
@@ -24,8 +24,8 @@ module SocialWeb
         def stored?(object:, collection:, actor:)
           found = collections.
             where(
-              actor_iri: actor.id,
-              object_iri: object.id,
+              actor_iri: actor[:id],
+              object_iri: object[:id],
               type: collection
             ).
             first

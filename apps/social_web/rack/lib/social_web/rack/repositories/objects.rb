@@ -8,7 +8,7 @@ module SocialWeb
           return obj if stored?(obj)
 
           objects.insert(
-            iri: obj.id,
+            iri: obj[:id],
             type: obj.type,
             json: obj.to_json,
             created_at: Time.now.utc
@@ -54,7 +54,7 @@ module SocialWeb
         end
 
         def remove(obj)
-          objects.by_iri(obj.id).delete
+          objects.by_iri(obj[:id]).delete
         end
 
         def replies_for_iri(iri)
@@ -121,14 +121,14 @@ module SocialWeb
         # e.g. { obj1 => inReplyTo => obj2 }
         def insert_relationship(parent:, child:, prop:)
           found = SocialWeb::Rack.db[:social_web_relationships].where(
-            parent_iri: parent.id, child_iri: child.id, type: prop.to_s
+            parent_iri: parent[:id], child_iri: child[:id], type: prop.to_s
           ).first
           return if found
 
           SocialWeb::Rack.db[:social_web_relationships].insert(
             type: prop.to_s,
-            parent_iri: parent.id,
-            child_iri: child.id,
+            parent_iri: parent[:id],
+            child_iri: child[:id],
             created_at: Time.now.utc
           )
         end
@@ -138,7 +138,7 @@ module SocialWeb
         end
 
         def stored?(obj)
-          found = objects.by_iri(obj.id).first
+          found = objects.by_iri(obj[:id]).first
           !found.nil?
         end
       end
