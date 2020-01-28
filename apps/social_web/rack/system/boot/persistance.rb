@@ -16,7 +16,7 @@ SocialWeb::Rack::Container.boot :persistance do
     register(:collections_rel) { SocialWeb::Rack::Relations::Collections }
 
     require 'social_web/rack/relations/relationships'
-    register(:collections_rel) { SocialWeb::Rack::Relations::Relationships }
+    register(:relationships_rel) { SocialWeb::Rack::Relations::Relationships }
 
     require 'social_web/rack/repositories/keys'
     register(:keys) { SocialWeb::Rack::Repositories::Keys.new }
