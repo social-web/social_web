@@ -26,6 +26,9 @@ module SocialWeb
       require 'social_web/rack/services/traverse_collection'
       register('rack.traverse_collection') { SocialWeb::Rack::TraverseCollection.new }
 
+      require 'social_web/rack/services/http_client'
+      register('http_client') { SocialWeb::Rack::HTTPClient }
+
       require 'social_web/rack/routes'
     end
   end

@@ -105,7 +105,7 @@ module SocialWeb
           # TODO: Replace with custom HTTP fetcher
           sleep 0.5
 
-          res = HTTP.headers(accept: 'application/activity+json').get(iri)
+          res = SocialWeb['http_client'].get(iri)
           unless res.status.success?
             puts "SocialWeb HTTP: Failed req: #{res.to_a}"
             return
