@@ -25,7 +25,11 @@ module SocialWeb
         )
       }
 
-      def self.get(iri)
+      def initialize(for_actor = nil)
+        @actor = for_actor
+      end
+
+      def get(iri)
         request = ::HTTP.build_request(
           :get,
           iri,
@@ -35,14 +39,16 @@ module SocialWeb
           }
         )
 
-        # keys = SocialWeb.container['keys'].for_actor_iri(@actor.id)
-        #
-        # signature = Signature.call(
-        #   request,
-        #   private_key: keys.fetch(:private),
-        #   key_id: keys[:key_id]
-        # )
-        # request.headers.merge!(signature: signature)
+        if @actor
+          keys = SocialWeb.container['keys'].for_actor_iri(@actor.id)
+
+          signature = Signature.call(
+            request,
+            private_key: keys.fetch(:private),
+            key_id: keys[:key_id]
+          )
+          request.headers.merge!(signature: signature)
+        end
 
         client = ::HTTP::Client.new
         client.perform(request, client.default_options)
