@@ -8,8 +8,10 @@ module SocialWeb
       RELATIONSHIPS = %i[actor attributedTo inReplyTo object target tag].freeze
 
       def call(obj)
-        with_queue(obj) do |popped|
+        queue(obj) do |popped|
+          # Keep track of the items we'd like to add to the queue
           queue_up = []
+
           popped = SocialWeb['objects'].get_by_iri(popped) if popped.is_a?(String)
           next unless popped
 
@@ -29,6 +31,7 @@ module SocialWeb
           RELATIONSHIPS.each do |relationship|
             child = popped[relationship]
             child = SocialWeb['objects'].get_by_iri(child) if child.is_a?(String)
+            popped[relationship] = child
             queue_up += Array(child)
           end
 
@@ -40,24 +43,11 @@ module SocialWeb
 
       private
 
-      attr_accessor :cache
-
-      def cache
-        @cache ||= {}
-      end
-
-      private
-
-      def with_queue(initial, depth: DEPTH, &blk)
+      def queue(initial, depth: DEPTH, &blk)
         loop_count = 0
         queue = [initial]
-        while !queue.empty?
-          popped = blk.call(queue.shift)
-          if popped
-            queue += Array(popped)
-          else
-            next
-          end
+        while !queue.empty? && loop_count < DEPTH
+          queue += Array(blk.call(queue.shift))
           loop_count += 1
         end
       end

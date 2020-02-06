@@ -1,24 +1,19 @@
 #!/usr/bin/env ruby
 
 # frozen_string_literal: true
-#
 ENV['SOCIAL_WEB_DATABASE_URL'] = 'sqlite://social_web_dev.sqlite3'
 
 require 'bundler/setup'
 require 'sequel'
-require 'social_web/rack'
-
-SocialWeb::Rack.configure do |config|
-  config.logger = true
-end
-SocialWeb::Rack.start!
 
 Sequel.extension :migration
 Sequel::Migrator.run(
-  SocialWeb::Rack.db,
+  Sequel.connect(ENV['SOCIAL_WEB_DATABASE_URL']),
   './db/migrations',
   table: :social_web_schema_migrations
 )
+
+require 'social_web/boot'
 
 require 'factory_bot'
 FactoryBot.find_definitions

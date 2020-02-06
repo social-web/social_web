@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module SocialWeb
-  class Activity; end
+  class Actor; end
 end

@@ -10,7 +10,7 @@ module SocialWeb
           it 'removes the activity' do
             activity = create_activity
             expect { described_class.new.delete(activity) }.
-              to change { SocialWeb::Rack.db[:social_web_activities].count }.by(-1)
+              to change { SocialWeb::Rack['db'][:social_web_activities].count }.by(-1)
           end
         end
 
@@ -64,7 +64,7 @@ module SocialWeb
             }
 
             expect { described_class.new.store(activity, actor, 'inbox') }.
-              to change { SocialWeb::Rack.db[:social_web_activities].count }.
+              to change { SocialWeb::Rack['db'][:social_web_activities].count }.
               by(+1)
           end
         end

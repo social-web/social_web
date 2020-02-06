@@ -11,10 +11,10 @@ Gem::Specification.new do |s|
 
   s.authors = ['Shane Cavanaugh']
   s.email = ['shane@shanecav.net']
-  s.homepage = 'https://github.com/social-rack'
+  s.homepage = 'https://github.com/social-web'
 
-  s.files = %w[README.md Rakefile LICENSE.txt] + Dir['{apps,lib,system}/**/*']
-  s.require_paths = %w[apps lib system]
+  s.files = %w[README.md Rakefile LICENSE.txt] + Dir['{db,lib,system}/**/*']
+  s.require_paths = %w[lib system]
 
   s.required_ruby_version = '>= 2.5.0'
 

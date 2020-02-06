@@ -1,0 +1,93 @@
+# frozen_string_literal: true
+
+require 'forwardable'
+
+module SocialWeb
+  module Repositories
+    class Objects
+      class Cache
+        extend Forwardable
+
+        def initialize(cache = {})
+          @cache = cache
+        end
+
+        def fetch(id)
+          @cache[id] || @cache[id] = yield
+        end
+
+        def_delegator :@cache, :[], :get
+        def_delegator :@cache, :[]=, :set
+      end
+
+      def get_by_iri(iri)
+        found = objects.by_iri(iri).first
+        return if found.nil?
+
+        obj = ActivityStreams.from_json(found[:json])
+        SocialWeb['services.reconstitute'].call(obj)
+        obj
+      end
+
+      def delete(obj)
+        objects.by_iri(obj[:id]).delete
+      end
+
+      def store(obj)
+        return obj if stored?(obj)
+
+        # Reference the object's properties, assigning the value of child
+        # properties to the id of child
+        obj.traverse_properties(depth: 1) do |hash|
+          parent, child, prop = hash.values_at(:parent, :child, :property)
+          parent[prop] = child[:id] if child.is_a?(ActivityStreams::Object)
+        end
+
+        objects.insert(
+          iri: obj[:id],
+          type: obj[:type],
+          json: obj.to_json,
+          created_at: Time.now.utc
+        )
+
+        obj
+      end
+
+      # Traverse the tree of relationships starting with `root`, visiting
+      # each relationship with the provided block.
+      def traverse(root, properties = [])
+        cache = Cache.new
+        cache.set(root[:id], root)
+
+        tree =  objects.traverse_children(root[:id]).all +
+          objects.traverse_parents(root[:id]).all
+        tree.each do |property_map|
+          keys = %i[parent_iri parent_json child_iri child_json rel_type]
+          parent_iri,
+            parent_json,
+            child_iri,
+            child_json,
+            rel_type = property_map.values_at(*keys)
+
+          parent = cache.fetch(parent_iri) { ActivityStreams.from_json(parent_json) }
+          child = cache.fetch(child_iri) { ActivityStreams.from_json(child_json) }
+
+          yield(parent: parent, child: child, property: rel_type)
+
+          child
+        end
+      end
+
+      private
+
+      def objects
+        SocialWeb['relations.objects']
+      end
+
+      def stored?(obj)
+        found = get_by_iri(obj[:id])
+        !found.nil?
+      end
+    end
+  end
+end

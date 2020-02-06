@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require 'roda'
-require 'slim'
-require 'tilt'
-
 module SocialWeb
   module Rack
     def self.new(app, *args, &block)
@@ -11,7 +7,7 @@ module SocialWeb
       SocialWeb::Rack::Routes.new(app, *args, &block)
     end
 
-    class Routes < Roda
+    class Routes < ::Roda
       COLLECTION_REGEX = /(?:inbox|outbox|following|followers|liked|likes|shared)$/.freeze
       TIMELINE = 'timeline'
 

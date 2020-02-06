@@ -20,7 +20,7 @@ module RackHelper
       }
     })
 
-    id = SocialWeb::Rack.db[:social_web_activities].insert(
+    id = SocialWeb::Rack['db'][:social_web_activities].insert(
       iri: iri,
       json: json,
       type: 'Create',
@@ -28,7 +28,7 @@ module RackHelper
     )
 
     if for_actor
-      SocialWeb::Rack.db[:social_web_actor_activities].insert(
+      SocialWeb::Rack['db'][:social_web_actor_activities].insert(
         collection: collection || 'inbox',
         actor_iri: for_actor.id,
         activity_iri: iri,

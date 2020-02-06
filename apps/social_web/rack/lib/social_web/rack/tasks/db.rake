@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'sequel'
+require 'social_web/rack'
+
 migrations_path = File.join(
   Gem::Specification.find_by_name('social_web').gem_dir,
   'db',
@@ -18,8 +21,8 @@ namespace :social_web do
   namespace :db do
     desc 'Remove SocialWeb tables'
     task :drop_tables do
-      SocialWeb::Rack.db.transaction do
-        SocialWeb::Rack.db.drop_table?(*tables,  cascade: true)
+      SocialWeb::Rack['db'].transaction do
+        SocialWeb::Rack['db'].drop_table?(*tables,  cascade: true)
         puts 'Removed SocialWeb tables. ' \
           'Run `rake sequel:db:migrate` to add them.'
       end
@@ -28,9 +31,9 @@ namespace :social_web do
     desc 'Create SocialWeb tables'
     task :migrate do
       Sequel.extension :migration, :core_extensions
-      SocialWeb::Rack.db.transaction do
+      SocialWeb::Rack['db'].transaction do
         Sequel::Migrator.run(
-          SocialWeb::Rack.db,
+          SocialWeb::Rack['db'],
           migrations_path,
           table: :social_web_schema_migrations
         )

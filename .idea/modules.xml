@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../activity_streams/.idea/activity_streams.iml" filepath="$PROJECT_DIR$/../activity_streams/.idea/activity_streams.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../shanecav.net/.idea/shanecav.net.iml" filepath="$PROJECT_DIR$/../shanecav.net/.idea/shanecav.net.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/social_web.iml" filepath="$PROJECT_DIR$/.idea/social_web.iml" />
+    </modules>
+  </component>
+</project>

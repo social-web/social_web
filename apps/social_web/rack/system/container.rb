@@ -19,17 +19,6 @@ module SocialWeb
       end
 
       load_paths! 'lib'
-
-      require 'social_web/rack/services/traverse_relationships'
-      register('rack.traverse_relationships') { SocialWeb::Rack::TraverseRelationships.new }
-
-      require 'social_web/rack/services/traverse_collection'
-      register('rack.traverse_collection') { SocialWeb::Rack::TraverseCollection.new }
-
-      require 'social_web/rack/services/http_client'
-      register('http_client') { SocialWeb::Rack::HTTPClient }
-
-      require 'social_web/rack/routes'
     end
   end
 end

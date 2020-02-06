@@ -7,12 +7,12 @@ require 'sequel'
 require 'social_web'
 require 'social_web/rack'
 
-SocialWeb::Rack.start!
-
 Sequel.extension :migration
 
+SocialWeb::Rack.start!
+
 Sequel::Migrator.run(
-  SocialWeb::Rack.db,
+  SocialWeb::Rack['db'],
   './db/migrations',
   table: :social_web_schema_migrations
 )

@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <title>Rubrowser</title>
+    <link media='all' rel='stylesheet'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>html, body, .dependency_graph, .dependency_graph svg{
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    font-size: 13px;
+    overflow: hidden;
+}
+
+.link {
+    fill: none;
+    stroke: #666;
+    stroke-width: 1.5px;
+}
+
+circle {
+    fill: #fff;
+    stroke: #333;
+    stroke-width: 1.5px;
+}
+
+.circular {
+    stroke: #FF0000;
+}
+
+.fixed circle {
+    stroke-width: 3px;
+}
+
+text {
+    font: 10px sans-serif;
+    pointer-events: none;
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
+
+text.type{
+    font: 7px sans-serif;
+}
+
+.downlighted {
+    opacity: 0.1;
+}
+
+.ignored{
+    display: none;
+}
+
+.running circle{
+    stroke: #18b738;
+    fill: #7dea93;
+}
+
+.highlighted,
+.highlighted_by_namespace,
+.highlighted_by_path,
+.highlighted_by_type{
+    fill: #008ef3;
+}
+
+.highlighted circle,
+.highlighted_by_namespace circle,
+.highlighted_by_path circle,
+.highlighted_by_type circle{
+    stroke: #008ef3;
+}
+
+.hide_namespace .namespace, .link.hide_relation{
+    display: none;
+}
+
+/* ============================ */
+/* Toolbox style */
+/* ============================ */
+
+.toolbox{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    max-height: 100%;
+    width: 250px;
+    background: white;
+    overflow: auto;
+}
+
+ul, ol{
+    list-style-position: inside;
+    white-space: nowrap;
+    margin: 0px;
+    padding-left: 0px;
+    overflow: auto;
+}
+
+#information_panel{
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    height: 5rem;
+    background: rgba(255,255,255,0.8);
+    width: 100%;
+    margin-left: 250px;
+    padding-right: 250px;
+}
+
+#information_panel div{
+    margin: 1rem;
+    display: inline-block;
+}
+
+#information_panel:hover{
+    height: 33%;
+    overflow: auto;
+}
+</style>
+  </head>
+  <body>
+    <div class='dependency_graph'>
+      <svg></svg>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src='https://unpkg.com/lodash@4.17.4/lodash.min.js' type='text/javascript'></script>
+    <script src='https://unpkg.com/d3@4.13.0/build/d3.min.js' type='text/javascript'></script>
+    <script type='text/javascript'>
+     var data = {"definitions":[{"type":"Class","namespace":"SocialWeb::Collection","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/collection.rb","line":4,"lines":9},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/collection.rb","line":3,"lines":11},{"type":"Class","namespace":"SocialWeb::Followers","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/followers.rb","line":4,"lines":9},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/followers.rb","line":3,"lines":11},{"type":"Class","namespace":"SocialWeb::Outbox::Follow","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/outbox/follow.rb","line":5,"lines":5},{"type":"Class","namespace":"SocialWeb::Outbox","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/outbox/follow.rb","line":4,"lines":7},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/outbox/follow.rb","line":3,"lines":9},{"type":"Class","namespace":"SocialWeb::Inbox","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/inbox.rb","line":4,"lines":15},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/inbox.rb","line":3,"lines":17},{"type":"Class","namespace":"SocialWeb::Likes","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/likes.rb","line":4,"lines":9},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/likes.rb","line":3,"lines":11},{"type":"Class","namespace":"SocialWeb::Outbox","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/outbox.rb","line":4,"lines":7},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/outbox.rb","line":3,"lines":9},{"type":"Class","namespace":"SocialWeb::Activity","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/activity.rb","line":4,"lines":9},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/activity.rb","line":3,"lines":11},{"type":"Class","namespace":"SocialWeb::Following","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/following.rb","line":4,"lines":9},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/following.rb","line":3,"lines":11},{"type":"Class","namespace":"SocialWeb::Liked","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/liked.rb","line":4,"lines":9},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/liked.rb","line":3,"lines":11},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/process.rb","line":7,"lines":16},{"type":"Class","namespace":"SocialWeb::Inbox::Create","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/inbox/create.rb","line":5,"lines":5},{"type":"Class","namespace":"SocialWeb::Inbox","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/inbox/create.rb","line":4,"lines":7},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/inbox/create.rb","line":3,"lines":9},{"type":"Class","namespace":"SocialWeb::Inbox::Accept","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/inbox/accept.rb","line":5,"lines":5},{"type":"Class","namespace":"SocialWeb::Inbox","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/inbox/accept.rb","line":4,"lines":7},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/inbox/accept.rb","line":3,"lines":9},{"type":"Class","namespace":"SocialWeb::Inbox::Delete","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/inbox/delete.rb","line":5,"lines":5},{"type":"Class","namespace":"SocialWeb::Inbox","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/inbox/delete.rb","line":4,"lines":7},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/lib/social_web/inbox/delete.rb","line":3,"lines":9},{"type":"Module","namespace":"RackHelper","circular":false,"file":"/home/shanecav/Code/social_web/spec/helpers/rack_helper.rb","line":3,"lines":50},{"type":"Module","namespace":"Helpers::Request","circular":false,"file":"/home/shanecav/Code/social_web/spec/helpers/request_helper.rb","line":4,"lines":11},{"type":"Module","namespace":"Helpers","circular":false,"file":"/home/shanecav/Code/social_web/spec/helpers/request_helper.rb","line":3,"lines":13},{"type":"Module","namespace":"SocialWeb::Rack::Repositories","circular":true,"file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/objects_spec.rb","line":7,"lines":28},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/objects_spec.rb","line":6,"lines":30},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/objects_spec.rb","line":5,"lines":32},{"type":"Module","namespace":"SocialWeb::Rack::Repositories","circular":true,"file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/keys_spec.rb","line":7,"lines":16},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/keys_spec.rb","line":6,"lines":18},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/keys_spec.rb","line":5,"lines":20},{"type":"Module","namespace":"SocialWeb::Rack::Repositories","circular":true,"file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/activities_spec.rb","line":7,"lines":66},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/activities_spec.rb","line":6,"lines":68},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/activities_spec.rb","line":5,"lines":70},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/spec/apps/rack/routes_spec.rb","line":6,"lines":47},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/spec/apps/rack/routes_spec.rb","line":5,"lines":49},{"type":"Class","namespace":"SocialWeb::SpecContainer::Following","circular":true,"file":"/home/shanecav/Code/social_web/spec/spec_container.rb","line":11,"lines":19},{"type":"Class","namespace":"SocialWeb::SpecContainer::ActivitiesRepo","circular":true,"file":"/home/shanecav/Code/social_web/spec/spec_container.rb","line":31,"lines":29},{"type":"Class","namespace":"SocialWeb::SpecContainer::Dereference","circular":true,"file":"/home/shanecav/Code/social_web/spec/spec_container.rb","line":61,"lines":5},{"type":"Class","namespace":"SocialWeb::SpecContainer","circular":true,"file":"/home/shanecav/Code/social_web/spec/spec_container.rb","line":6,"lines":82},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/spec/spec_container.rb","line":5,"lines":84},{"type":"Class","namespace":"RackSpecContainer","circular":false,"file":"/home/shanecav/Code/social_web/spec/rack_spec_container.rb","line":5,"lines":27},{"type":"Class","namespace":"SocialWeb::Rack::Addressing","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/addressing.rb","line":5,"lines":11},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/addressing.rb","line":4,"lines":13},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/addressing.rb","line":3,"lines":15},{"type":"Class","namespace":"SocialWeb::Rack::TraverseCollections","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/traverse_collection.rb","line":5,"lines":37},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/traverse_collection.rb","line":4,"lines":39},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/traverse_collection.rb","line":3,"lines":41},{"type":"Class","namespace":"SocialWeb::Rack::HTTPClient","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/http_client.rb","line":5,"lines":52},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/http_client.rb","line":4,"lines":54},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/http_client.rb","line":3,"lines":56},{"type":"Class","namespace":"SocialWeb::Rack::TraverseRelationships","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/traverse_relationships.rb","line":5,"lines":46},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/traverse_relationships.rb","line":4,"lines":48},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/traverse_relationships.rb","line":3,"lines":50},{"type":"Class","namespace":"SocialWeb::Rack::Delivery","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/delivery.rb","line":5,"lines":72},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/delivery.rb","line":4,"lines":74},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/delivery.rb","line":3,"lines":76},{"type":"Class","namespace":"SocialWeb::Retrieve","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/retrieve.rb","line":4,"lines":6},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/retrieve.rb","line":3,"lines":8},{"type":"Class","namespace":"SocialWeb::Rack::Reconstitute","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/reconstitute.rb","line":5,"lines":50},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/reconstitute.rb","line":4,"lines":52},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/reconstitute.rb","line":3,"lines":54},{"type":"Class","namespace":"SocialWeb::Rack::Models::Actor","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","line":6,"lines":76},{"type":"Module","namespace":"SocialWeb::Rack::Models","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","line":5,"lines":78},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","line":4,"lines":80},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","line":3,"lines":82},{"type":"Class","namespace":"SocialWeb::Rack::Repositories::Objects","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","line":6,"lines":139},{"type":"Module","namespace":"SocialWeb::Rack::Repositories","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","line":5,"lines":141},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","line":4,"lines":143},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","line":3,"lines":145},{"type":"Class","namespace":"SocialWeb::Rack::Repositories::Relationships","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/relationships.rb","line":6,"lines":24},{"type":"Module","namespace":"SocialWeb::Rack::Repositories","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/relationships.rb","line":5,"lines":26},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/relationships.rb","line":4,"lines":28},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/relationships.rb","line":3,"lines":30},{"type":"Class","namespace":"SocialWeb::Rack::Repositories::Collections","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/collections.rb","line":6,"lines":29},{"type":"Module","namespace":"SocialWeb::Rack::Repositories","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/collections.rb","line":5,"lines":31},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/collections.rb","line":4,"lines":33},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/collections.rb","line":3,"lines":35},{"type":"Class","namespace":"SocialWeb::Rack::Repositories::Keys","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/keys.rb","line":6,"lines":22},{"type":"Module","namespace":"SocialWeb::Rack::Repositories","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/keys.rb","line":5,"lines":24},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/keys.rb","line":4,"lines":26},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/keys.rb","line":3,"lines":28},{"type":"Class","namespace":"SocialWeb::Rack::Routes","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","line":14,"lines":75},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","line":8,"lines":82},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","line":7,"lines":84},{"type":"Class","namespace":"SocialWeb::Rack::Relations::Objects","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","line":6,"lines":62},{"type":"Module","namespace":"SocialWeb::Rack::Relations","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","line":5,"lines":64},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","line":4,"lines":66},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","line":3,"lines":68},{"type":"Class","namespace":"SocialWeb::Rack::Relations::Relationships","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/relationships.rb","line":6,"lines":15},{"type":"Module","namespace":"SocialWeb::Rack::Relations","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/relationships.rb","line":5,"lines":17},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/relationships.rb","line":4,"lines":19},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/relationships.rb","line":3,"lines":21},{"type":"Class","namespace":"SocialWeb::Rack::Relations::Collections","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/collections.rb","line":6,"lines":15},{"type":"Module","namespace":"SocialWeb::Rack::Relations","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/collections.rb","line":5,"lines":17},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/collections.rb","line":4,"lines":19},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/collections.rb","line":3,"lines":21},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/persistance.rb","line":6,"lines":5},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/persistance.rb","line":5,"lines":7},{"type":"Class","namespace":"SocialWeb::Rack::Configuration","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/configuration.rb","line":13,"lines":3},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/configuration.rb","line":4,"lines":13},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/configuration.rb","line":3,"lines":15},{"type":"Class","namespace":"SocialWeb::Rack::Container","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/container.rb","line":15,"lines":19},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/container.rb","line":6,"lines":29},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/container.rb","line":5,"lines":31},{"type":"Module","namespace":"SocialWeb::Rack","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack.rb","line":7,"lines":10},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/apps/social_web/rack.rb","line":6,"lines":12},{"type":"Module","namespace":"ActivityStreams::Extensions::ActivityPub","circular":false,"file":"/home/shanecav/Code/social_web/system/social_web/ext/activity_streams_extension.rb","line":7,"lines":9},{"type":"Module","namespace":"ActivityStreams::Extensions","circular":false,"file":"/home/shanecav/Code/social_web/system/social_web/ext/activity_streams_extension.rb","line":6,"lines":11},{"type":"Module","namespace":"ActivityStreams","circular":false,"file":"/home/shanecav/Code/social_web/system/social_web/ext/activity_streams_extension.rb","line":5,"lines":13},{"type":"Class","namespace":"SocialWeb::Container","circular":true,"file":"/home/shanecav/Code/social_web/system/social_web/container.rb","line":14,"lines":37},{"type":"Module","namespace":"SocialWeb","circular":true,"file":"/home/shanecav/Code/social_web/system/social_web/container.rb","line":5,"lines":47}],"relations":[{"type":"Base","namespace":"Collection","resolved_namespace":"SocialWeb::Collection","caller":"SocialWeb::Followers","file":"/home/shanecav/Code/social_web/lib/social_web/followers.rb","circular":false,"line":4},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Followers","file":"/home/shanecav/Code/social_web/lib/social_web/followers.rb","circular":true,"line":8},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Followers","file":"/home/shanecav/Code/social_web/lib/social_web/followers.rb","circular":true,"line":10},{"type":"Base","namespace":"COLLECTION","resolved_namespace":"COLLECTION","caller":"SocialWeb::Followers","file":"/home/shanecav/Code/social_web/lib/social_web/followers.rb","circular":false,"line":10},{"type":"Base","namespace":"Activity","resolved_namespace":"SocialWeb::Activity","caller":"SocialWeb::Outbox::Follow","file":"/home/shanecav/Code/social_web/lib/social_web/outbox/follow.rb","circular":false,"line":5},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Outbox::Follow","file":"/home/shanecav/Code/social_web/lib/social_web/outbox/follow.rb","circular":false,"line":7},{"type":"Base","namespace":"Collection","resolved_namespace":"SocialWeb::Collection","caller":"SocialWeb::Inbox","file":"/home/shanecav/Code/social_web/lib/social_web/inbox.rb","circular":false,"line":4},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Inbox","file":"/home/shanecav/Code/social_web/lib/social_web/inbox.rb","circular":true,"line":8},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Inbox","file":"/home/shanecav/Code/social_web/lib/social_web/inbox.rb","circular":true,"line":10},{"type":"Base","namespace":"COLLECTION","resolved_namespace":"COLLECTION","caller":"SocialWeb::Inbox","file":"/home/shanecav/Code/social_web/lib/social_web/inbox.rb","circular":false,"line":10},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Inbox","file":"/home/shanecav/Code/social_web/lib/social_web/inbox.rb","circular":true,"line":14},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Inbox","file":"/home/shanecav/Code/social_web/lib/social_web/inbox.rb","circular":true,"line":16},{"type":"Base","namespace":"Collection","resolved_namespace":"SocialWeb::Collection","caller":"SocialWeb::Likes","file":"/home/shanecav/Code/social_web/lib/social_web/likes.rb","circular":false,"line":4},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Likes","file":"/home/shanecav/Code/social_web/lib/social_web/likes.rb","circular":true,"line":8},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Likes","file":"/home/shanecav/Code/social_web/lib/social_web/likes.rb","circular":true,"line":10},{"type":"Base","namespace":"COLLECTION","resolved_namespace":"COLLECTION","caller":"SocialWeb::Likes","file":"/home/shanecav/Code/social_web/lib/social_web/likes.rb","circular":false,"line":10},{"type":"Base","namespace":"Collection","resolved_namespace":"SocialWeb::Collection","caller":"SocialWeb::Outbox","file":"/home/shanecav/Code/social_web/lib/social_web/outbox.rb","circular":false,"line":4},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Outbox","file":"/home/shanecav/Code/social_web/lib/social_web/outbox.rb","circular":true,"line":8},{"type":"Base","namespace":"COLLECTION","resolved_namespace":"COLLECTION","caller":"SocialWeb::Outbox","file":"/home/shanecav/Code/social_web/lib/social_web/outbox.rb","circular":false,"line":8},{"type":"Base","namespace":"Collection","resolved_namespace":"SocialWeb::Collection","caller":"SocialWeb::Following","file":"/home/shanecav/Code/social_web/lib/social_web/following.rb","circular":false,"line":4},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Following","file":"/home/shanecav/Code/social_web/lib/social_web/following.rb","circular":true,"line":8},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Following","file":"/home/shanecav/Code/social_web/lib/social_web/following.rb","circular":true,"line":10},{"type":"Base","namespace":"COLLECTION","resolved_namespace":"COLLECTION","caller":"SocialWeb::Following","file":"/home/shanecav/Code/social_web/lib/social_web/following.rb","circular":false,"line":10},{"type":"Base","namespace":"Collection","resolved_namespace":"SocialWeb::Collection","caller":"SocialWeb::Liked","file":"/home/shanecav/Code/social_web/lib/social_web/liked.rb","circular":false,"line":4},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Liked","file":"/home/shanecav/Code/social_web/lib/social_web/liked.rb","circular":true,"line":8},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Liked","file":"/home/shanecav/Code/social_web/lib/social_web/liked.rb","circular":true,"line":10},{"type":"Base","namespace":"COLLECTION","resolved_namespace":"COLLECTION","caller":"SocialWeb::Liked","file":"/home/shanecav/Code/social_web/lib/social_web/liked.rb","circular":false,"line":10},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb","file":"/home/shanecav/Code/social_web/lib/social_web/process.rb","circular":false,"line":11},{"type":"Base","namespace":"Activity","resolved_namespace":"SocialWeb::Activity","caller":"SocialWeb::Inbox::Create","file":"/home/shanecav/Code/social_web/lib/social_web/inbox/create.rb","circular":false,"line":5},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Inbox::Create","file":"/home/shanecav/Code/social_web/lib/social_web/inbox/create.rb","circular":true,"line":7},{"type":"Base","namespace":"Activity","resolved_namespace":"SocialWeb::Activity","caller":"SocialWeb::Inbox::Accept","file":"/home/shanecav/Code/social_web/lib/social_web/inbox/accept.rb","circular":false,"line":5},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Inbox::Accept","file":"/home/shanecav/Code/social_web/lib/social_web/inbox/accept.rb","circular":true,"line":7},{"type":"Base","namespace":"Activity","resolved_namespace":"SocialWeb::Activity","caller":"SocialWeb::Inbox::Delete","file":"/home/shanecav/Code/social_web/lib/social_web/inbox/delete.rb","circular":false,"line":5},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Inbox::Delete","file":"/home/shanecav/Code/social_web/lib/social_web/inbox/delete.rb","circular":true,"line":7},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"/home/shanecav/Code/social_web/spec/implementation/outbox_spec.rb","circular":false,"line":5},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"","file":"/home/shanecav/Code/social_web/spec/implementation/outbox_spec.rb","circular":false,"line":16},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"/home/shanecav/Code/social_web/spec/implementation/inbox_spec.rb","circular":false,"line":5},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"","file":"/home/shanecav/Code/social_web/spec/implementation/inbox_spec.rb","circular":false,"line":16},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"/home/shanecav/Code/social_web/spec/implementation/activities/follow_spec.rb","circular":false,"line":5},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"","file":"/home/shanecav/Code/social_web/spec/implementation/activities/follow_spec.rb","circular":false,"line":11},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"","file":"/home/shanecav/Code/social_web/spec/implementation/activities/follow_spec.rb","circular":false,"line":17},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"","file":"/home/shanecav/Code/social_web/spec/implementation/activities/follow_spec.rb","circular":false,"line":19},{"type":"Base","namespace":"Rack::Builder","resolved_namespace":"Rack::Builder","caller":"RackHelper","file":"/home/shanecav/Code/social_web/spec/helpers/rack_helper.rb","circular":false,"line":5},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"RackHelper","file":"/home/shanecav/Code/social_web/spec/helpers/rack_helper.rb","circular":false,"line":6},{"type":"Base","namespace":"Random","resolved_namespace":"Random","caller":"RackHelper","file":"/home/shanecav/Code/social_web/spec/helpers/rack_helper.rb","circular":false,"line":12},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"RackHelper","file":"/home/shanecav/Code/social_web/spec/helpers/rack_helper.rb","circular":false,"line":23},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"RackHelper","file":"/home/shanecav/Code/social_web/spec/helpers/rack_helper.rb","circular":false,"line":27},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"RackHelper","file":"/home/shanecav/Code/social_web/spec/helpers/rack_helper.rb","circular":false,"line":31},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"RackHelper","file":"/home/shanecav/Code/social_web/spec/helpers/rack_helper.rb","circular":false,"line":35},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"RackHelper","file":"/home/shanecav/Code/social_web/spec/helpers/rack_helper.rb","circular":false,"line":39},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"RackHelper","file":"/home/shanecav/Code/social_web/spec/helpers/rack_helper.rb","circular":false,"line":43},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"RackHelper","file":"/home/shanecav/Code/social_web/spec/helpers/rack_helper.rb","circular":false,"line":49},{"type":"Base","namespace":"SocialWeb::Routes","resolved_namespace":"SocialWeb::Routes","caller":"Helpers::Request","file":"/home/shanecav/Code/social_web/spec/helpers/request_helper.rb","circular":false,"line":6},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"/home/shanecav/Code/social_web/spec/spec_helper.rb","circular":false,"line":3},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"","file":"/home/shanecav/Code/social_web/spec/spec_helper.rb","circular":false,"line":7},{"type":"Base","namespace":"SocialWeb::SpecContainer","resolved_namespace":"SocialWeb::SpecContainer","caller":"","file":"/home/shanecav/Code/social_web/spec/spec_helper.rb","circular":false,"line":8},{"type":"Base","namespace":"Dir","resolved_namespace":"Dir","caller":"","file":"/home/shanecav/Code/social_web/spec/spec_helper.rb","circular":false,"line":14},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"/home/shanecav/Code/social_web/spec/spec_helper.rb","circular":false,"line":16},{"type":"Base","namespace":"::Rack::Test::Methods","resolved_namespace":"Rack::Test::Methods","caller":"","file":"/home/shanecav/Code/social_web/spec/spec_helper.rb","circular":false,"line":17},{"type":"Base","namespace":"::Helpers::Request","resolved_namespace":"Helpers::Request","caller":"","file":"/home/shanecav/Code/social_web/spec/spec_helper.rb","circular":false,"line":18},{"type":"Base","namespace":"FactoryBot::Syntax::Methods","resolved_namespace":"FactoryBot::Syntax::Methods","caller":"","file":"/home/shanecav/Code/social_web/spec/spec_helper.rb","circular":false,"line":19},{"type":"Base","namespace":"SocialWeb::SpecContainer::DB","resolved_namespace":"SocialWeb::SpecContainer::DB","caller":"","file":"/home/shanecav/Code/social_web/spec/spec_helper.rb","circular":false,"line":22},{"type":"Base","namespace":"FactoryBot","resolved_namespace":"FactoryBot","caller":"","file":"/home/shanecav/Code/social_web/spec/spec_helper.rb","circular":false,"line":25},{"type":"Base","namespace":"FactoryBot","resolved_namespace":"FactoryBot","caller":"","file":"/home/shanecav/Code/social_web/spec/factories.rb","circular":false,"line":3},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"","file":"/home/shanecav/Code/social_web/spec/factories.rb","circular":false,"line":4},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"","file":"/home/shanecav/Code/social_web/spec/factories.rb","circular":false,"line":6},{"type":"Base","namespace":"JSON","resolved_namespace":"JSON","caller":"","file":"/home/shanecav/Code/social_web/spec/factories.rb","circular":false,"line":6},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/objects_spec.rb","circular":false,"line":8},{"type":"Base","namespace":"Objects","resolved_namespace":"SocialWeb::Rack::Repositories::Objects","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/objects_spec.rb","circular":false,"line":8},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/objects_spec.rb","circular":false,"line":11},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/objects_spec.rb","circular":false,"line":17},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/objects_spec.rb","circular":false,"line":22},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/objects_spec.rb","circular":false,"line":25},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/keys_spec.rb","circular":false,"line":8},{"type":"Base","namespace":"Keys","resolved_namespace":"SocialWeb::Rack::Repositories::Keys","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/keys_spec.rb","circular":false,"line":8},{"type":"Base","namespace":"String","resolved_namespace":"String","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/keys_spec.rb","circular":false,"line":17},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/activities_spec.rb","circular":false,"line":8},{"type":"Base","namespace":"Activities","resolved_namespace":"Activities","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/activities_spec.rb","circular":false,"line":8},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/activities_spec.rb","circular":false,"line":13},{"type":"Base","namespace":"ActivityStreams::Collection","resolved_namespace":"ActivityStreams::Collection","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/activities_spec.rb","circular":false,"line":35},{"type":"Base","namespace":"ActivityStreams::Collection","resolved_namespace":"ActivityStreams::Collection","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/activities_spec.rb","circular":false,"line":53},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/activities_spec.rb","circular":false,"line":62},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Repositories","file":"/home/shanecav/Code/social_web/spec/apps/rack/repositories/activities_spec.rb","circular":false,"line":67},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"SocialWeb::Rack","file":"/home/shanecav/Code/social_web/spec/apps/rack/routes_spec.rb","circular":false,"line":7},{"type":"Base","namespace":"Routes","resolved_namespace":"SocialWeb::Rack::Routes","caller":"SocialWeb::Rack","file":"/home/shanecav/Code/social_web/spec/apps/rack/routes_spec.rb","circular":false,"line":7},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack","file":"/home/shanecav/Code/social_web/spec/apps/rack/routes_spec.rb","circular":false,"line":11},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack","file":"/home/shanecav/Code/social_web/spec/apps/rack/routes_spec.rb","circular":false,"line":43},{"type":"Base","namespace":"SocialWeb::Container","resolved_namespace":"SocialWeb::Container","caller":"SocialWeb::SpecContainer","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":6},{"type":"Base","namespace":"Dry::Container::Mixin","resolved_namespace":"Dry::Container::Mixin","caller":"SocialWeb::SpecContainer","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":7},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::SpecContainer","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":9},{"type":"Base","namespace":"DB","resolved_namespace":"DB","caller":"SocialWeb::SpecContainer::Following","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":13},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"SocialWeb::SpecContainer::Following","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":17},{"type":"Base","namespace":"DB","resolved_namespace":"DB","caller":"SocialWeb::SpecContainer::Following","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":22},{"type":"Base","namespace":"DB","resolved_namespace":"DB","caller":"SocialWeb::SpecContainer::ActivitiesRepo","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":33},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"SocialWeb::SpecContainer::ActivitiesRepo","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":37},{"type":"Base","namespace":"DB","resolved_namespace":"DB","caller":"SocialWeb::SpecContainer::ActivitiesRepo","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":39},{"type":"Base","namespace":"DB","resolved_namespace":"DB","caller":"SocialWeb::SpecContainer::ActivitiesRepo","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":46},{"type":"Base","namespace":"DB","resolved_namespace":"DB","caller":"SocialWeb::SpecContainer::ActivitiesRepo","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":52},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::SpecContainer::Dereference","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":63},{"type":"Base","namespace":"Following","resolved_namespace":"SocialWeb::SpecContainer::Following","caller":"SocialWeb::SpecContainer","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":68},{"type":"Base","namespace":"Inbox::Accept","resolved_namespace":"SocialWeb::Inbox::Accept","caller":"SocialWeb::SpecContainer","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":71},{"type":"Base","namespace":"Outbox::Follow","resolved_namespace":"SocialWeb::Outbox::Follow","caller":"SocialWeb::SpecContainer","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":75},{"type":"Base","namespace":"ActivitiesRepo","resolved_namespace":"SocialWeb::SpecContainer::ActivitiesRepo","caller":"SocialWeb::SpecContainer","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":80},{"type":"Base","namespace":"Dereference","resolved_namespace":"SocialWeb::SpecContainer::Dereference","caller":"SocialWeb::SpecContainer","file":"/home/shanecav/Code/social_web/spec/spec_container.rb","circular":false,"line":85},{"type":"Base","namespace":"Dry::System::Container","resolved_namespace":"Dry::System::Container","caller":"RackSpecContainer","file":"/home/shanecav/Code/social_web/spec/rack_spec_container.rb","circular":false,"line":5},{"type":"Base","namespace":"Object","resolved_namespace":"Object","caller":"RackSpecContainer","file":"/home/shanecav/Code/social_web/spec/rack_spec_container.rb","circular":false,"line":7},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"RackSpecContainer","file":"/home/shanecav/Code/social_web/spec/rack_spec_container.rb","circular":false,"line":10},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"RackSpecContainer","file":"/home/shanecav/Code/social_web/spec/rack_spec_container.rb","circular":false,"line":12},{"type":"Base","namespace":"::SocialWeb::Rack::Container","resolved_namespace":"SocialWeb::Rack::Container","caller":"RackSpecContainer","file":"/home/shanecav/Code/social_web/spec/rack_spec_container.rb","circular":false,"line":27},{"type":"Base","namespace":"RackSpecContainer","resolved_namespace":"RackSpecContainer","caller":"RackSpecContainer","file":"/home/shanecav/Code/social_web/spec/rack_spec_container.rb","circular":false,"line":27},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"RackSpecContainer","file":"/home/shanecav/Code/social_web/spec/rack_spec_container.rb","circular":false,"line":28},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"","file":"/home/shanecav/Code/social_web/spec/rack_spec_helper.rb","circular":false,"line":3},{"type":"Base","namespace":"RackSpecContainer","resolved_namespace":"RackSpecContainer","caller":"","file":"/home/shanecav/Code/social_web/spec/rack_spec_helper.rb","circular":false,"line":8},{"type":"Base","namespace":"RSpec","resolved_namespace":"RSpec","caller":"","file":"/home/shanecav/Code/social_web/spec/rack_spec_helper.rb","circular":false,"line":12},{"type":"Base","namespace":"::RackHelper","resolved_namespace":"RackHelper","caller":"","file":"/home/shanecav/Code/social_web/spec/rack_spec_helper.rb","circular":false,"line":13},{"type":"Base","namespace":"::Rack::Test::Methods","resolved_namespace":"Rack::Test::Methods","caller":"","file":"/home/shanecav/Code/social_web/spec/rack_spec_helper.rb","circular":false,"line":14},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"","file":"/home/shanecav/Code/social_web/spec/rack_spec_helper.rb","circular":false,"line":17},{"type":"Base","namespace":"ADDRESS_FIELDS","resolved_namespace":"ADDRESS_FIELDS","caller":"SocialWeb::Rack::Addressing","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/addressing.rb","circular":false,"line":9},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Addressing","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/addressing.rb","circular":false,"line":13},{"type":"Base","namespace":"COLLECTIONS","resolved_namespace":"COLLECTIONS","caller":"SocialWeb::Rack::TraverseCollections","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/traverse_collection.rb","circular":false,"line":8},{"type":"Base","namespace":"Set","resolved_namespace":"Set","caller":"SocialWeb::Rack::TraverseCollections","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/traverse_collection.rb","circular":false,"line":12},{"type":"Base","namespace":"String","resolved_namespace":"String","caller":"SocialWeb::Rack::TraverseCollections","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/traverse_collection.rb","circular":false,"line":19},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::TraverseCollections","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/traverse_collection.rb","circular":false,"line":20},{"type":"Base","namespace":"OpenSSL::PKey::RSA","resolved_namespace":"OpenSSL::PKey::RSA","caller":"SocialWeb::Rack::HTTPClient","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/http_client.rb","circular":false,"line":17},{"type":"Base","namespace":"OpenSSL::Digest::SHA256","resolved_namespace":"OpenSSL::Digest::SHA256","caller":"SocialWeb::Rack::HTTPClient","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/http_client.rb","circular":false,"line":18},{"type":"Base","namespace":"Base64","resolved_namespace":"Base64","caller":"SocialWeb::Rack::HTTPClient","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/http_client.rb","circular":false,"line":24},{"type":"Base","namespace":"::HTTP","resolved_namespace":"HTTP","caller":"SocialWeb::Rack::HTTPClient","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/http_client.rb","circular":false,"line":33},{"type":"Base","namespace":"ACTIVITY_JSON_MIME_TYPE","resolved_namespace":"ACTIVITY_JSON_MIME_TYPE","caller":"SocialWeb::Rack::HTTPClient","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/http_client.rb","circular":false,"line":37},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"SocialWeb::Rack::HTTPClient","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/http_client.rb","circular":false,"line":38},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::HTTPClient","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/http_client.rb","circular":false,"line":43},{"type":"Base","namespace":"Signature","resolved_namespace":"Signature","caller":"SocialWeb::Rack::HTTPClient","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/http_client.rb","circular":false,"line":45},{"type":"Base","namespace":"::HTTP::Client","resolved_namespace":"HTTP::Client","caller":"SocialWeb::Rack::HTTPClient","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/http_client.rb","circular":false,"line":53},{"type":"Base","namespace":"RELATIONSHIPS","resolved_namespace":"RELATIONSHIPS","caller":"SocialWeb::Rack::TraverseRelationships","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/traverse_relationships.rb","circular":false,"line":15},{"type":"Base","namespace":"Array","resolved_namespace":"Array","caller":"SocialWeb::Rack::TraverseRelationships","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/traverse_relationships.rb","circular":false,"line":30},{"type":"Base","namespace":"String","resolved_namespace":"String","caller":"SocialWeb::Rack::TraverseRelationships","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/traverse_relationships.rb","circular":false,"line":44},{"type":"Base","namespace":"URI","resolved_namespace":"URI","caller":"SocialWeb::Rack::TraverseRelationships","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/traverse_relationships.rb","circular":false,"line":44},{"type":"Base","namespace":"OpenSSL::PKey::RSA","resolved_namespace":"OpenSSL::PKey::RSA","caller":"SocialWeb::Rack::Delivery","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/delivery.rb","circular":false,"line":21},{"type":"Base","namespace":"OpenSSL::Digest::SHA256","resolved_namespace":"OpenSSL::Digest::SHA256","caller":"SocialWeb::Rack::Delivery","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/delivery.rb","circular":false,"line":22},{"type":"Base","namespace":"Base64","resolved_namespace":"Base64","caller":"SocialWeb::Rack::Delivery","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/delivery.rb","circular":false,"line":28},{"type":"Base","namespace":"::HTTP","resolved_namespace":"HTTP","caller":"SocialWeb::Rack::Delivery","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/delivery.rb","circular":false,"line":36},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"SocialWeb::Rack::Delivery","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/delivery.rb","circular":false,"line":42},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Delivery","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/delivery.rb","circular":false,"line":46},{"type":"Base","namespace":"SocialWeb::Rack::Delivery::Signature","resolved_namespace":"SocialWeb::Rack::Delivery::Signature","caller":"SocialWeb::Rack::Delivery","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/delivery.rb","circular":false,"line":48},{"type":"Base","namespace":"::HTTP::Client","resolved_namespace":"HTTP::Client","caller":"SocialWeb::Rack::Delivery","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/delivery.rb","circular":false,"line":55},{"type":"Base","namespace":"PUBLIC_INBOX","resolved_namespace":"PUBLIC_INBOX","caller":"SocialWeb::Rack::Delivery","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/delivery.rb","circular":false,"line":68},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Delivery","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/delivery.rb","circular":false,"line":70},{"type":"Base","namespace":"HTTP","resolved_namespace":"HTTP","caller":"SocialWeb::Retrieve","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/retrieve.rb","circular":false,"line":6},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::Retrieve","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/retrieve.rb","circular":false,"line":7},{"type":"Base","namespace":"String","resolved_namespace":"String","caller":"SocialWeb::Rack::Reconstitute","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/reconstitute.rb","circular":false,"line":15},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Reconstitute","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/reconstitute.rb","circular":false,"line":15},{"type":"Base","namespace":"COLLECTIONS","resolved_namespace":"COLLECTIONS","caller":"SocialWeb::Rack::Reconstitute","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/reconstitute.rb","circular":false,"line":18},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Reconstitute","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/reconstitute.rb","circular":false,"line":19},{"type":"Base","namespace":"String","resolved_namespace":"String","caller":"SocialWeb::Rack::Reconstitute","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/reconstitute.rb","circular":false,"line":21},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Reconstitute","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/reconstitute.rb","circular":false,"line":21},{"type":"Base","namespace":"RELATIONSHIPS","resolved_namespace":"RELATIONSHIPS","caller":"SocialWeb::Rack::Reconstitute","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/reconstitute.rb","circular":false,"line":31},{"type":"Base","namespace":"String","resolved_namespace":"String","caller":"SocialWeb::Rack::Reconstitute","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/reconstitute.rb","circular":false,"line":33},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Reconstitute","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/reconstitute.rb","circular":false,"line":33},{"type":"Base","namespace":"DEPTH","resolved_namespace":"DEPTH","caller":"SocialWeb::Rack::Reconstitute","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/reconstitute.rb","circular":false,"line":46},{"type":"Base","namespace":"DEPTH","resolved_namespace":"DEPTH","caller":"SocialWeb::Rack::Reconstitute","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/services/reconstitute.rb","circular":false,"line":49},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":6},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":6},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":17},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":19},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":20},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":22},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":23},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":24},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":25},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":27},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":29},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":30},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":32},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":33},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":34},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":40},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":43},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":44},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":45},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":46},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":46},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":48},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":50},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":51},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":64},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":67},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":67},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":69},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":71},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":72},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Models::Actor","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/models/actor.rb","circular":false,"line":79},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":14},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":23},{"type":"Base","namespace":"String","resolved_namespace":"String","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":24},{"type":"Base","namespace":"URI","resolved_namespace":"URI","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":24},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":28},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":43},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":47},{"type":"Base","namespace":"String","resolved_namespace":"String","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":48},{"type":"Base","namespace":"URI","resolved_namespace":"URI","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":48},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":73},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":80},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":108},{"type":"Base","namespace":"ActivityStreams","resolved_namespace":"ActivityStreams","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":115},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":123},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":128},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":132},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Repositories::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/objects.rb","circular":false,"line":137},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Repositories::Relationships","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/relationships.rb","circular":false,"line":8},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Repositories::Relationships","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/relationships.rb","circular":false,"line":18},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"SocialWeb::Rack::Repositories::Relationships","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/relationships.rb","circular":false,"line":22},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"SocialWeb::Rack::Repositories::Collections","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/collections.rb","circular":false,"line":14},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Repositories::Collections","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/collections.rb","circular":false,"line":21},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Repositories::Keys","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/keys.rb","circular":false,"line":8},{"type":"Base","namespace":"OpenSSL::PKey::RSA","resolved_namespace":"OpenSSL::PKey::RSA","caller":"SocialWeb::Rack::Repositories::Keys","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/keys.rb","circular":false,"line":18},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Repositories::Keys","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/keys.rb","circular":false,"line":19},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"SocialWeb::Rack::Repositories::Keys","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/keys.rb","circular":false,"line":23},{"type":"Base","namespace":"Time","resolved_namespace":"Time","caller":"SocialWeb::Rack::Repositories::Keys","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/repositories/keys.rb","circular":false,"line":24},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":10},{"type":"Base","namespace":"SocialWeb::Rack::Routes","resolved_namespace":"SocialWeb::Rack::Routes","caller":"SocialWeb::Rack","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":11},{"type":"Base","namespace":"Roda","resolved_namespace":"Roda","caller":"SocialWeb::Rack::Routes","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":14},{"type":"Base","namespace":"File","resolved_namespace":"File","caller":"SocialWeb::Rack::Routes","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":23},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Routes","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":31},{"type":"Base","namespace":"TIMELINE","resolved_namespace":"TIMELINE","caller":"SocialWeb::Rack::Routes","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":33},{"type":"Base","namespace":"TIMELINE","resolved_namespace":"TIMELINE","caller":"SocialWeb::Rack::Routes","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":35},{"type":"Base","namespace":"TIMELINE","resolved_namespace":"TIMELINE","caller":"SocialWeb::Rack::Routes","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":37},{"type":"Base","namespace":"TIMELINE","resolved_namespace":"TIMELINE","caller":"SocialWeb::Rack::Routes","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":38},{"type":"Base","namespace":"COLLECTION_REGEX","resolved_namespace":"COLLECTION_REGEX","caller":"SocialWeb::Rack::Routes","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":43},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Routes","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":48},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Routes","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":66},{"type":"Base","namespace":"SocialWeb","resolved_namespace":"SocialWeb","caller":"SocialWeb::Rack::Routes","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":78},{"type":"Base","namespace":"COLLECTION_REGEX","resolved_namespace":"COLLECTION_REGEX","caller":"SocialWeb::Rack::Routes","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":82},{"type":"Base","namespace":"TIMELINE","resolved_namespace":"TIMELINE","caller":"SocialWeb::Rack::Routes","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":82},{"type":"Base","namespace":"COLLECTION_REGEX","resolved_namespace":"COLLECTION_REGEX","caller":"SocialWeb::Rack::Routes","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/routes.rb","circular":false,"line":86},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":6},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":6},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":33},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":37},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":38},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":39},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":40},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":41},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":42},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":45},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":46},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":47},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":50},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":51},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":52},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":53},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":54},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":55},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":56},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":58},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":59},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":59},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Objects","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/objects.rb","circular":false,"line":60},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Relationships","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/relationships.rb","circular":false,"line":6},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Relations::Relationships","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/relationships.rb","circular":false,"line":6},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack::Relations::Collections","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/collections.rb","circular":false,"line":6},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"SocialWeb::Rack::Relations::Collections","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/relations/collections.rb","circular":false,"line":6},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"SocialWeb::Rack","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/persistance.rb","circular":false,"line":8},{"type":"Base","namespace":"ENV","resolved_namespace":"ENV","caller":"SocialWeb::Rack","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/persistance.rb","circular":false,"line":8},{"type":"Base","namespace":"Configuration","resolved_namespace":"SocialWeb::Rack::Configuration","caller":"SocialWeb::Rack","file":"/home/shanecav/Code/social_web/apps/social_web/rack/lib/social_web/rack/configuration.rb","circular":false,"line":6},{"type":"Base","namespace":"SocialWeb::Rack::Container","resolved_namespace":"SocialWeb::Rack::Container","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/config.rb","circular":false,"line":3},{"type":"Base","namespace":"SocialWeb::Rack::Container","resolved_namespace":"SocialWeb::Rack::Container","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/tasks.rb","circular":false,"line":3},{"type":"Base","namespace":"Rake","resolved_namespace":"Rake","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/tasks.rb","circular":false,"line":9},{"type":"Base","namespace":"SocialWeb::Rack::Container","resolved_namespace":"SocialWeb::Rack::Container","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/social_web.rb","circular":false,"line":3},{"type":"Base","namespace":"SocialWeb::Rack::Container","resolved_namespace":"SocialWeb::Rack::Container","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/persistance.rb","circular":false,"line":3},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/persistance.rb","circular":false,"line":10},{"type":"Base","namespace":"SocialWeb::Rack::Relations::Objects","resolved_namespace":"SocialWeb::Rack::Relations::Objects","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/persistance.rb","circular":false,"line":13},{"type":"Base","namespace":"SocialWeb::Rack::Relations::Collections","resolved_namespace":"SocialWeb::Rack::Relations::Collections","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/persistance.rb","circular":false,"line":16},{"type":"Base","namespace":"SocialWeb::Rack::Relations::Relationships","resolved_namespace":"SocialWeb::Rack::Relations::Relationships","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/persistance.rb","circular":false,"line":19},{"type":"Base","namespace":"SocialWeb::Rack::Repositories::Keys","resolved_namespace":"SocialWeb::Rack::Repositories::Keys","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/persistance.rb","circular":false,"line":22},{"type":"Base","namespace":"SocialWeb::Rack::Repositories::Collections","resolved_namespace":"SocialWeb::Rack::Repositories::Collections","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/persistance.rb","circular":false,"line":25},{"type":"Base","namespace":"SocialWeb::Rack::Reconstitute","resolved_namespace":"SocialWeb::Rack::Reconstitute","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/persistance.rb","circular":false,"line":28},{"type":"Base","namespace":"SocialWeb::Rack::Repositories::Relationships","resolved_namespace":"SocialWeb::Rack::Repositories::Relationships","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/persistance.rb","circular":false,"line":31},{"type":"Base","namespace":"SocialWeb::Rack::Repositories::Objects","resolved_namespace":"SocialWeb::Rack::Repositories::Objects","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/persistance.rb","circular":false,"line":34},{"type":"Base","namespace":"SocialWeb::Rack::Models::Actor","resolved_namespace":"SocialWeb::Rack::Models::Actor","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/persistance.rb","circular":false,"line":37},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/persistance.rb","circular":false,"line":42},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/persistance.rb","circular":false,"line":46},{"type":"Base","namespace":"SocialWeb::Rack::Container","resolved_namespace":"SocialWeb::Rack::Container","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/logging.rb","circular":false,"line":3},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/logging.rb","circular":false,"line":5},{"type":"Base","namespace":"Logger","resolved_namespace":"Logger","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/logging.rb","circular":false,"line":6},{"type":"Base","namespace":"STDOUT","resolved_namespace":"STDOUT","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/logging.rb","circular":false,"line":6},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/logging.rb","circular":false,"line":8},{"type":"Base","namespace":"SocialWeb::Rack","resolved_namespace":"SocialWeb::Rack","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/logging.rb","circular":false,"line":9},{"type":"Base","namespace":"SocialWeb::Rack::Routes","resolved_namespace":"SocialWeb::Rack::Routes","caller":"","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/boot/logging.rb","circular":false,"line":12},{"type":"Base","namespace":"Container","resolved_namespace":"SocialWeb::Rack::Container","caller":"SocialWeb::Rack","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/container.rb","circular":false,"line":12},{"type":"Base","namespace":"Dry::System::Container","resolved_namespace":"Dry::System::Container","caller":"SocialWeb::Rack::Container","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/container.rb","circular":false,"line":15},{"type":"Base","namespace":"File","resolved_namespace":"File","caller":"SocialWeb::Rack::Container","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/container.rb","circular":false,"line":18},{"type":"Base","namespace":"SocialWeb::Rack::TraverseRelationships","resolved_namespace":"SocialWeb::Rack::TraverseRelationships","caller":"SocialWeb::Rack::Container","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/container.rb","circular":false,"line":24},{"type":"Base","namespace":"SocialWeb::Rack::TraverseCollection","resolved_namespace":"SocialWeb::Rack::TraverseCollection","caller":"SocialWeb::Rack::Container","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/container.rb","circular":false,"line":27},{"type":"Base","namespace":"SocialWeb::Rack::HTTPClient","resolved_namespace":"SocialWeb::Rack::HTTPClient","caller":"SocialWeb::Rack::Container","file":"/home/shanecav/Code/social_web/apps/social_web/rack/system/container.rb","circular":false,"line":30},{"type":"Base","namespace":"SocialWeb::Rack::Container","resolved_namespace":"SocialWeb::Rack::Container","caller":"SocialWeb::Rack","file":"/home/shanecav/Code/social_web/apps/social_web/rack.rb","circular":false,"line":9},{"type":"Base","namespace":"SocialWeb::Container","resolved_namespace":"SocialWeb::Container","caller":"SocialWeb::Rack","file":"/home/shanecav/Code/social_web/apps/social_web/rack.rb","circular":false,"line":13},{"type":"Base","namespace":"SocialWeb::Container","resolved_namespace":"SocialWeb::Container","caller":"","file":"/home/shanecav/Code/social_web/system/social_web/boot.rb","circular":false,"line":5},{"type":"Base","namespace":"SocialWeb::Container","resolved_namespace":"SocialWeb::Container","caller":"","file":"/home/shanecav/Code/social_web/system/social_web/boot/activity_streams.rb","circular":false,"line":3},{"type":"Base","namespace":"ActivityStreams::Model","resolved_namespace":"ActivityStreams::Model","caller":"","file":"/home/shanecav/Code/social_web/system/social_web/boot/activity_streams.rb","circular":false,"line":10},{"type":"Base","namespace":"ActivityStreams::Extensions::ActivityPub","resolved_namespace":"ActivityStreams::Extensions::ActivityPub","caller":"","file":"/home/shanecav/Code/social_web/system/social_web/boot/activity_streams.rb","circular":false,"line":10},{"type":"Base","namespace":"Container","resolved_namespace":"SocialWeb::Container","caller":"SocialWeb","file":"/home/shanecav/Code/social_web/system/social_web/container.rb","circular":false,"line":11},{"type":"Base","namespace":"Dry::System::Container","resolved_namespace":"Dry::System::Container","caller":"SocialWeb::Container","file":"/home/shanecav/Code/social_web/system/social_web/container.rb","circular":false,"line":14},{"type":"Base","namespace":"File","resolved_namespace":"File","caller":"SocialWeb::Container","file":"/home/shanecav/Code/social_web/system/social_web/container.rb","circular":false,"line":17},{"type":"Base","namespace":"::SocialWeb::Inbox","resolved_namespace":"SocialWeb::Inbox","caller":"SocialWeb::Container","file":"/home/shanecav/Code/social_web/system/social_web/container.rb","circular":false,"line":33},{"type":"Base","namespace":"SocialWeb::Inbox::Accept","resolved_namespace":"SocialWeb::Inbox::Accept","caller":"SocialWeb::Container","file":"/home/shanecav/Code/social_web/system/social_web/container.rb","circular":true,"line":35},{"type":"Base","namespace":"SocialWeb::Inbox::Create","resolved_namespace":"SocialWeb::Inbox::Create","caller":"SocialWeb::Container","file":"/home/shanecav/Code/social_web/system/social_web/container.rb","circular":true,"line":36},{"type":"Base","namespace":"SocialWeb::Inbox::Delete","resolved_namespace":"SocialWeb::Inbox::Delete","caller":"SocialWeb::Container","file":"/home/shanecav/Code/social_web/system/social_web/container.rb","circular":true,"line":37},{"type":"Base","namespace":"::SocialWeb::Outbox","resolved_namespace":"SocialWeb::Outbox","caller":"SocialWeb::Container","file":"/home/shanecav/Code/social_web/system/social_web/container.rb","circular":false,"line":40},{"type":"Base","namespace":"SocialWeb::Inbox::Create","resolved_namespace":"SocialWeb::Inbox::Create","caller":"SocialWeb::Container","file":"/home/shanecav/Code/social_web/system/social_web/container.rb","circular":true,"line":42},{"type":"Base","namespace":"::SocialWeb::Followers","resolved_namespace":"SocialWeb::Followers","caller":"SocialWeb::Container","file":"/home/shanecav/Code/social_web/system/social_web/container.rb","circular":false,"line":45},{"type":"Base","namespace":"::SocialWeb::Following","resolved_namespace":"SocialWeb::Following","caller":"SocialWeb::Container","file":"/home/shanecav/Code/social_web/system/social_web/container.rb","circular":false,"line":46},{"type":"Base","namespace":"::SocialWeb::Liked","resolved_namespace":"SocialWeb::Liked","caller":"SocialWeb::Container","file":"/home/shanecav/Code/social_web/system/social_web/container.rb","circular":false,"line":48},{"type":"Base","namespace":"::SocialWeb::Likes","resolved_namespace":"SocialWeb::Likes","caller":"SocialWeb::Container","file":"/home/shanecav/Code/social_web/system/social_web/container.rb","circular":false,"line":49},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"","file":"/home/shanecav/Code/social_web/db/migrations/002_create_keys.rb","circular":false,"line":3},{"type":"Base","namespace":"String","resolved_namespace":"String","caller":"","file":"/home/shanecav/Code/social_web/db/migrations/002_create_keys.rb","circular":false,"line":17},{"type":"Base","namespace":"Sequel","resolved_namespace":"Sequel","caller":"","file":"/home/shanecav/Code/social_web/db/migrations/001_create_tables.rb","circular":false,"line":3},{"type":"Base","namespace":"String","resolved_namespace":"String","caller":"","file":"/home/shanecav/Code/social_web/db/migrations/001_create_tables.rb","circular":false,"line":29},{"type":"Base","namespace":"String","resolved_namespace":"String","caller":"","file":"/home/shanecav/Code/social_web/db/migrations/001_create_tables.rb","circular":false,"line":35},{"type":"Base","namespace":"String","resolved_namespace":"String","caller":"","file":"/home/shanecav/Code/social_web/db/migrations/001_create_tables.rb","circular":false,"line":53},{"type":"Base","namespace":"String","resolved_namespace":"String","caller":"","file":"/home/shanecav/Code/social_web/db/migrations/001_create_tables.rb","circular":false,"line":59}]};
+     var layout = null;
+    </script>
+    <script type='text/javascript'>var classForCircular = function(d) {
+  return d.circular ? 'circular' : '';
+};
+
+var svg = d3.select(".dependency_graph svg"),
+    $svg = $('.dependency_graph svg'),
+    width = $svg.width(),
+    height = $svg.height(),
+    drag = d3.drag()
+    .on("start", dragstarted)
+    .on("drag", dragged)
+    .on("end", dragended),
+    dup_definitions = data.definitions.map(function(d){
+      return {
+        id: d.namespace,
+        file: d.file,
+        type: d.type,
+        lines: d.lines,
+        circular: d.circular
+      };
+    }),
+    definitions = _(dup_definitions).groupBy('id').map(function(group) {
+      return {
+        id: group[0].id,
+        type: group[0].type,
+        lines: _(group).sumBy('lines'),
+        circular: group[0].circular,
+        files: group.map(function(d){ return d.file; })
+      };
+    }).value(),
+    namespaces = definitions.map(function(d){ return d.id; }),
+    relations = data.relations.map(function(d){ return {source: d.caller, target: d.resolved_namespace, circular: d.circular}; }),
+    max_lines = _.maxBy(definitions, 'lines').lines,
+    max_circle_r = 50;
+
+relations = relations.filter(function(d){
+  return namespaces.indexOf(d.source) >= 0 && namespaces.indexOf(d.target) >= 0;
+});
+relations = _.uniqWith(relations, _.isEqual);
+
+var zoom = d3.zoom()
+    .on("zoom", function () {
+      container.attr("transform", d3.event.transform);
+    });
+
+svg.call(zoom)
+  .on("dblclick.zoom", null);
+
+var container = svg.append('g'),
+    simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+    .force("charge", d3.forceManyBody())
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("forceCollide", d3.forceCollide(80));
+
+simulation
+  .nodes(definitions)
+  .on("tick", ticked);
+
+simulation.force("link")
+  .links(relations);
+
+var link = container.append("g")
+    .attr("class", "links")
+    .selectAll("path")
+    .data(relations)
+    .enter().append("path")
+    .attr("class", function(d) { return 'link ' + classForCircular(d); })
+    .attr("marker-end", function(d){ return "url(#" + d.target.id + ")"; }),
+    node = container.append("g")
+    .attr("class", "nodes")
+    .selectAll("g")
+    .data(definitions)
+    .enter().append("g")
+    .call(drag)
+    .on("dblclick", dblclick),
+    circle = node
+    .append("circle")
+    .attr("r", function(d) { return d.lines / max_lines * max_circle_r + 6; })
+    .attr("class", function (d) { return classForCircular(d) ; }),
+    type = node
+    .append("text")
+    .attr("class", "type")
+    .attr("x", "-0.4em")
+    .attr("y", "0.4em")
+    .text(function(d) { return d.type[0]; }),
+    text = node
+    .append("text")
+    .attr("class", "namespace")
+    .attr("x", function(d) { return d.lines / max_lines * max_circle_r + 8; })
+    .attr("y", ".31em")
+    .text(function(d) { return d.id; });
+
+container.append("defs").selectAll("marker")
+  .data(definitions)
+  .enter().append("marker")
+  .attr("id", function(d) { return d.id; })
+  .attr("viewBox", "0 -5 10 10")
+  .attr("refX", function(d){ return d.lines / max_lines * max_circle_r + 20; })
+  .attr("refY", 0)
+  .attr("markerWidth", 6)
+  .attr("markerHeight", 6)
+  .attr("orient", "auto")
+  .append("path")
+  .attr("d", "M0,-5L10,0L0,5");
+
+function ticked() {
+  link.attr("d", linkArc);
+  node.attr("transform", transform);
+}
+
+function linkArc(d) {
+  var dx = d.target.x - d.source.x,
+      dy = d.target.y - d.source.y,
+      dr =  0;
+  return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+}
+
+function dragstarted(d) {
+  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+  d3.select(this).classed("fixed", true);
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(d) {
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragended(d) {
+  if (!d3.event.active) simulation.alphaTarget(0);
+}
+
+function dblclick(d) {
+  d3.select(this).classed("fixed", false);
+  d.fx = null;
+  d.fy = null;
+}
+
+function transform(d) {
+  return "translate(" + d.x + "," + d.y + ")";
+}
+
+var state = {
+  get: function(){
+    var positions = [];
+    rubrowser.definitions.forEach(function(elem){
+      if( elem.fx !== undefined && elem.fy !== undefined) {
+        positions.push({
+          id: elem.id,
+          x: elem.fx,
+          y: elem.fy
+        });
+      }
+    });
+    return positions;
+  },
+
+  set: function(layout){
+    if ( !layout ) { return; }
+    layout.forEach(function(pos) {
+      var definition = node.filter(function(e) { return e.id == pos.id; })
+      definition.classed("fixed", true);
+
+      var datum = definition.data()[0]
+      if( datum ) {
+        datum.fx = pos.x
+        datum.fy = pos.y
+      }
+    });
+  }
+}
+
+node.on('mouseover', function(d) {
+  var relatives = [];
+  link.classed('downlighted', function(l) {
+    if (d === l.source || d === l.target){
+      relatives.push(l.source);
+      relatives.push(l.target);
+      return false;
+    }else{
+      return true;
+    }
+  });
+  node.classed('downlighted', function(n) {
+    return !(n == d || relatives.indexOf(n) > -1);
+  });
+});
+
+node.on('mouseout', function() {
+  link.classed('downlighted', false);
+  node.classed('downlighted', false);
+});
+
+window.rubrowser = {
+  data: data,
+  definitions: definitions,
+  relations: relations,
+  simulation: simulation,
+  node: node,
+  link: link,
+  state: state
+};
+
+rubrowser.state.set(layout);
+</script>
+
+    
+      <div class="toolbox">
+  <div class="card ml-2 mt-2">
+    <div class="card-header">Search</div>
+    <div class="card-body">
+      <label class="form-label">Namespace</label>
+      <textarea id="highlight_by_namespace" class="form-control" rows="5"></textarea>
+    </div>
+    <div class="card-body">
+      <label class="form-label">File Path</label>
+      <textarea id="highlight_by_file_path" class="form-control" rows="5"></textarea>
+    </div>
+    <div class="card-body">
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="highlight_modules"/>
+        <label class="form-check-label">Modules</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="highlight_classes"/>
+        <label class="form-check-label">Classes</label>
+      </div>
+    </div>
+  </div>
+  <div class="card ml-2 mt-2">
+    <div class="card-header">Ignore</div>
+    <div class="card-body">
+      <label>Namespace</label>
+      <textarea id="ignore_by_namespace" class="form-control" rows="5"></textarea>
+    </div>
+    <div class="card-body">
+      <label>File Path</label>
+      <textarea id="ignore_by_file_path" class="form-control" rows="5"></textarea>
+    </div>
+    <div class="card-body">
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="ignore_modules"/>
+        <label class="form-check-label">Modules</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="ignore_classes"/>
+        <label class="form-check-label">Classes</label>
+      </div>
+    </div>
+  </div>
+  <div class="card ml-2 mt-2">
+    <div class="card-header">Display</div>
+    <div class="card-body">
+      <button type="button" id="download_layout" class="btn btn-secondary btn-block">Download layout</button>
+      <button type="button" id="pause_simulation" class="btn btn-secondary btn-block">Pause animation</button>
+      <button type="button" id="fix_all" class="btn btn-secondary btn-block">Fix all</button>
+      <button type="button" id="release_all" class="btn btn-secondary btn-block">Release all</button>
+    </div>
+    <div class="card-body">
+      <label class="form-label">Force Collide</label>
+      <input id="force_collide" class="form-control" type="range" value="80" min="0" max="500"/>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="hide_namespaces"/>
+        <label class="form-check-label">Hide namespaces</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="hide_relations"/>
+        <label class="form-check-label">Hide relations</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="information_panel" class="card"></div>
+
+      <script type='text/javascript'>$(document).on('click', '.card-header', function(){
+  $(this).siblings().toggle();
+});
+
+// --------------------------------
+// Details Panel
+// --------------------------------
+rubrowser.node.on('click', function(d){
+  var namespace = d.id;
+  var lines = d.lines;
+  var dependents = rubrowser.relations.filter(function(i){ return i.target.id == namespace; });
+  var dependencies = rubrowser.relations.filter(function(i){ return i.source.id == namespace; });
+  var definitions = rubrowser.data.definitions.filter(function(i){ return i.namespace == namespace; });
+  var relations = rubrowser.data.relations.filter(function(i){ return i.resolved_namespace == namespace || i.caller == namespace; });
+
+  var content = $('<div>');
+  content.append('<label><strong>'+namespace+' ('+d.lines+' Lines)</strong></label>');
+
+  content.append('<strong>Defined in:</strong>');
+  var definitions_ol = $("<ol>");
+  for(var i=0; i<definitions.length; i++){
+    definitions_ol.append("<li>"+definitions[i].file+":"+definitions[i].line.toString()+"</li>");
+  }
+  content.append(definitions_ol);
+
+  if( dependents.length > 0 ){
+    content.append('<strong>Dependents:</strong>');
+    var dependents_ol = $("<ol>");
+    for(var i=0; i<dependents.length; i++){
+      dependents_ol.append("<li>"+dependents[i].source.id+"</li>");
+    }
+    content.append(dependents_ol);
+  }
+
+  if( dependencies.length > 0 ){
+    content.append('<strong>Dependencies:</strong>');
+    var dependencies_ol = $("<ol>");
+    for(var i=0; i<dependencies.length; i++){
+      dependencies_ol.append("<li>"+dependencies[i].target.id+"</li>");
+    }
+    content.append(dependencies_ol);
+  }
+
+  $('#information_panel').html(content);
+  return true;
+});
+
+
+// --------------------------------
+// Search Panel
+// --------------------------------
+$(document).on('change', '#highlight_by_namespace', function(){
+  var highlights_entries = $(this).val().trim();
+  var highlights = _(highlights_entries.split("\n"));
+
+  rubrowser.node.classed('highlighted_by_namespace', function(d){
+    if(highlights_entries.length == 0){ return false; }
+    return highlights.some(function(i){ return d.id.indexOf(i) > -1; });
+  });
+});
+
+$(document).on('change', '#highlight_by_file_path', function(){
+  var highlights_entries = $(this).val().trim();
+  var highlights = _(highlights_entries.split("\n"));
+
+  rubrowser.node.classed('highlighted_by_path', function(d){
+    if(highlights_entries.length == 0){ return false; }
+    return highlights.some(function(i){
+      return _(d.files).some(function(f) {
+        return f.indexOf(i) > -1;
+      });
+    });
+  });
+});
+
+$(document).on('change', '#highlight_modules, #highlight_classes', function(){
+  var modules_highlighted = $('#highlight_modules').is(':checked'),
+      classes_highlighted = $('#highlight_classes').is(':checked');
+
+  rubrowser.node.classed('highlighted_by_type', function(d){
+    return (d.type == 'Module' && modules_highlighted) || (d.type == 'Class' && classes_highlighted);
+  });
+});
+
+// --------------------------------
+// Ignore Panel
+// --------------------------------
+var ignoring_functions = {};
+
+function updateNodes() {
+
+  function ignoreNode(d) {
+    return _(ignoring_functions).some(function(ignoring_function) {
+      return ignoring_function(d);
+    });
+  }
+
+  function notIgnoreNode(d){
+    return !ignoreNode(d);
+  }
+  function ignoreRelation(r){
+    return ignoreNode(r.source) || ignoreNode(r.target);
+  }
+
+  function notIgnoreRelation(r){
+    return !ignoreRelation(r);
+  }
+
+  var filtered_definitions = rubrowser.definitions.filter(notIgnoreNode);
+  rubrowser.simulation.nodes(filtered_definitions);
+  rubrowser.node.classed('ignored', ignoreNode);
+
+  var filtered_relations = rubrowser.relations.filter(notIgnoreRelation);
+  rubrowser.simulation.force("link").links(filtered_relations);
+  rubrowser.link.classed('ignored', ignoreRelation);
+}
+
+$(document).on('change', '#ignore_by_namespace', function(){
+  var ignores_entries = $(this).val().trim();
+  var ignores = ignores_entries.split("\n");
+
+  if(ignores_entries.length == 0){
+    delete ignoring_functions["ignore_by_name"];
+  }else{
+    ignoring_functions["ignore_by_name"] = function(d){
+      return ignores.some(function(i){ return d.id.indexOf(i) > -1; });
+    }
+  }
+
+  updateNodes();
+});
+
+$(document).on('change', '#ignore_by_file_path', function(){
+  var ignores_entries = $(this).val().trim();
+  var ignores = ignores_entries.split("\n");
+
+  if(ignores_entries.length == 0){
+    delete ignoring_functions["ignore_by_file_path"];
+  }else{
+    ignoring_functions["ignore_by_file_path"] = function(d){
+      return ignores.some(function(i){
+        return _(d.files).every(function(f){
+          return f.indexOf(i) > -1;
+        });
+      });
+    }
+  }
+
+  updateNodes();
+});
+
+$(document).on('change', '#ignore_modules, #ignore_classes', function(){
+  var modules_ignored = $('#ignore_modules').is(':checked'),
+      classes_ignored = $('#ignore_classes').is(':checked');
+
+  if( modules_ignored ){
+    ignoring_functions["ignore_modules"] = function(d) {
+      return d.type == 'Module';
+    }
+  }else{
+    delete ignoring_functions["ignore_modules"];
+  }
+
+  if( classes_ignored ){
+    ignoring_functions["ignore_classes"] = function(d) {
+      return d.type == 'Class';
+    }
+  }else{
+    delete ignoring_functions["ignore_classes"];
+  }
+
+  updateNodes();
+});
+
+// --------------------------------
+// Display Panel
+// --------------------------------
+$(document).on('change', "#force_collide", function(){
+  var new_value = $(this).val();
+  rubrowser.simulation.force("forceCollide", d3.forceCollide(new_value));
+});
+
+$(document).on('change', "#hide_relations", function(){
+  var hide_relations = $('#hide_relations').is(':checked');
+  rubrowser.link.classed("hide_relation", hide_relations);
+});
+
+$(document).on('change', "#hide_namespaces", function(){
+  var hide_namespaces = $('#hide_namespaces').is(':checked');
+  rubrowser.node.classed("hide_namespace", hide_namespaces);
+});
+
+$(document).on('click', "#pause_simulation", function(){
+    rubrowser.simulation.stop();
+});
+
+$(document).on('click', "#fix_all", function(){
+  rubrowser.node.classed("fixed", true);
+  rubrowser.node.each(function(d){
+    d.fx = d.x;
+    d.fy = d.y;
+  });
+});
+
+$(document).on('click', "#release_all", function(){
+  rubrowser.node.classed("fixed", false);
+  rubrowser.node.each(function(d){
+    delete d["fx"];
+    delete d["fy"];
+  });
+});
+
+$(document).on('click', "#download_layout", function(){
+  var json = JSON.stringify(rubrowser.state.get());
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(json));
+  element.setAttribute('download', 'layout.json');
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+});
+</script>
+    
+
+    
+      <script type='text/javascript'>
+       server = "ws://localhost:8080";
+       (function() {
+  var slice = [].slice;
+
+  this.ActionCable = {
+    INTERNAL: {
+      "message_types": {
+        "welcome": "welcome",
+        "ping": "ping",
+        "confirmation": "confirm_subscription",
+        "rejection": "reject_subscription"
+      },
+      "default_mount_path": "/cable",
+      "protocols": ["actioncable-v1-json", "actioncable-unsupported"]
+    },
+    WebSocket: window.WebSocket,
+    logger: window.console,
+    createConsumer: function(url) {
+      var ref;
+      if (url == null) {
+        url = (ref = this.getConfig("url")) != null ? ref : this.INTERNAL.default_mount_path;
+      }
+      return new ActionCable.Consumer(this.createWebSocketURL(url));
+    },
+    getConfig: function(name) {
+      var element;
+      element = document.head.querySelector("meta[name='action-cable-" + name + "']");
+      return element != null ? element.getAttribute("content") : void 0;
+    },
+    createWebSocketURL: function(url) {
+      var a;
+      if (url && !/^wss?:/i.test(url)) {
+        a = document.createElement("a");
+        a.href = url;
+        a.href = a.href;
+        a.protocol = a.protocol.replace("http", "ws");
+        return a.href;
+      } else {
+        return url;
+      }
+    },
+    startDebugging: function() {
+      return this.debugging = true;
+    },
+    stopDebugging: function() {
+      return this.debugging = null;
+    },
+    log: function() {
+      var messages, ref;
+      messages = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+      if (this.debugging) {
+        messages.push(Date.now());
+        return (ref = this.logger).log.apply(ref, ["[ActionCable]"].concat(slice.call(messages)));
+      }
+    }
+  };
+
+}).call(this);
+(function() {
+  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  ActionCable.ConnectionMonitor = (function() {
+    var clamp, now, secondsSince;
+
+    ConnectionMonitor.pollInterval = {
+      min: 3,
+      max: 30
+    };
+
+    ConnectionMonitor.staleThreshold = 6;
+
+    function ConnectionMonitor(connection) {
+      this.connection = connection;
+      this.visibilityDidChange = bind(this.visibilityDidChange, this);
+      this.reconnectAttempts = 0;
+    }
+
+    ConnectionMonitor.prototype.start = function() {
+      if (!this.isRunning()) {
+        this.startedAt = now();
+        delete this.stoppedAt;
+        this.startPolling();
+        document.addEventListener("visibilitychange", this.visibilityDidChange);
+        return ActionCable.log("ConnectionMonitor started. pollInterval = " + (this.getPollInterval()) + " ms");
+      }
+    };
+
+    ConnectionMonitor.prototype.stop = function() {
+      if (this.isRunning()) {
+        this.stoppedAt = now();
+        this.stopPolling();
+        document.removeEventListener("visibilitychange", this.visibilityDidChange);
+        return ActionCable.log("ConnectionMonitor stopped");
+      }
+    };
+
+    ConnectionMonitor.prototype.isRunning = function() {
+      return (this.startedAt != null) && (this.stoppedAt == null);
+    };
+
+    ConnectionMonitor.prototype.recordPing = function() {
+      return this.pingedAt = now();
+    };
+
+    ConnectionMonitor.prototype.recordConnect = function() {
+      this.reconnectAttempts = 0;
+      this.recordPing();
+      delete this.disconnectedAt;
+      return ActionCable.log("ConnectionMonitor recorded connect");
+    };
+
+    ConnectionMonitor.prototype.recordDisconnect = function() {
+      this.disconnectedAt = now();
+      return ActionCable.log("ConnectionMonitor recorded disconnect");
+    };
+
+    ConnectionMonitor.prototype.startPolling = function() {
+      this.stopPolling();
+      return this.poll();
+    };
+
+    ConnectionMonitor.prototype.stopPolling = function() {
+      return clearTimeout(this.pollTimeout);
+    };
+
+    ConnectionMonitor.prototype.poll = function() {
+      return this.pollTimeout = setTimeout((function(_this) {
+        return function() {
+          _this.reconnectIfStale();
+          return _this.poll();
+        };
+      })(this), this.getPollInterval());
+    };
+
+    ConnectionMonitor.prototype.getPollInterval = function() {
+      var interval, max, min, ref;
+      ref = this.constructor.pollInterval, min = ref.min, max = ref.max;
+      interval = 5 * Math.log(this.reconnectAttempts + 1);
+      return Math.round(clamp(interval, min, max) * 1000);
+    };
+
+    ConnectionMonitor.prototype.reconnectIfStale = function() {
+      if (this.connectionIsStale()) {
+        ActionCable.log("ConnectionMonitor detected stale connection. reconnectAttempts = " + this.reconnectAttempts + ", pollInterval = " + (this.getPollInterval()) + " ms, time disconnected = " + (secondsSince(this.disconnectedAt)) + " s, stale threshold = " + this.constructor.staleThreshold + " s");
+        this.reconnectAttempts++;
+        if (this.disconnectedRecently()) {
+          return ActionCable.log("ConnectionMonitor skipping reopening recent disconnect");
+        } else {
+          ActionCable.log("ConnectionMonitor reopening");
+          return this.connection.reopen();
+        }
+      }
+    };
+
+    ConnectionMonitor.prototype.connectionIsStale = function() {
+      var ref;
+      return secondsSince((ref = this.pingedAt) != null ? ref : this.startedAt) > this.constructor.staleThreshold;
+    };
+
+    ConnectionMonitor.prototype.disconnectedRecently = function() {
+      return this.disconnectedAt && secondsSince(this.disconnectedAt) < this.constructor.staleThreshold;
+    };
+
+    ConnectionMonitor.prototype.visibilityDidChange = function() {
+      if (document.visibilityState === "visible") {
+        return setTimeout((function(_this) {
+          return function() {
+            if (_this.connectionIsStale() || !_this.connection.isOpen()) {
+              ActionCable.log("ConnectionMonitor reopening stale connection on visibilitychange. visbilityState = " + document.visibilityState);
+              return _this.connection.reopen();
+            }
+          };
+        })(this), 200);
+      }
+    };
+
+    now = function() {
+      return new Date().getTime();
+    };
+
+    secondsSince = function(time) {
+      return (now() - time) / 1000;
+    };
+
+    clamp = function(number, min, max) {
+      return Math.max(min, Math.min(max, number));
+    };
+
+    return ConnectionMonitor;
+
+  })();
+
+}).call(this);
+(function() {
+  var i, message_types, protocols, ref, supportedProtocols, unsupportedProtocol,
+    slice = [].slice,
+    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+  ref = ActionCable.INTERNAL, message_types = ref.message_types, protocols = ref.protocols;
+
+  supportedProtocols = 2 <= protocols.length ? slice.call(protocols, 0, i = protocols.length - 1) : (i = 0, []), unsupportedProtocol = protocols[i++];
+
+  ActionCable.Connection = (function() {
+    Connection.reopenDelay = 500;
+
+    function Connection(consumer) {
+      this.consumer = consumer;
+      this.open = bind(this.open, this);
+      this.subscriptions = this.consumer.subscriptions;
+      this.monitor = new ActionCable.ConnectionMonitor(this);
+      this.disconnected = true;
+    }
+
+    Connection.prototype.send = function(data) {
+      if (this.isOpen()) {
+        this.webSocket.send(JSON.stringify(data));
+        return true;
+      } else {
+        return false;
+      }
+    };
+
+    Connection.prototype.open = function() {
+      if (this.isActive()) {
+        ActionCable.log("Attempted to open WebSocket, but existing socket is " + (this.getState()));
+        return false;
+      } else {
+        ActionCable.log("Opening WebSocket, current state is " + (this.getState()) + ", subprotocols: " + protocols);
+        if (this.webSocket != null) {
+          this.uninstallEventHandlers();
+        }
+        this.webSocket = new ActionCable.WebSocket(this.consumer.url, protocols);
+        this.installEventHandlers();
+        this.monitor.start();
+        return true;
+      }
+    };
+
+    Connection.prototype.close = function(arg) {
+      var allowReconnect, ref1;
+      allowReconnect = (arg != null ? arg : {
+        allowReconnect: true
+      }).allowReconnect;
+      if (!allowReconnect) {
+        this.monitor.stop();
+      }
+      if (this.isActive()) {
+        return (ref1 = this.webSocket) != null ? ref1.close() : void 0;
+      }
+    };
+
+    Connection.prototype.reopen = function() {
+      var error;
+      ActionCable.log("Reopening WebSocket, current state is " + (this.getState()));
+      if (this.isActive()) {
+        try {
+          return this.close();
+        } catch (error1) {
+          error = error1;
+          return ActionCable.log("Failed to reopen WebSocket", error);
+        } finally {
+          ActionCable.log("Reopening WebSocket in " + this.constructor.reopenDelay + "ms");
+          setTimeout(this.open, this.constructor.reopenDelay);
+        }
+      } else {
+        return this.open();
+      }
+    };
+
+    Connection.prototype.getProtocol = function() {
+      var ref1;
+      return (ref1 = this.webSocket) != null ? ref1.protocol : void 0;
+    };
+
+    Connection.prototype.isOpen = function() {
+      return this.isState("open");
+    };
+
+    Connection.prototype.isActive = function() {
+      return this.isState("open", "connecting");
+    };
+
+    Connection.prototype.isProtocolSupported = function() {
+      var ref1;
+      return ref1 = this.getProtocol(), indexOf.call(supportedProtocols, ref1) >= 0;
+    };
+
+    Connection.prototype.isState = function() {
+      var ref1, states;
+      states = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+      return ref1 = this.getState(), indexOf.call(states, ref1) >= 0;
+    };
+
+    Connection.prototype.getState = function() {
+      var ref1, state, value;
+      for (state in WebSocket) {
+        value = WebSocket[state];
+        if (value === ((ref1 = this.webSocket) != null ? ref1.readyState : void 0)) {
+          return state.toLowerCase();
+        }
+      }
+      return null;
+    };
+
+    Connection.prototype.installEventHandlers = function() {
+      var eventName, handler;
+      for (eventName in this.events) {
+        handler = this.events[eventName].bind(this);
+        this.webSocket["on" + eventName] = handler;
+      }
+    };
+
+    Connection.prototype.uninstallEventHandlers = function() {
+      var eventName;
+      for (eventName in this.events) {
+        this.webSocket["on" + eventName] = function() {};
+      }
+    };
+
+    Connection.prototype.events = {
+      message: function(event) {
+        var identifier, message, ref1, type;
+        if (!this.isProtocolSupported()) {
+          return;
+        }
+        ref1 = JSON.parse(event.data), identifier = ref1.identifier, message = ref1.message, type = ref1.type;
+        switch (type) {
+          case message_types.welcome:
+            this.monitor.recordConnect();
+            return this.subscriptions.reload();
+          case message_types.ping:
+            return this.monitor.recordPing();
+          case message_types.confirmation:
+            return this.subscriptions.notify(identifier, "connected");
+          case message_types.rejection:
+            return this.subscriptions.reject(identifier);
+          default:
+            return this.subscriptions.notify(identifier, "received", message);
+        }
+      },
+      open: function() {
+        ActionCable.log("WebSocket onopen event, using '" + (this.getProtocol()) + "' subprotocol");
+        this.disconnected = false;
+        if (!this.isProtocolSupported()) {
+          ActionCable.log("Protocol is unsupported. Stopping monitor and disconnecting.");
+          return this.close({
+            allowReconnect: false
+          });
+        }
+      },
+      close: function(event) {
+        ActionCable.log("WebSocket onclose event");
+        if (this.disconnected) {
+          return;
+        }
+        this.disconnected = true;
+        this.monitor.recordDisconnect();
+        return this.subscriptions.notifyAll("disconnected", {
+          willAttemptReconnect: this.monitor.isRunning()
+        });
+      },
+      error: function() {
+        return ActionCable.log("WebSocket onerror event");
+      }
+    };
+
+    return Connection;
+
+  })();
+
+}).call(this);
+(function() {
+  var slice = [].slice;
+
+  ActionCable.Subscriptions = (function() {
+    function Subscriptions(consumer) {
+      this.consumer = consumer;
+      this.subscriptions = [];
+    }
+
+    Subscriptions.prototype.create = function(channelName, mixin) {
+      var channel, params, subscription;
+      channel = channelName;
+      params = typeof channel === "object" ? channel : {
+        channel: channel
+      };
+      subscription = new ActionCable.Subscription(this.consumer, params, mixin);
+      return this.add(subscription);
+    };
+
+    Subscriptions.prototype.add = function(subscription) {
+      this.subscriptions.push(subscription);
+      this.consumer.ensureActiveConnection();
+      this.notify(subscription, "initialized");
+      this.sendCommand(subscription, "subscribe");
+      return subscription;
+    };
+
+    Subscriptions.prototype.remove = function(subscription) {
+      this.forget(subscription);
+      if (!this.findAll(subscription.identifier).length) {
+        this.sendCommand(subscription, "unsubscribe");
+      }
+      return subscription;
+    };
+
+    Subscriptions.prototype.reject = function(identifier) {
+      var i, len, ref, results, subscription;
+      ref = this.findAll(identifier);
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        subscription = ref[i];
+        this.forget(subscription);
+        this.notify(subscription, "rejected");
+        results.push(subscription);
+      }
+      return results;
+    };
+
+    Subscriptions.prototype.forget = function(subscription) {
+      var s;
+      this.subscriptions = (function() {
+        var i, len, ref, results;
+        ref = this.subscriptions;
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          s = ref[i];
+          if (s !== subscription) {
+            results.push(s);
+          }
+        }
+        return results;
+      }).call(this);
+      return subscription;
+    };
+
+    Subscriptions.prototype.findAll = function(identifier) {
+      var i, len, ref, results, s;
+      ref = this.subscriptions;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        s = ref[i];
+        if (s.identifier === identifier) {
+          results.push(s);
+        }
+      }
+      return results;
+    };
+
+    Subscriptions.prototype.reload = function() {
+      var i, len, ref, results, subscription;
+      ref = this.subscriptions;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        subscription = ref[i];
+        results.push(this.sendCommand(subscription, "subscribe"));
+      }
+      return results;
+    };
+
+    Subscriptions.prototype.notifyAll = function() {
+      var args, callbackName, i, len, ref, results, subscription;
+      callbackName = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+      ref = this.subscriptions;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        subscription = ref[i];
+        results.push(this.notify.apply(this, [subscription, callbackName].concat(slice.call(args))));
+      }
+      return results;
+    };
+
+    Subscriptions.prototype.notify = function() {
+      var args, callbackName, i, len, results, subscription, subscriptions;
+      subscription = arguments[0], callbackName = arguments[1], args = 3 <= arguments.length ? slice.call(arguments, 2) : [];
+      if (typeof subscription === "string") {
+        subscriptions = this.findAll(subscription);
+      } else {
+        subscriptions = [subscription];
+      }
+      results = [];
+      for (i = 0, len = subscriptions.length; i < len; i++) {
+        subscription = subscriptions[i];
+        results.push(typeof subscription[callbackName] === "function" ? subscription[callbackName].apply(subscription, args) : void 0);
+      }
+      return results;
+    };
+
+    Subscriptions.prototype.sendCommand = function(subscription, command) {
+      var identifier;
+      identifier = subscription.identifier;
+      return this.consumer.send({
+        command: command,
+        identifier: identifier
+      });
+    };
+
+    return Subscriptions;
+
+  })();
+
+}).call(this);
+(function() {
+  ActionCable.Subscription = (function() {
+    var extend;
+
+    function Subscription(consumer, params, mixin) {
+      this.consumer = consumer;
+      if (params == null) {
+        params = {};
+      }
+      this.identifier = JSON.stringify(params);
+      extend(this, mixin);
+    }
+
+    Subscription.prototype.perform = function(action, data) {
+      if (data == null) {
+        data = {};
+      }
+      data.action = action;
+      return this.send(data);
+    };
+
+    Subscription.prototype.send = function(data) {
+      return this.consumer.send({
+        command: "message",
+        identifier: this.identifier,
+        data: JSON.stringify(data)
+      });
+    };
+
+    Subscription.prototype.unsubscribe = function() {
+      return this.consumer.subscriptions.remove(this);
+    };
+
+    extend = function(object, properties) {
+      var key, value;
+      if (properties != null) {
+        for (key in properties) {
+          value = properties[key];
+          object[key] = value;
+        }
+      }
+      return object;
+    };
+
+    return Subscription;
+
+  })();
+
+}).call(this);
+(function() {
+  ActionCable.Consumer = (function() {
+    function Consumer(url) {
+      this.url = url;
+      this.subscriptions = new ActionCable.Subscriptions(this);
+      this.connection = new ActionCable.Connection(this);
+    }
+
+    Consumer.prototype.send = function(data) {
+      return this.connection.send(data);
+    };
+
+    Consumer.prototype.connect = function() {
+      return this.connection.open();
+    };
+
+    Consumer.prototype.disconnect = function() {
+      return this.connection.close({
+        allowReconnect: false
+      });
+    };
+
+    Consumer.prototype.ensureActiveConnection = function() {
+      if (!this.connection.isActive()) {
+        return this.connection.open();
+      }
+    };
+
+    return Consumer;
+
+  })();
+
+}).call(this);
+
+var glowing = {}
+function glow(cls) {
+  if (!glowing[cls]) {
+    var node = rubrowser.node.filter(function(d){
+      return d.id == cls;
+    });
+
+    if (node.size() > 0){
+      node.classed("running", true);
+      glowing[cls] = true;
+      setTimeout(function(){
+        glowing[cls] = false;
+        node.classed("running", false);
+      }, 2000)
+    }
+  }
+}
+
+var cable = ActionCable.createConsumer(server)
+cable.ensureActiveConnection()
+var channel = cable.subscriptions.create(
+  "classes",
+  {
+    received: function(data){
+      glow(data.message);
+    }
+  }
+)
+
+      </script>
+    
+  </body>
+</html>

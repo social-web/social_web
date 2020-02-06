@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
 module SocialWeb
-  class Activity; end
+  module Activities
+    class Delete; end
+  end
 end
