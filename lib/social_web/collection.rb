@@ -34,16 +34,5 @@ module SocialWeb
     private
 
     attr_reader :actor
-
-    def store_obj_in_collection(obj, collection)
-      SocialWeb['objects_repo'].store(obj)
-      SocialWeb['collections_repo'].
-        store_object_in_collection_for_iri(
-          object: obj,
-          collection: self::TYPE,
-          actor: actor
-        )
-      true
-    end
   end
 end
