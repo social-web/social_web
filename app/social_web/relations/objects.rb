@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
+require_relative './concerns/normalize_id'
+
 module SocialWeb
   module Relations
     class Objects < Sequel::Model(SocialWeb[:db][:social_web_objects])
+      include NormalizeID
+
       set_primary_key :iri
 
       many_to_many :children,
