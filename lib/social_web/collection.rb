@@ -26,7 +26,7 @@ module SocialWeb
     def includes?(obj)
       SocialWeb['repositories.collections'].stored?(
         object: obj,
-        collection: self::TYPE,
+        collection: self.class::TYPE.downcase,
         actor: actor
       )
     end
