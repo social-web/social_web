@@ -24,7 +24,13 @@ module SocialWeb
 
     require_relative './configuration'
     register(:config, SocialWeb.configuration)
+    original_formatter = Logger::Formatter.new
+    logger = Logger.new(
+      $stdout,
+      formatter: -> (severity, datetime, progname, msg) { original_formatter.call(severity, datetime, progname, "SocialWeb: #{msg}") }
+    )
     SocialWeb.configure do |config|
+      config.loggers = [logger]
       config.max_depth = Float::INFINITY
     end
   end
