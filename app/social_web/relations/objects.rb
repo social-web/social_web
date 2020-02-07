@@ -28,7 +28,7 @@ module SocialWeb
           where(type: type)
         end
 
-        def traverse_children(iri)
+        def traverse_children(iri, depth: SocialWeb['config'].max_depth)
           SocialWeb[:db][:threads].
             with_recursive(
               :threads,
@@ -52,16 +52,17 @@ module SocialWeb
                 Sequel[:children][:json],
                 Sequel[:social_web_relationships][:type],
                 Sequel[:social_web_objects][:created_at]
-              ) { Sequel[:distance] + 1 }.
+              ) { Sequel[:depth] + 1 }.
                 join(:social_web_relationships, { parent_iri: :iri }).
                 join(Sequel[:social_web_objects].as(:children), { iri: :child_iri }).
-                join(:threads, Sequel[:threads][:child_iri] => Sequel[:social_web_objects][:iri]),
+                join(:threads, Sequel[:threads][:child_iri] => Sequel[:social_web_objects][:iri]).
+                where { Sequel[:threads][:depth] <= depth },
 
-              args: [:parent_iri, :child_iri, :parent_json, :child_json, :rel_type, :created_at, :distance]
+              args: [:parent_iri, :child_iri, :parent_json, :child_json, :rel_type, :created_at, :depth]
             )
         end
 
-        def traverse_parents(iri)
+        def traverse_parents(iri, depth: SocialWeb['config'].max_depth)
           SocialWeb[:db][:threads].
             with_recursive(
               :threads,
@@ -85,12 +86,13 @@ module SocialWeb
                 Sequel[:parents][:json],
                 Sequel[:social_web_relationships][:type],
                 Sequel[:social_web_objects][:created_at]
-              ) { Sequel[:distance] + 1 }.
+              ) { Sequel[:depth] + 1 }.
                 join(:social_web_relationships, { child_iri: :iri }).
                 join(Sequel[:social_web_objects].as(:parents), { iri: :parent_iri }).
-                join(:threads, Sequel[:threads][:parent_iri] => Sequel[:social_web_objects][:iri]),
+                join(:threads, Sequel[:threads][:parent_iri] => Sequel[:social_web_objects][:iri]).
+                where { Sequel[:threads][:depth] <= depth },
 
-              args: [:child_iri, :parent_iri, :child_json, :parent_json, :rel_type, :created_at, :distance]
+              args: [:child_iri, :parent_iri, :child_json, :parent_json, :rel_type, :created_at, :depth]
             )
         end
       end

@@ -12,8 +12,8 @@ module SocialWeb
       #
       # @param [ActivityStreams::Object] obj
       # @return [ActivityStreams::Object]
-      def call(obj, for_actor)
-        obj.traverse_properties(PROPERTIES) do |hash|
+      def call(obj)
+        obj.traverse_properties(PROPERTIES, depth: SocialWeb['config'].max_depth) do |hash|
           parent, child, prop = hash.values_at(:parent, :child, :property)
 
           # Check if the value of `child` is a remotely accessible IRI

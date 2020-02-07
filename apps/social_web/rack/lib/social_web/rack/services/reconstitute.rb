@@ -3,7 +3,6 @@
 module SocialWeb
   module Rack
     class Reconstitute
-      DEPTH = 90
       COLLECTIONS = %i[replies].freeze
       RELATIONSHIPS = %i[actor attributedTo inReplyTo object target tag].freeze
 
@@ -43,7 +42,7 @@ module SocialWeb
 
       private
 
-      def queue(initial, depth: DEPTH, &blk)
+      def queue(initial, depth: SocialWeb['config'].max_depth, &blk)
         loop_count = 0
         queue = [initial]
         while !queue.empty? && loop_count < DEPTH
