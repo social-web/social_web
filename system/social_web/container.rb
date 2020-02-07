@@ -21,5 +21,11 @@ module SocialWeb
 
     load_paths! 'lib'
     load_paths! 'app'
+
+    require_relative './configuration'
+    register(:config, SocialWeb.configuration)
+    SocialWeb.configure do |config|
+      config.max_depth = Float::INFINITY
+    end
   end
 end

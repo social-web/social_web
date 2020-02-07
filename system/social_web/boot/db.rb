@@ -3,8 +3,16 @@
 SocialWeb::Container.boot :db do
   init do
     require 'sequel'
+    require 'logger'
 
-    register(:db, Sequel.connect(ENV['SOCIAL_WEB_DATABASE_URL']))
+    db = Sequel.connect(
+      ENV['SOCIAL_WEB_DATABASE_URL'],
+      loggers: [Logger.new($stdout)]
+    )
+
+    db.extension :caller_logging
+
+    register(:db, db)
   end
 
   start do
