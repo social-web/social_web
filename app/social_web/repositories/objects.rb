@@ -36,12 +36,7 @@ module SocialWeb
       def store(obj)
         return obj if stored?(obj)
 
-        # Reference the object's properties, assigning the value of child
-        # properties to the id of child
-        obj.traverse_properties(depth: 1) do |hash|
-          parent, child, prop = hash.values_at(:parent, :child, :property)
-          parent[prop] = child[:id] if child.is_a?(ActivityStreams::Object)
-        end
+        obj.compress!
 
         objects.insert(
           iri: obj[:id],
