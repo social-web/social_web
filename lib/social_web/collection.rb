@@ -12,7 +12,16 @@ module SocialWeb
       @actor = for_actor
     end
 
-    def add(obj); end
+    def add(obj)
+      SocialWeb['objects_repo'].store(obj)
+      SocialWeb['collections_repo'].
+        store_object_in_collection_for_iri(
+          object: obj,
+          collection: self::TYPE,
+          actor: actor
+        )
+      true
+    end
 
     def includes?(obj)
       SocialWeb['repositories.collections'].stored?(
