@@ -2,6 +2,8 @@
 
 module SocialWeb
   module Activities
-    class Create; end
+    class Create
+
+    end
   end
 end
