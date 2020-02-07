@@ -7,6 +7,14 @@ module SocialWeb
       PROPERTIES = %i[actor attributedTo inReplyTo object target tag].freeze
       COLLECTIONS = %i[replies].freeze
 
+      def self.for_actor(actor)
+        new(actor)
+      end
+
+      def initialize(actor)
+        @actor = actor
+      end
+
       # Wire the remote storage client with the local storage client on behalf
       # of an actor to remotely access and locally store the object.
       #
@@ -20,7 +28,7 @@ module SocialWeb
           if child.is_a?(String) && child.match?(URI.regexp)
             child = SocialWeb['services.http_client'].
               # We'll need to sign the request on the actor's behalf
-              for_actor(for_actor).
+              for_actor(actor).
               # Retrieve the remote object
               get(child)
           end
@@ -38,6 +46,10 @@ module SocialWeb
           child
         end
       end
+
+      private
+
+      attr_reader :actor
     end
   end
 end
