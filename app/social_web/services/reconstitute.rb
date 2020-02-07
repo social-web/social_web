@@ -8,9 +8,10 @@ module SocialWeb
         SocialWeb['repositories.objects'].traverse(obj) do |prop_map|
           parent, child, prop = prop_map.values_at(:parent, :child, :property)
           parent[prop] = child
+          next unless child
 
           # Add replies to child's replies and also to given object's replies
-          if prop == 'inReplyTo'
+          if prop == 'inReplyTo' && child[:replies]
             child[:replies][:items] ||= []
             child[:replies][:items] << parent
 
