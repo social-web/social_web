@@ -31,6 +31,12 @@ module SocialWeb
 
       def delete(obj)
         objects.by_iri(obj[:id]).delete
+        true
+      end
+
+      def replace(obj)
+        objects.by_iri(obj.iri).update(json: obj.compress!.to_json)
+        true
       end
 
       def store(obj)
