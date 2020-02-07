@@ -35,8 +35,8 @@ module SocialWeb
 
           # Store the parent, child, and a record of their relationship
           if child.is_a?(ActivityStreams::Object)
-            SocialWeb['repositories.objects'].new.store(child)
-            SocialWeb['repositories.relationships'].new.store(
+            SocialWeb['repositories.objects'].store(child)
+            SocialWeb['repositories.relationships'].store(
               parent: parent,
               child: child,
               property: prop
