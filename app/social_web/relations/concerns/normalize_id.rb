@@ -2,6 +2,7 @@
 
 module SocialWeb
   module Relations
+    # Provides a callback for normalizing an object's ID before insertion
     module NormalizeID
       def self.included(base)
         base.class_eval do
