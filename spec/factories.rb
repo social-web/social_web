@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :stream, class: ActivityStreams do
-    initialize_with do
-      ActivityStreams.from_json(JSON.dump(attributes))
-    end
+  factory :object, class: ActivityStreams::Object do
+    to_create { |instance| SocialWeb['repositories.objects'].store(instance) }
 
-    sequence(:id) { |n| "https://example.com/#{n}"}
+    id { 'http://example.org' }
     type { 'Create' }
+    json { ActivityStreams.create(iri: iri, type: type).to_json }
+    created_at { Time.now }
   end
 end

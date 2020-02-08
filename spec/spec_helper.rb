@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 ENV['RACK_ENV'] = 'test'
+ENV['SOCIAL_WEB_DATABASE_URL'] = 'sqlite://social_web_test.sqlite3'
 
-require 'social_web'
-require_relative '../spec/spec_container'
+require 'social_web/boot'
 SocialWeb.configure do |config|
-  config.container = SocialWeb::SpecContainer
+  config.max_depth = 200
 end
 
 require 'rack/test'
@@ -14,13 +14,16 @@ require 'factory_bot'
 Dir['./spec/helpers/*.rb'].each { |f| require f }
 
 RSpec.configure do |config|
+  config.include ::RackHelper, type: :request
   config.include ::Rack::Test::Methods, type: :request
-  config.include ::Helpers::Request, type: :request
   config.include FactoryBot::Syntax::Methods
 
   config.around(:example) do |example|
-    SocialWeb::SpecContainer::DB.transaction(rollback: :always, &example)
+    SocialWeb[:db].transaction(rollback: :always) do
+      example.run
+    end
   end
+
   config.before(:suite) do
     FactoryBot.find_definitions
   end
