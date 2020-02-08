@@ -42,12 +42,12 @@ module SocialWeb
       def store(obj)
         return obj if stored?(obj)
 
-        obj.compress!
+        compressed = obj.compress
 
         objects.insert(
-          iri: obj[:id],
-          type: obj[:type],
-          json: obj.to_json,
+          iri: compressed[:id],
+          type: compressed[:type],
+          json: compressed.to_json,
           created_at: Time.now.utc
         )
 

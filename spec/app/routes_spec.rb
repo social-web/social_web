@@ -5,12 +5,19 @@ require 'spec_helper'
 module SocialWeb
   RSpec.describe Routes, type: :request do
     context 'POST' do
-      describe 'inbox' do
-        it "adds the item to the actor's inbox" do
-          actor = create :object, iri: 'http://example.org/actor'
-          activity = create :object
-          header('accept', 'application/activity+json')
-          post '/actor/inbox', activity.to_json
+      %w[inbox outbox].each do |collection|
+        describe collection do
+          it "adds the item to the actor's #{collection}" do
+            actor = create :object
+            activity = build :object
+
+            expect(SocialWeb).
+              to receive(:process).
+              with(activity.to_json, actor[:id], collection)
+
+            header('accept', 'application/activity+json')
+            post "#{actor[:id]}/#{collection}", activity.to_json
+          end
         end
       end
     end

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 FactoryBot.define do
-  factory :object, class: ActivityStreams::Object do
+  factory :object, class: ActivityStreams do
+    initialize_with { ActivityStreams.new(attributes) }
     to_create { |instance| SocialWeb['repositories.objects'].store(instance) }
 
-    id { 'http://example.org' }
-    type { 'Create' }
-    json { ActivityStreams.create(iri: iri, type: type).to_json }
-    created_at { Time.now }
+    id { "https://example.org/objects/#{SecureRandom.hex}"}
   end
 end

@@ -13,17 +13,17 @@ module SocialWeb
     end
 
     def add(obj)
-      SocialWeb['objects_repo'].store(obj)
-      SocialWeb['collections_repo'].
+      SocialWeb['repositories.objects'].store(obj)
+      SocialWeb['repositories.collections'].
         store_object_in_collection_for_iri(
           object: obj,
-          collection: self::TYPE,
+          collection: self.class::TYPE.downcase,
           actor: actor
         )
       true
     end
 
-    def includes?(obj)
+    def include?(obj)
       SocialWeb['repositories.collections'].stored?(
         object: obj,
         collection: self.class::TYPE.downcase,

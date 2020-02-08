@@ -16,6 +16,10 @@ module SocialWeb
     # Default: Float::INFINITY
     attr_accessor :max_depth
 
+    def loggers
+      @loggers ||= [SocialWeb[:logger].new(STDOUT)]
+    end
+
     def loggers=(val)
       @loggers ||= []
       @loggers += Array(val)

@@ -9,7 +9,7 @@ SocialWeb::Container.boot :activity_pub do
       register(:inbox, SocialWeb::Collections::Inbox)
 
       require 'social_web/collections/outbox'
-      register(:oubox, SocialWeb::Collections::Outbox)
+      register(:outbox, SocialWeb::Collections::Outbox)
 
       require 'social_web/collections/following'
       register(:following, SocialWeb::Collections::Following)

@@ -21,16 +21,18 @@ module SocialWeb
       # @param [ActivityStreams::Object] obj
       # @return [ActivityStreams::Object]
       def call(obj)
-        obj.traverse_properties(PROPERTIES, depth: SocialWeb['config'].max_depth) do |hash|
+        new_obj = obj.dup
+        new_obj.traverse_properties(PROPERTIES, depth: SocialWeb['config'].max_depth) do |hash|
           parent, child, prop = hash.values_at(:parent, :child, :property)
 
           # Check if the value of `child` is a remotely accessible IRI
           if child.is_a?(String) && child.match?(URI.regexp)
-            child = SocialWeb['services.http_client'].
-              # We'll need to sign the request on the actor's behalf
-              for_actor(actor).
-              # Retrieve the remote object
-              get(child)
+            child = SocialWeb['repositories.objects'].get_by_iri(child) ||
+              SocialWeb['services.http_client'].
+                # We'll need to sign the request on the actor's behalf
+                for_actor(actor).
+                # Retrieve the remote object
+                get(child)
           end
 
           # Store the parent, child, and a record of their relationship
@@ -45,6 +47,8 @@ module SocialWeb
 
           child
         end
+
+        new_obj
       end
 
       private

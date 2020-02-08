@@ -3,6 +3,7 @@
 module SocialWeb
   module Rack
     def self.new(app, *args, &block)
+      SocialWeb::Container.finalize!
       SocialWeb::Routes.new(app, *args, &block)
     end
   end
@@ -20,10 +21,7 @@ module SocialWeb
       types: { activity_json: 'application/activity+json' }
     plugin :default_headers,
       'Content-Type' => 'text/html; charset=utf-8'
-    plugin :common_logger, Logger.new(
-      $stdout,
-      formatter: -> (severity, datetime, progname, msg) { original_formatter.call(severity, datetime, progname, "SocialWeb: #{msg}") }
-    )
+    plugin :common_logger, SocialWeb['config'].loggers
 
     route do |r|
       r.activity_json do
@@ -37,7 +35,7 @@ module SocialWeb
           actor_iri = parse_actor_iri(r.url)
           collection = parse_collection(r.url)
 
-          SocialWeb(activity_json, actor_iri, collection)
+          SocialWeb.process(activity_json, actor_iri, collection)
 
           response.status = 201
           ''

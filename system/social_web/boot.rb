@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative './configuration'
 require 'social_web/container'
 
-SocialWeb::Container.finalize!
+SocialWeb::Container.start :logging

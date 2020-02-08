@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/social-web'
 
   s.files = %w[README.md Rakefile LICENSE.txt] + Dir['{db,lib,system}/**/*']
-  s.require_paths = %w[lib system]
+  s.require_paths = %w[system]
 
   s.required_ruby_version = '>= 2.5.0'
 

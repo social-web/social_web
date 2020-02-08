@@ -5,7 +5,8 @@ module SocialWeb
     # Retrieve and assign object's nested relationships
     class Reconstitute
       def call(obj)
-        SocialWeb['repositories.objects'].traverse(obj) do |prop_map|
+        new_obj = obj.dup
+        SocialWeb['repositories.objects'].traverse(new_obj) do |prop_map|
           parent, child, prop = prop_map.values_at(:parent, :child, :property)
           parent[prop] = child
           next unless child
@@ -21,6 +22,7 @@ module SocialWeb
             end
           end
         end
+        new_obj
       end
     end
   end
