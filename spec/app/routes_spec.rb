@@ -4,6 +4,22 @@ require 'spec_helper'
 
 module SocialWeb
   RSpec.describe Routes, type: :request do
+    describe 'GET' do
+      it 'returns the JSON representation of the found object' do
+        obj = create :object
+        header('accept', 'application/activity+json')
+        get obj[:id]
+        expect(last_response.body).to eq(obj.to_json)
+      end
+
+      it 'returns an empty 404 response if the object does not exist' do
+        header('accept', 'application/activity+json')
+        get '/some-object'
+        expect(last_response.status).to eq(404)
+        expect(last_response.body).to be_empty
+      end
+    end
+
     context 'POST' do
       %w[inbox outbox].each do |collection|
         describe collection do
