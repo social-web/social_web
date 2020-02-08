@@ -54,6 +54,10 @@ module SocialWeb
         obj
       end
 
+      def total
+        objects.count
+      end
+
       # Traverse the tree of relationships starting with `root`, visiting
       # each relationship with the provided block.
       def traverse(root, properties = [], depth: SocialWeb['config'].max_depth)
