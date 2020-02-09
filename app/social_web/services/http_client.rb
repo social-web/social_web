@@ -60,6 +60,34 @@ module SocialWeb
 
         ActivityStreams.from_json(res.body.to_s)
       end
+
+      def post(iri, obj)
+        request = ::HTTP.build_request(
+          :post,
+          iri,
+          headers: {
+            accept: ACTIVITY_JSON_MIME_TYPE,
+            date: Time.now.utc.httpdate
+          },
+          body: obj.compress.to_json
+        )
+
+        if @actor
+          keys = SocialWeb.container['repositories.keys'].for_actor(@actor)
+
+          signature = Signature.call(
+            request,
+            private_key: keys.fetch(:private),
+            key_id: keys[:key_id]
+          )
+          request.headers.merge!(signature: signature)
+        end
+
+        client = ::HTTP::Client.new
+        res = client.perform(request, client.default_options)
+
+        res.status.success?
+      end
     end
   end
 end
