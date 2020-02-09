@@ -52,7 +52,7 @@ module SocialWeb
         end
 
         describe 'Accept activity' do
-          it "adds the activity's actor to the actor's following collection if the " do
+          it "adds the activity's actor to the receiving actor's following collection if the receiving actor had sent a follow" do
             actor = create :object, type: 'Actor'
 
             follow_actor = create :object, type: 'Actor'
