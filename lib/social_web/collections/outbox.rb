@@ -5,7 +5,16 @@ module SocialWeb
     class Outbox < SocialWeb::Collection
       TYPE = 'Outbox'
 
-      def process(activity); end
+      def process(activity)
+        add(activity)
+
+        case activity[:type]
+        when 'Follow'
+          SocialWeb['services.http_client'].
+            for_actor(actor).
+            post(activity[:object][:id], activity)
+        end
+      end
     end
   end
 end
