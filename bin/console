@@ -13,9 +13,9 @@ Sequel::Migrator.run(
   table: :social_web_schema_migrations
 )
 
-require 'social_web'
+require 'social_web/boot'
 
-SocialWeb.start!
+SocialWeb::Container.finalize!
 
 require 'factory_bot'
 FactoryBot.find_definitions
