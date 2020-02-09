@@ -21,7 +21,7 @@ module SocialWeb
       types: { activity_json: 'application/activity+json' }
     plugin :default_headers,
       'Content-Type' => 'text/html; charset=utf-8'
-    plugin :common_logger, SocialWeb['config'].loggers
+    plugin :common_logger, SocialWeb[:config].loggers
 
     route do |r|
       r.activity_json do

@@ -61,7 +61,7 @@ module SocialWeb
 
       # Traverse the tree of relationships starting with `root`, visiting
       # each relationship with the provided block.
-      def traverse(root, properties = [], depth: SocialWeb['config'].max_depth)
+      def traverse(root, properties = [], depth: SocialWeb[:config].max_depth)
         cache = Cache.new
         cache.set(root[:id], root)
 

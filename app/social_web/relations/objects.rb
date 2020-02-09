@@ -32,7 +32,7 @@ module SocialWeb
           where(type: type)
         end
 
-        def traverse_children(iri, depth: SocialWeb['config'].max_depth)
+        def traverse_children(iri, depth: SocialWeb[:config].max_depth)
           SocialWeb[:db][:threads].
             with_recursive(
               :threads,
@@ -66,7 +66,7 @@ module SocialWeb
             )
         end
 
-        def traverse_parents(iri, depth: SocialWeb['config'].max_depth)
+        def traverse_parents(iri, depth: SocialWeb[:config].max_depth)
           SocialWeb[:db][:threads].
             with_recursive(
               :threads,

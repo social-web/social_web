@@ -42,7 +42,7 @@ module SocialWeb
 
       private
 
-      def queue(initial, depth: SocialWeb['config'].max_depth, &blk)
+      def queue(initial, depth: SocialWeb[:config].max_depth, &blk)
         loop_count = 0
         queue = [initial]
         while !queue.empty? && loop_count < DEPTH
