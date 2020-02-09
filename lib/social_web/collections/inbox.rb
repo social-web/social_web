@@ -6,10 +6,6 @@ module SocialWeb
       TYPE = 'INBOX'
 
       def process(activity)
-        unless SocialWeb['collections.following'].for_actor(actor).include?(activity[:actor])
-          return
-        end
-
         add(activity)
 
         case activity[:type]

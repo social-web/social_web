@@ -35,7 +35,8 @@ module SocialWeb
       end
 
       def replace(obj)
-        objects.by_iri(obj.iri).update(json: obj.compress!.to_json)
+        compressed = obj.compress
+        objects.by_iri(obj[:id]).update(json: obj.to_json)
         true
       end
 
