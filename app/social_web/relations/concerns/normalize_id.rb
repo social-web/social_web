@@ -11,7 +11,7 @@ module SocialWeb
           def before_create
             each do |k, v|
               if k.to_s.end_with?('iri')
-                self[k] = normalize_id(v)
+                self[k] = self.class.normalize_id(v)
               end
             end
             super
@@ -19,7 +19,7 @@ module SocialWeb
 
           private
 
-          def normalize_id(id)
+          def self.normalize_id(id)
             id.end_with?('/') ? id.chop : id
           end
         end

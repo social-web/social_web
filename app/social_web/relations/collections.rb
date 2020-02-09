@@ -9,11 +9,11 @@ module SocialWeb
 
       class << self
         def by_object_iri(iri)
-          where(object_iri: iri)
+          where(object_iri: normalize_id(iri))
         end
 
         def by_actor_iri(iri)
-          where(actor_iri: iri)
+          where(actor_iri: normalize_id(iri))
         end
 
         def by_type(type)

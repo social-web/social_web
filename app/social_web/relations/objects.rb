@@ -25,7 +25,7 @@ module SocialWeb
 
       class << self
         def by_iri(iri)
-          where(iri: iri)
+          where(iri: normalize_id(iri))
         end
 
         def by_type(type)
@@ -47,7 +47,7 @@ module SocialWeb
               ) { 1 }.
                 join(:social_web_relationships, { parent_iri: :iri }).
                 join(Sequel[:social_web_objects].as(:children), { iri: :child_iri }).
-                where(Sequel[:social_web_objects][:iri] => iri),
+                where(Sequel[:social_web_objects][:iri] => normalize_id(iri)),
 
               select(
                 Sequel[:social_web_objects][:iri],
@@ -81,7 +81,7 @@ module SocialWeb
               ) { 1 }.
                 join(:social_web_relationships, { child_iri: :iri }).
                 join(Sequel[:social_web_objects].as(:parents), { iri: :parent_iri }).
-                where(Sequel[:social_web_objects][:iri] => iri),
+                where(Sequel[:social_web_objects][:iri] => normalize_id(iri)),
 
               select(
                 Sequel[:social_web_objects][:iri],

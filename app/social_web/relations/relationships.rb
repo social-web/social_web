@@ -6,14 +6,14 @@ module SocialWeb
   module Relations
     class Relationships < Sequel::Model(SocialWeb[:db][:social_web_relationships])
       include NormalizeID
-      
+
       class << self
         def by_child_iri(iri)
-          where(child_iri: iri)
+          where(child_iri: normalize_id(iri))
         end
 
         def by_parent_iri(iri)
-          where(parent_iri: iri)
+          where(parent_iri: normalize_id(iri))
         end
 
         def by_type(type)
