@@ -61,15 +61,15 @@ module SocialWeb
         ActivityStreams.from_json(res.body.to_s)
       end
 
-      def post(iri, obj)
+      def post(object:, to_collection:)
         request = ::HTTP.build_request(
           :post,
-          iri,
+          to_collection.is_a?(ActivityStreams) ? to_collection[:id] : to_collection,
           headers: {
             accept: ACTIVITY_JSON_MIME_TYPE,
             date: Time.now.utc.httpdate
           },
-          body: obj.compress.to_json
+          body: object.compress.to_json
         )
 
         if @actor

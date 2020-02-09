@@ -12,7 +12,7 @@ module SocialWeb
         when 'Follow'
           SocialWeb['services.http_client'].
             for_actor(actor).
-            post(activity[:object][:id], activity)
+            post(object: activity, to_collection: activity[:object][:outbox])
         end
       end
     end
