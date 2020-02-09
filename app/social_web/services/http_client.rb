@@ -78,7 +78,7 @@ module SocialWeb
           signature = Signature.call(
             request,
             private_key: keys.fetch(:private),
-            key_id: keys[:key_id]
+            key_id: keys.fetch(:key_id)
           )
           request.headers.merge!(signature: signature)
         end
