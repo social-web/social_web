@@ -50,6 +50,32 @@ module SocialWeb
             expect(collection).to include(update_act)
           end
         end
+
+        describe 'Accept activity' do
+          it "adds the activity's actor to the actor's following collection if the " do
+            actor = create :object, type: 'Actor'
+
+            follow_actor = create :object, type: 'Actor'
+            follow_activity = create :object,
+              type: 'Follow',
+              object: follow_actor
+
+            SocialWeb['collections.outbox'].for_actor(actor).add(follow_activity)
+
+            accept_activity = create :object,
+              type: 'Accept',
+              object: follow_activity,
+              actor: follow_actor
+
+            inbox = described_class.for_actor(actor)
+            following_collection = SocialWeb['collections.following'].
+              for_actor(actor)
+
+            expect(following_collection).not_to include(follow_actor)
+            inbox.process(accept_activity)
+            expect(following_collection).to include(follow_actor)
+          end
+        end
       end
     end
   end
