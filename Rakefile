@@ -52,7 +52,7 @@ namespace :social_web do
     end
 
     desc 'Print SocialWeb migrations'
-    task :migrations do
+    task :print_migrations do
       Dir[File.join(migrations_path, '*.rb')].each do |migration|
         puts File.read(migration)
       end
