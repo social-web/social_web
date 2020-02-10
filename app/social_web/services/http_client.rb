@@ -44,7 +44,7 @@ module SocialWeb
         )
 
         if @actor
-          keys = SocialWeb.container['repositories.keys'].for_actor(@actor)
+          keys = SocialWeb.container['repositories.keys'].get_keys_for(@actor)
 
           signature = Signature.call(
             request,
