@@ -29,64 +29,65 @@ module SocialWeb
         new(actor)
       end
 
-      def initialize(for_actor = nil)
+      def initialize(for_actor)
         @actor = for_actor
       end
 
+      # @param [String] iri
+      # @return [nil, ActivityStreams]
       def get(iri)
-        request = ::HTTP.build_request(
-          :get,
-          iri,
-          headers: {
-            accept: ACTIVITY_JSON_MIME_TYPE,
-            date: Time.now.utc.httpdate
-          }
-        )
+        request = http_client.build_request(:get, iri)
+        request.headers.merge!(signature: signature(request))
 
-        if @actor
-          keys = SocialWeb.container['repositories.keys'].get_keys_for(@actor)
-
-          signature = Signature.call(
-            request,
-            private_key: keys.fetch(:private),
-            key_id: keys[:key_id]
-          )
-          request.headers.merge!(signature: signature)
-        end
-
-        client = ::HTTP::Client.new
-        res = client.perform(request, client.default_options)
+        res = perform(request)
         return unless res.status.success?
 
         ActivityStreams.from_json(res.body.to_s)
       end
 
+      # @param [ActivityStreams] object
+      # @param [String] to_collection
+      # @return [TrueClass, FalseClass]
       def post(object:, to_collection:)
-        request = ::HTTP.build_request(
+        request = http_client.build_request(
           :post,
           to_collection.is_a?(ActivityStreams) ? to_collection[:id] : to_collection,
-          headers: {
-            accept: ACTIVITY_JSON_MIME_TYPE,
-            date: Time.now.utc.httpdate
-          },
           body: object.compress.to_json
         )
+        request.headers.merge!(signature: signature(request))
 
-        if @actor
-          keys = SocialWeb.container['repositories.keys'].get_keys_for(@actor)
-
-          signature = Signature.call(
-            request,
-            private_key: keys.fetch(:private),
-            key_id: keys.fetch(:key_id)
-          )
-          request.headers.merge!(signature: signature)
-        end
-
-        client = ::HTTP::Client.new
-        res = client.perform(request, client.default_options)
+        res = perform(request)
 
         res.status.success?
+      end
+
+      private
+
+      attr_reader :actor
+
+      def perform(request)
+        client = ::HTTP::Client.new
+        client.perform(request, client.default_options)
+      end
+
+      def signature(request)
+        keys = SocialWeb.container['repositories.keys'].get_keys_for(actor)
+
+        Signature.call(
+          request,
+          private_key: keys.fetch(:private),
+          key_id: keys.fetch(:key_id)
+        )
+      end
+
+      def http_client
+        HTTP.
+          use(logging: { logger: SocialWeb[:config].loggers[0] }).
+          headers(
+            accept: ACTIVITY_JSON_MIME_TYPE,
+            date: Time.now.utc.httpdate,
+            signature: signature
+          )
       end
     end
   end
