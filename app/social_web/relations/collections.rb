@@ -7,7 +7,7 @@ module SocialWeb
     class Collections < Sequel::Model(SocialWeb[:db][:social_web_collections])
       include NormalizeID
 
-      class << self
+      dataset_module do
         def by_object_iri(iri)
           where(object_iri: normalize_id(iri))
         end

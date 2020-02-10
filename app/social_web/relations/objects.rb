@@ -23,7 +23,7 @@ module SocialWeb
         left_key: :child_iri,
         right_key: :parent_iri
 
-      class << self
+      dataset_module do
         def by_iri(iri)
           where(iri: normalize_id(iri))
         end

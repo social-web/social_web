@@ -19,8 +19,10 @@ module SocialWeb
 
           private
 
-          def self.normalize_id(id)
-            id.end_with?('/') ? id.chop : id
+          dataset_module do
+            def normalize_id(id)
+              id.end_with?('/') ? id.chop : id
+            end
           end
         end
       end
