@@ -49,7 +49,6 @@ module SocialWeb
       end
 
       r.on(COLLECTION_REGEX) do |collection_type|
-
         r.get do
           actor_iri = parse_actor_iri(iri)
           actor = SocialWeb['repositories.objects'].get_by_iri(actor_iri)
