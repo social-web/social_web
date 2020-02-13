@@ -3,7 +3,7 @@
 module SocialWeb
   class Logger < ::Logger
     FORMATTER = lambda do |severity, datetime, progname, msg|
-      ::Logger::Formatter.new.call(severity, datetime, progname, "SocialWeb: #{msg}")
+      ::Logger::Formatter.new.call(severity, datetime, 'SocialWeb', msg)
     end
     LOG_LEVELS = [:debug , :info , :warn , :error , :fatal , :unknown]
 
@@ -16,5 +16,8 @@ module SocialWeb
         @loggers.each { |logger| logger.send(log_level, message) }
       end
     end
+
+    alias_method :<<, :info
+    alias_method :write, :info
   end
 end

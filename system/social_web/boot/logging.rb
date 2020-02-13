@@ -5,6 +5,6 @@ SocialWeb::Container.boot :logging do
     require 'logger'
 
     require 'social_web/logger'
-    register(:logger, SocialWeb::Logger)
+    register(:logger, SocialWeb::Logger.new(STDOUT))
   end
 end
