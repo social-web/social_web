@@ -15,7 +15,6 @@ module SocialWeb
     ].freeze
     COLLECTION_REGEX = /(#{SocialWeb[:config].collections.join('|')})/i.freeze
 
-    plugin :halt
     plugin :json
     plugin :middleware
     plugin :default_headers, 'Content-Type' => 'text/html; charset=utf-8'
@@ -37,7 +36,12 @@ module SocialWeb
           end
 
           found = SocialWeb['repositories.objects'].get_by_iri(iri)
-          found.nil? ? r.halt(404) : found.to_json
+          if found.nil?
+            response.status = 404
+            nil
+          else
+            found.to_json
+          end
         end
 
         r.post do
