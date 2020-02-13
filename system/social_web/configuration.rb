@@ -1,28 +1,12 @@
 # frozen_string_literal: true
 
 module SocialWeb
-  def self.configuration
-    @configuration ||= Configuration.new
-  end
+  extend ::Dry::Configurable
 
-  def self.configure
-    yield configuration
-  end
+  setting(:loggers, [SocialWeb[:logger].new(STDOUT)]) { |logger| Array(logger).freeze }
+  setting(:collections, %i[inbox outbox].freeze) { |collection| Array(collection).freeze }
 
-  class Configuration
-    attr_accessor :loggers
-
-    # When traversing an ActivityStream's property tree, how deep should we go
-    # Default: Float::INFINITY
-    attr_accessor :max_depth
-
-    def loggers
-      @loggers ||= [SocialWeb[:logger].new(STDOUT)]
-    end
-
-    def loggers=(val)
-      @loggers ||= []
-      @loggers += Array(val)
-    end
-  end
+  # When traversing an ActivityStream's property tree, how deep should we go
+  # Default: Float::INFINITY
+  setting :max_depth, 200
 end
