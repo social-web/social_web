@@ -9,23 +9,25 @@ module SocialWeb
   end
 
   class Routes < ::Roda
-    COLLECTION_REGEX = begin
-      collections = /(#{SocialWeb[:config].collections.join('|')})/i.freeze
-    end
+    ACTIVITY_JSON_MIME_TYPES = [
+      'application/ld+json; profile="https://www.w3.org/ns/activitystreams',
+      'application/activity+json'
+    ].freeze
+    COLLECTION_REGEX = /(#{SocialWeb[:config].collections.join('|')})/i.freeze
 
     plugin :halt
     plugin :json
     plugin :middleware
-    plugin :type_routing, types: { activity_json: 'application/activity+json' }
     plugin :default_headers, 'Content-Type' => 'text/html; charset=utf-8'
     plugin :common_logger, SocialWeb[:config].loggers[0]
+    plugin :header_matchers
 
     route do |r|
       iri = r.url
       actor_iri = parse_actor_iri(iri)
       collection_type= parse_collection(iri)
 
-      r.activity_json do
+      r.on ACTIVITY_JSON_MIME_TYPES.map { |mime| [accept: mime] } do
         r.get do
           r.on(/.*#{COLLECTION_REGEX}/) do |collection_type|
             actor = SocialWeb['repositories.objects'].get_by_iri(actor_iri)
