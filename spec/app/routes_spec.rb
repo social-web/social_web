@@ -18,6 +18,25 @@ module SocialWeb
         expect(last_response.status).to eq(404)
         expect(last_response.body).to be_empty
       end
+
+      %w[inbox outbox].each do |collection|
+        context collection do
+          it 'returns the collection and items' do
+            actor = create :object, type: 'Actor'
+            item = create :object
+            col = build :collection,
+              for_actor: actor,
+              items: [item],
+              type: 'OrderedCollection',
+              name: collection
+            actor[collection.to_sym] = col
+
+            header('accept', 'application/activity+json')
+            get "#{actor[:id]}/#{collection}"
+            expect(last_response.body).to eq(col.to_json)
+          end
+        end
+      end
     end
 
     context 'POST' do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SocialWeb
-  class Logger
+  class Logger < ::Logger
     FORMATTER = lambda do |severity, datetime, progname, msg|
       ::Logger::Formatter.new.call(severity, datetime, progname, "SocialWeb: #{msg}")
     end

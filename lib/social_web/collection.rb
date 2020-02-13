@@ -15,7 +15,7 @@ module SocialWeb
     def add(obj)
       SocialWeb['repositories.objects'].store(obj)
       SocialWeb['repositories.collections'].
-        store_object_in_collection_for_iri(
+        store_object_in_collection_for_actor(
           object: obj,
           collection: self.class::TYPE.downcase,
           actor: actor

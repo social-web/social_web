@@ -12,11 +12,12 @@ module SocialWeb
           to_a
         ActivityStreams.ordered_collection(
           id: [actor[:id], collection].join('/'),
-          items: items.map { |i| ActivityStreams.from_json(i[:json])}
+          items: items.map { |i| ActivityStreams.from_json(i[:json])},
+          name: collection
         )
       end
 
-      def store_object_in_collection_for_iri(object:, collection:, actor:)
+      def store_object_in_collection_for_actor(object:, collection:, actor:)
         return if stored?(object: object, collection: collection, actor: actor)
 
         collections.insert(
