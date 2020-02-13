@@ -16,7 +16,7 @@ module SocialWeb
     COLLECTION_REGEX = /(#{SocialWeb[:config].collections.join('|')})/i.freeze
 
     plugin :middleware
-    plugin :common_logger, SocialWeb[:config].loggers[0]
+    plugin :common_logger, SocialWeb[:logger]
     plugin :header_matchers
 
     route do |r|
