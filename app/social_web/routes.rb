@@ -16,7 +16,6 @@ module SocialWeb
     COLLECTION_REGEX = /(#{SocialWeb[:config].collections.join('|')})/i.freeze
 
     plugin :middleware
-    plugin :default_headers, 'Content-Type' => 'text/html; charset=utf-8'
     plugin :common_logger, SocialWeb[:config].loggers[0]
     plugin :header_matchers
 
@@ -66,6 +65,8 @@ module SocialWeb
           response.headers['Content-Type'] = 'text/plain'
 
           items_list = collection[:items].map { |item| item[:id] }.join("\n")
+
+          response.headers['content-type'] = 'text/plain; charset=utf-8'
 
           <<~TXT
             INBOX for #{actor_iri}
