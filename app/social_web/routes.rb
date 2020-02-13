@@ -15,7 +15,6 @@ module SocialWeb
     ].freeze
     COLLECTION_REGEX = /(#{SocialWeb[:config].collections.join('|')})/i.freeze
 
-    plugin :json
     plugin :middleware
     plugin :default_headers, 'Content-Type' => 'text/html; charset=utf-8'
     plugin :common_logger, SocialWeb[:config].loggers[0]
@@ -32,6 +31,8 @@ module SocialWeb
             actor = SocialWeb['repositories.objects'].get_by_iri(actor_iri)
             collection = SocialWeb['repositories.collections'].
               get_collection_for_actor(actor: actor, collection: collection_type)
+
+            response.headers['content-type'] = ACTIVITY_JSON_MIME_TYPES.join(',')
             collection.to_json
           end
 
