@@ -9,7 +9,7 @@ module SocialWeb
         add(activity)
 
         case activity[:type]
-        when 'Create' then return
+        when 'Create', 'Announce' then return
         when 'Update'
           SocialWeb['repositories.objects'].replace(activity[:object])
         when 'Delete'

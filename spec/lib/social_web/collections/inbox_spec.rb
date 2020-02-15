@@ -7,7 +7,7 @@ module SocialWeb
     RSpec.describe Inbox do
       describe '#process' do
         describe 'Create activity' do
-          it "adds the activity to the actor's" do
+          it "adds the activity to the actor's inbox" do
             actor = create :object, type: 'Actor'
 
             activity_actor = create :object, type: 'Actor'
@@ -74,6 +74,25 @@ module SocialWeb
             expect(following_collection).not_to include(follow_actor)
             inbox.process(accept_activity)
             expect(following_collection).to include(follow_actor)
+          end
+        end
+
+        describe 'Announce activity' do
+          it "adds the activity to the actor's inbox" do
+            actor = create :object, type: 'Actor'
+
+            activity_actor = create :object, type: 'Actor'
+            announce_act = build :object,
+              type: 'Announce',
+              actor: activity_actor,
+              object: create(:object, type: 'Note')
+
+            collection = described_class.for_actor(actor)
+
+            expect(collection).not_to include(announce_act)
+            expect { collection.process(announce_act) }.
+              to change { SocialWeb['repositories.objects'].total }.by(+1)
+            expect(collection).to include(announce_act)
           end
         end
       end
