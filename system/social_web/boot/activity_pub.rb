@@ -2,7 +2,7 @@
 
 SocialWeb::Container.boot :activity_pub do
   init do
-    require 'social_web'
+    require 'social_web/process'
 
     require 'social_web/collection'
     container.namespace(:collections) do
