@@ -9,6 +9,7 @@ module SocialWeb
   end
 
   class Routes < ::Roda
+    ACCEPTED_HEADERS = %w[accept content-type].map { |h| { header: h } }.freeze
     ACTIVITY_JSON_MIME_TYPES = [
       'application/ld+json; profile="https://www.w3.org/ns/activitystreams',
       'application/activity+json'
@@ -24,8 +25,8 @@ module SocialWeb
       actor_iri = parse_actor_iri(iri)
       collection_type= parse_collection(iri)
 
-      # We need to specify the Rack-parsed header
-      r.on [{ header: 'HTTP_ACCEPT' }, { header: 'HTTP_CONTENT_TYPE' }] do |content_type|
+      # We need to specify the Rack-parsed headers
+      r.on ACCEPTED_HEADERS do |content_type|
         return unless ACTIVITY_JSON_MIME_TYPES.include?(content_type)
 
         r.get do
