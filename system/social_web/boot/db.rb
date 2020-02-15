@@ -6,7 +6,7 @@ SocialWeb::Container.boot :db do
 
     db = Sequel.connect(
       ENV['SOCIAL_WEB_DATABASE_URL'],
-      loggers: SocialWeb[:logger]
+      loggers: SocialWeb[:config].logger
     )
 
     db.extension :caller_logging

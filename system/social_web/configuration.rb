@@ -3,7 +3,7 @@
 module SocialWeb
   extend ::Dry::Configurable
 
-  setting(:loggers, [SocialWeb[:logger]]) { |logger| Array(logger).freeze }
+  setting(:logger, SocialWeb[:logger])
   setting(:collections, %i[inbox outbox].freeze) { |collection| Array(collection).freeze }
 
   # When traversing an ActivityStream's property tree, how deep should we go

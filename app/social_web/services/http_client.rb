@@ -82,7 +82,7 @@ module SocialWeb
 
       def http_client
         HTTP.
-          use(logging: { logger: SocialWeb[:logger] }).
+          use(logging: { logger: SocialWeb[:config].loggers }).
           headers(
             accept: ACTIVITY_JSON_MIME_TYPE,
             date: Time.now.utc.httpdate,
