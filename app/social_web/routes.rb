@@ -24,7 +24,10 @@ module SocialWeb
       actor_iri = parse_actor_iri(iri)
       collection_type= parse_collection(iri)
 
-      r.on ACTIVITY_JSON_MIME_TYPES.map { |mime| [accept: mime] } do
+      # We need to specify the Rack-parsed header
+      r.on [{ header: 'HTTP_ACCEPT' }, { header: 'HTTP_CONTENT_TYPE' }] do |content_type|
+        return unless ACTIVITY_JSON_MIME_TYPES.include?(content_type)
+
         r.get do
           r.on(/.*#{COLLECTION_REGEX}/) do |collection_type|
             actor = SocialWeb['repositories.objects'].get_by_iri(actor_iri)

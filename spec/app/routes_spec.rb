@@ -5,15 +5,15 @@ require 'spec_helper'
 module SocialWeb
   RSpec.describe Routes, type: :request do
     describe 'GET' do
+      before { header('HTTP_ACCEPT', 'application/activity+json') }
+
       it 'returns the JSON representation of the found object' do
         obj = create :object
-        header('accept', 'application/activity+json')
         get obj[:id]
         expect(last_response.body).to eq(obj.to_json)
       end
 
       it 'returns an empty 404 response if the object does not exist' do
-        header('accept', 'application/activity+json')
         get '/some-object'
         expect(last_response.status).to eq(404)
         expect(last_response.body).to be_empty
@@ -31,7 +31,6 @@ module SocialWeb
               name: collection
             actor[collection.to_sym] = col
 
-            header('accept', 'application/activity+json')
             get "#{actor[:id]}/#{collection}"
             expect(last_response.body).to eq(col.to_json)
           end
@@ -40,6 +39,8 @@ module SocialWeb
     end
 
     context 'POST' do
+      before { header('HTTP_CONTENT_TYPE', 'application/activity+json') }
+
       %w[inbox outbox].each do |collection|
         describe collection do
           it "adds the item to the actor's #{collection}" do
@@ -50,7 +51,6 @@ module SocialWeb
               to receive(:process).
               with(activity.to_json, actor[:id], collection)
 
-            header('accept', 'application/activity+json')
             post "#{actor[:id]}/#{collection}", activity.to_json
           end
         end
