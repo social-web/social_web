@@ -5,7 +5,7 @@ require 'spec_helper'
 module SocialWeb
   RSpec.describe Routes, type: :request do
     describe 'GET' do
-      before { header('HTTP_ACCEPT', 'application/activity+json') }
+      before { header('accept', 'application/activity+json') }
 
       it 'returns the JSON representation of the found object' do
         obj = create :object
@@ -39,7 +39,7 @@ module SocialWeb
     end
 
     context 'POST' do
-      before { header('HTTP_CONTENT_TYPE', 'application/activity+json') }
+      before { header('content-type', 'application/activity+json') }
 
       %w[inbox outbox].each do |collection|
         describe collection do
