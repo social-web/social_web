@@ -85,8 +85,7 @@ module SocialWeb
           use(logging: { logger: SocialWeb[:config].logger }).
           headers(
             accept: ACTIVITY_JSON_MIME_TYPE,
-            date: Time.now.utc.httpdate,
-            signature: signature
+            date: Time.now.utc.httpdate
           )
       end
     end
