@@ -91,7 +91,7 @@ module SocialWeb
       end
 
       def stored?(obj)
-        found = get_by_iri(obj[:id])
+        found = objects.by_iri(obj[:id]).first
         !found.nil?
       end
     end
