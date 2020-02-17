@@ -9,7 +9,6 @@ module SocialWeb
   end
 
   class Routes < ::Roda
-    ACCEPTED_HEADERS = %w[accept content-type].map { |h| { header: h } }.freeze
     ACTIVITY_JSON_MIME_TYPES = [
       'application/ld+json; profile="https://www.w3.org/ns/activitystreams',
       'application/activity+json'
@@ -25,8 +24,7 @@ module SocialWeb
       actor_iri = parse_actor_iri(iri)
       collection_type= parse_collection(iri)
 
-      # We need to specify the Rack-parsed headers
-      r.on ACCEPTED_HEADERS do |content_type|
+      r.on [{ header: 'accept' }, { header: 'content-type' }] do |content_type|
         return unless ACTIVITY_JSON_MIME_TYPES.include?(content_type)
 
         r.get do
@@ -50,34 +48,9 @@ module SocialWeb
 
         r.post do
           activity_json = r.body.read
-
           SocialWeb.process(activity_json, actor_iri, collection_type)
-
           response.status = 201
           ''
-        end
-      end
-
-      r.on(COLLECTION_REGEX) do |collection_type|
-        r.get do
-          actor_iri = parse_actor_iri(iri)
-          actor = SocialWeb['repositories.objects'].get_by_iri(actor_iri)
-
-          collection = SocialWeb['repositories.collections'].
-            get_collection_for_actor(actor: actor, collection: collection_type)
-
-          response.headers['Content-Type'] = 'text/plain'
-
-          items_list = collection[:items].map { |item| item[:id] }.join("\n")
-
-          response.headers['content-type'] = 'text/plain; charset=utf-8'
-
-          <<~TXT
-            INBOX for #{actor_iri}
-            #{collection[:items].count}
-
-            #{items_list}
-          TXT
         end
       end
     end
