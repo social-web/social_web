@@ -3,7 +3,8 @@
 module SocialWeb
   module Services
     class HTTPClient
-      ACTIVITY_JSON_MIME_TYPE = 'application/activity+json'
+      LD_JSON_MIME_TYPE = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"'
+      ACTIVITY_JSON_MIME_TYPE = "#{LD_JSON_MIME_TYPE}; application/activity+json"
 
       Signature = ->(request, key_id:, private_key:) {
         signing_headers = request.headers.to_h.merge(
@@ -37,7 +38,8 @@ module SocialWeb
       # @return [nil, ActivityStreams]
       def get(iri)
         request = http_client.build_request(:get, iri)
-        request.headers.merge!(signature: signature(request))
+        request.headers[:accept] = ACTIVITY_JSON_MIME_TYPE
+        sign_request(request)
 
         res = perform(request)
         return unless res.status.success?
@@ -54,7 +56,8 @@ module SocialWeb
           to_collection.is_a?(ActivityStreams) ? to_collection[:id] : to_collection,
           body: object.compress.to_json
         )
-        request.headers.merge!(signature: signature(request))
+        request.headers['content-type'] = LD_JSON_MIME_TYPE
+        request = sign_request(request)
 
         res = perform(request)
 
@@ -83,10 +86,11 @@ module SocialWeb
       def http_client
         HTTP.
           use(logging: { logger: SocialWeb[:config].logger }).
-          headers(
-            accept: ACTIVITY_JSON_MIME_TYPE,
-            date: Time.now.utc.httpdate
-          )
+          headers(date: Time.now.utc.httpdate)
+      end
+
+      def sign_request(request)
+        request.headers.merge(signature: signature(request))
       end
     end
   end
