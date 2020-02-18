@@ -22,7 +22,7 @@ module SocialWeb
       # @return [ActivityStreams::Object]
       def call(obj)
         new_obj = obj.dup
-        new_obj.traverse_properties(PROPERTIES, depth: SocialWeb[:config].max_depth) do |hash|
+        new_obj.traverse_properties(depth: SocialWeb[:config].max_depth) do |hash|
           parent, child, prop = hash.values_at(:parent, :child, :property)
 
           # Check if the value of `child` is a remotely accessible IRI
