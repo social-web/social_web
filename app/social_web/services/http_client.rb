@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'http'
+
 module SocialWeb
   module Services
     class HTTPClient
@@ -84,7 +86,7 @@ module SocialWeb
       end
 
       def http_client
-        HTTP.
+        ::HTTP.
           use(logging: { logger: SocialWeb[:config].logger }).
           headers(date: Time.now.utc.httpdate)
       end
