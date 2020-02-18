@@ -25,14 +25,8 @@ module SocialWeb
         new_obj.traverse_properties(depth: SocialWeb[:config].max_depth) do |hash|
           parent, child, prop = hash.values_at(:parent, :child, :property)
 
-          # Check if the value of `child` is a remotely accessible IRI
           if child.is_a?(String) && child.match?(URI.regexp)
-            child = SocialWeb['repositories.objects'].get_by_iri(child) ||
-              SocialWeb['services.http_client'].
-                # We'll need to sign the request on the actor's behalf
-                for_actor(actor).
-                # Retrieve the remote object
-                get(child)
+            child = SocialWeb['services.http_client'].for_actor(@actor).get(child)
           end
 
           # Store the parent, child, and a record of their relationship
@@ -50,10 +44,6 @@ module SocialWeb
 
         new_obj
       end
-
-      private
-
-      attr_reader :actor
     end
   end
 end
