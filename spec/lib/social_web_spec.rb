@@ -15,6 +15,16 @@ RSpec.describe SocialWeb do
           to receive(:for_actor).
           with(actor).
           and_return(stubbed_collection)
+        expect(SocialWeb['repositories.objects']).
+          to receive(:store).
+          with(activity)
+
+        dereferencer = instance_double(SocialWeb['services.dereference'])
+        expect(SocialWeb['services.dereference']).
+          to receive(:for_actor).
+          with(actor).
+          and_return(dereferencer)
+        expect(dereferencer).to receive(:call).with(activity)
 
         expect(stubbed_collection).to receive(:process).with(activity)
 
