@@ -6,7 +6,10 @@ ENV['SOCIAL_WEB_DATABASE_URL'] = 'sqlite://social_web_test.sqlite3'
 require 'social_web/boot'
 
 SocialWeb.configure do |config|
-  config.logger = SocialWeb[:logger].class.new(File.join('tmp', 'social_web_test.log'))
+  config.logger = ::Logger.new(
+    File.join('tmp', 'social_web_test.log'),
+    formatter: SocialWeb::LOG_FORMATTER
+  )
   config.max_depth = 200
 end
 
