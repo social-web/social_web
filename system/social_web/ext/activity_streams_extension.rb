@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'activity_streams'
-
 module ActivityStreams
   module Extensions
     module ActivityPub
-      def self.included(base)
+      def self.extended(base)
         base.class_eval do
           property :inbox
           property :outbox
