@@ -17,7 +17,7 @@ module SocialWeb
         end
 
         def by_type(type)
-          where(Sequel[:social_web_collections][:type] => type)
+          where(Sequel[:social_web_collections][:type] => type.to_s)
         end
 
         def with_objects

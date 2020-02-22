@@ -21,7 +21,7 @@ module SocialWeb
         return if stored?(object: object, collection: collection, actor: actor)
 
         collections.insert(
-          type: collection,
+          type: collection.to_s,
           object_iri: object[:id],
           actor_iri: actor[:id],
           created_at: Time.now.utc
@@ -33,7 +33,7 @@ module SocialWeb
           where(
             actor_iri: actor[:id],
             object_iri: object[:id],
-            type: collection
+            type: collection.to_s
           ).
           first
         !found.nil?
