@@ -12,7 +12,8 @@ module SocialWeb
       end
 
       def store(parent:, child:, property:)
-        return if stored?(parent: parent, child: child, prop: property)
+        return if stored?(parent: parent, child: child, prop: property) ||
+          !parent[:id] || !child[:id]
 
         relationships.insert(
           type: property.to_s,

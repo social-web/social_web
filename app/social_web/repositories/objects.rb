@@ -41,7 +41,7 @@ module SocialWeb
       end
 
       def store(obj)
-        return obj if stored?(obj)
+        return obj if stored?(obj) || !obj[:id]
 
         compressed = obj.compress
 
@@ -91,6 +91,8 @@ module SocialWeb
       end
 
       def stored?(obj)
+        return false unless obj[:id]
+
         found = objects.by_iri(obj[:id]).first
         !found.nil?
       end
