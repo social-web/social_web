@@ -4,8 +4,7 @@ module SocialWeb
   module Services
     # Retrieve the authoritative object and its nested, authorative associations.
     class Dereference
-      PROPERTIES = %i[actor attributedTo inReplyTo object target tag].freeze
-      COLLECTIONS = %i[replies].freeze
+      IGNORED_PROPERTIES = %i[@context].freeze
 
       def self.for_actor(actor)
         new(actor)
@@ -23,6 +22,7 @@ module SocialWeb
       def call(obj)
         obj.traverse_properties(depth: SocialWeb[:config].max_depth) do |hash|
           parent, child, prop = hash.values_at(:parent, :child, :property)
+          next if IGNORED_PROPERTIES.include?(prop)
 
           child = dereference_uri(child) if is_a_uri?(child)
           next unless child.is_a?(ActivityStreams::Object)
