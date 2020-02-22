@@ -20,6 +20,8 @@ module SocialWeb
       # @param [ActivityStreams::Object] obj
       # @return [ActivityStreams::Object]
       def call(obj)
+        obj = dereference_uri(is_a_uri?(obj) ? obj : obj[:id])
+
         obj.traverse_properties(depth: SocialWeb[:config].max_depth) do |hash|
           parent, child, prop = hash.values_at(:parent, :child, :property)
           next if IGNORED_PROPERTIES.include?(prop)
@@ -44,26 +46,42 @@ module SocialWeb
       private
 
       def dereference_collection(actor, collection, collection_name)
-        collection.traverse_items(depth: 1) do |collection|
-          collection[:items] = collection[:items].map do |item|
-            item = dereference_uri(item) if is_a_uri?(item)
+        collection.traverse_items(depth: SocialWeb[:config].max_depth) do |collection|
+          collection = dereference_uri(collection) if is_a_uri?(collection)
+          collection[:items] ||= []
+          collection[:items] = collection[:items].map do |i|
+            dereference_collection_item(i, collection_name, actor)
+          end
 
-            store_object(item)
-            store_item_in_collection_for_actor(item, collection_name, actor)
-
-            item
+          collection[:orderedItems] ||= []
+          collection[:orderedItems] = collection[:orderedItems].map do |i|
+            dereference_collection_item(i, collection_name, actor)
           end
 
           collection
         end
       end
 
+      def dereference_collection_item(item, collection_name, actor)
+        item = dereference_uri(item) if is_a_uri?(item)
+        item = ActivityStreams.new(**item) if item.is_a?(Hash)
+
+        store_object(item)
+        store_item_in_collection_for_actor(item, collection_name, actor)
+
+        item
+      end
+
       def dereference_uri(uri)
-        SocialWeb['services.http_client'].for_actor(@actor).get(uri)
+        http_client.get(uri)
+      end
+
+      def http_client
+        @http_client ||= SocialWeb['services.http_client'].for_actor(@actor)
       end
 
       def is_a_uri?(child)
-        child.is_a?(String) && child.match?(URI.regexp)
+        child.is_a?(String) && child.match?(/^#{URI.regexp}$/)
       end
 
       def store_item_in_collection_for_actor(item, collection, actor)
