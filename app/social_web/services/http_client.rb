@@ -93,6 +93,7 @@ module SocialWeb
 
       def sign_request(request)
         request.headers.merge(signature: signature(request))
+        request
       end
     end
   end
