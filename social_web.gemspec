@@ -4,8 +4,7 @@ Gem::Specification.new do |s|
   s.name = 'social_web'
   s.version = '0.1'
   s.summary = 'Framework for the Social Web'
-  s.description = 'A suite of apps and tools for participating in the social ' \
-    'rack.'
+  s.description = 'A suite of apps and tools for participating in the social web'
 
   s.license = 'MIT'
 
