@@ -4,7 +4,7 @@ module SocialWeb
   module Services
     # Retrieve the authoritative object and its nested, authorative associations.
     class Dereference
-      IGNORED_PROPERTIES = %i[@context].freeze
+      IGNORED_PROPERTIES = %i[@context id].freeze
 
       def self.for_actor(actor)
         new(actor)
