@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'dry-container'
   s.add_dependency 'dry-configurable'
-  s.add_dependency 'dry-monads'
   s.add_dependency 'dry-system'
 
   # Provides easy access to an HTTP client
@@ -33,11 +32,6 @@ Gem::Specification.new do |s|
 
   # Provides a database toolkit for persistance
   s.add_dependency 'sequel'
-
-  # Provides simple templating of HTML documents
-  s.add_dependency 'slim'
-  # Supports 'slim'
-  s.add_dependency 'tilt'
 
   s.add_development_dependency 'bundler', '~> 2.0'
   s.add_development_dependency 'dry-auto_inject'
