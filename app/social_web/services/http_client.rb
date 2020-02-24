@@ -63,7 +63,12 @@ module SocialWeb
 
         res = perform(request)
 
-        res.status.success?
+        if res.status.success?
+          true
+        else
+          SocialWeb[:config].logger.error(res.body.to_s)
+          false
+        end
       end
 
       private
