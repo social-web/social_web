@@ -22,6 +22,16 @@ module SocialWeb
             end
           end
         end
+
+        keys = SocialWeb['repositories.keys'].get_keys_for(new_obj)
+        if keys
+          new_obj[:publicKey] = {
+            id: keys[:key_id],
+            owner: new_obj[:id],
+            publicKeyPem: keys[:public]
+          }
+        end
+
         new_obj
       end
     end

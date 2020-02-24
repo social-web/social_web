@@ -7,6 +7,8 @@ module SocialWeb
       # @return [Hash]
       def get_keys_for(obj)
         keys = SocialWeb[:db][:social_web_keys].first(object_iri: obj[:id])
+        return unless keys
+
         timestamp = keys[:updated_at].iso8601
         {
           key_id: "#{obj[:id]}/#key-#{timestamp}",
