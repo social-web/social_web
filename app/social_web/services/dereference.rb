@@ -21,7 +21,9 @@ module SocialWeb
       # @param [ActivityStreams::Object] obj
       # @return [ActivityStreams::Object]
       def call(obj)
-        obj = dereference_uri(is_a_uri?(obj) ? obj : obj[:id])
+        unless obj.is_a?(ActivityStreams)
+          raise "Expected an ActivityStreams object, got: #{obj.class}"
+        end
 
         obj.traverse_properties(depth: SocialWeb[:config].max_depth) do |hash|
           parent, child, prop = hash.values_at(:parent, :child, :property)
