@@ -4,6 +4,7 @@ module SocialWeb
   module Services
     # Retrieve the authoritative object and its nested, authorative associations.
     class Dereference
+      # Don't dereference these properties
       IGNORED_PROPERTIES = %i[@context id].freeze
 
       def self.for_actor(actor)
@@ -15,7 +16,7 @@ module SocialWeb
       end
 
       # Wire the remote storage client with the local storage client on behalf
-      # of an actor to remotely access and locally store the object.
+      # of an actor to remotely access and locally store the object and its children.
       #
       # @param [ActivityStreams::Object] obj
       # @return [ActivityStreams::Object]
