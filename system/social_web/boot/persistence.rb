@@ -11,6 +11,9 @@ SocialWeb::Container.boot :persistence do
       require 'social_web/relations/collections'
       register(:collections, SocialWeb::Relations::Collections)
 
+      require 'social_web/relations/keys'
+      register(:keys, SocialWeb::Relations::Keys)
+
       require 'social_web/relations/relationships'
       register(:relationships, SocialWeb::Relations::Relationships)
     end

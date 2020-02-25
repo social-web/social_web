@@ -6,14 +6,14 @@ module SocialWeb
       # @param obj [ActivityStreams] the object to the keys for
       # @return [Hash]
       def get_keys_for(obj)
-        keys = SocialWeb[:db][:social_web_keys].first(object_iri: obj[:id])
-        return unless keys
+        result = keys.by_object_iri(obj[:id]).first
+        return unless result
 
-        timestamp = keys[:updated_at].iso8601
+        timestamp = result[:updated_at].iso8601
         {
           key_id: "#{obj[:id]}/#key-#{timestamp}",
-          private: keys[:private],
-          public: keys[:public]
+          private: result[:private],
+          public: result[:public]
         }
       end
 
@@ -21,13 +21,19 @@ module SocialWeb
       # @return [Hash]
       def generate_for_actor(obj)
         keypair = OpenSSL::PKey::RSA.new(2048)
-        SocialWeb[:db][:social_web_keys].insert(
+        keys.insert(
           object_iri: obj[:id],
           private: keypair.to_pem,
           public: keypair.public_key.to_pem,
           created_at: Time.now.utc,
           updated_at: Time.now.utc
         )
+      end
+
+      private
+
+      def keys
+        SocialWeb['relations.keys']
       end
     end
   end
