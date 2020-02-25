@@ -4,7 +4,12 @@ require 'securerandom'
 
 FactoryBot.define do
   factory :collection, parent: :object do
-    to_create { |instance| SocialWeb['repositories.objects'].store(instance) }
+    to_create do |instance|
+      SocialWeb['repositories.collections'].get_collection_for_actor(
+        actor: for_actor,
+        collection: name
+      )
+    end
 
     id { [for_actor[:id], name].join('/') }
     type { 'Collection' }
