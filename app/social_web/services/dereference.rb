@@ -50,15 +50,18 @@ module SocialWeb
 
       def dereference_collection(actor, collection, collection_name)
         collection.traverse_items(depth: SocialWeb[:config].max_depth) do |collection|
-          collection = dereference_uri(collection) if is_a_uri?(collection)
-          collection[:items] ||= []
-          collection[:items] = collection[:items].map do |i|
-            dereference_collection_item(i, collection_name, actor)
-          end
+          collection = dereference_uri(collection) if is_a_uri?(collection)\
 
-          collection[:orderedItems] ||= []
-          collection[:orderedItems] = collection[:orderedItems].map do |i|
-            dereference_collection_item(i, collection_name, actor)
+          if collection.is_a?(ActivityStreams::OrderedCollection)
+            collection[:orderedItems] ||= []
+            collection[:orderedItems] = collection[:orderedItems].map do |i|
+              dereference_collection_item(i, collection_name, actor)
+            end
+          elsif collection.is_a?(ActivityStreams::Collection)
+            collection[:items] ||= []
+            collection[:items] = collection[:items].map do |i|
+              dereference_collection_item(i, collection_name, actor)
+            end
           end
 
           collection
