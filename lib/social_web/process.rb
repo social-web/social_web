@@ -14,7 +14,8 @@ module SocialWeb
     actor = SocialWeb['repositories.objects'].get_by_iri(actor_iri)
 
     SocialWeb['repositories.objects'].store(activity)
-    SocialWeb['services.dereference'].for_actor(actor).call(activity)
+
+    activity = SocialWeb['services.dereference'].for_actor(actor).call(activity)
     activity = SocialWeb['services.reconstitute'].call(activity)
 
     SocialWeb["collections.#{collection}"].for_actor(actor).process(activity)

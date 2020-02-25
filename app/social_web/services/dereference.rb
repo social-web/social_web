@@ -25,7 +25,9 @@ module SocialWeb
           raise "Expected an ActivityStreams object, got: #{obj.class}"
         end
 
-        obj.traverse_properties(depth: SocialWeb[:config].max_depth) do |hash|
+        obj_dup = obj.dup
+
+        obj_dup.traverse_properties(depth: SocialWeb[:config].max_depth) do |hash|
           parent, child, prop = hash.values_at(:parent, :child, :property)
           next if IGNORED_PROPERTIES.include?(prop)
 
@@ -43,7 +45,7 @@ module SocialWeb
           child
         end
 
-        obj
+        obj_dup
       end
 
       private

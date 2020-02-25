@@ -24,7 +24,10 @@ RSpec.describe SocialWeb do
           to receive(:for_actor).
           with(actor).
           and_return(dereferencer)
-        expect(dereferencer).to receive(:call).with(activity)
+        expect(dereferencer).
+          to receive(:call).
+          with(activity).
+          and_return(activity.dup)
 
         expect(stubbed_collection).to receive(:process).with(activity)
 

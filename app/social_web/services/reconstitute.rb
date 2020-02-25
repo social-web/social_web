@@ -5,8 +5,8 @@ module SocialWeb
     # Retrieve and assign object's nested relationships
     class Reconstitute
       def call(obj)
-        new_obj = obj.dup
-        SocialWeb['repositories.objects'].traverse(new_obj) do |prop_map|
+        dupped_obj = obj.dup
+        SocialWeb['repositories.objects'].traverse(dupped_obj) do |prop_map|
           parent, child, prop = prop_map.values_at(:parent, :child, :property)
           parent[prop] = child
           next unless child
@@ -23,16 +23,16 @@ module SocialWeb
           end
         end
 
-        keys = SocialWeb['repositories.keys'].get_keys_for(new_obj)
+        keys = SocialWeb['repositories.keys'].get_keys_for(dupped_obj)
         if keys
-          new_obj[:publicKey] = {
+          dupped_obj[:publicKey] = {
             id: keys[:key_id],
-            owner: new_obj[:id],
+            owner: dupped_obj[:id],
             publicKeyPem: keys[:public]
           }
         end
 
-        new_obj
+        dupped_obj
       end
     end
   end
