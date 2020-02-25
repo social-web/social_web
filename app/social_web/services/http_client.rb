@@ -44,9 +44,12 @@ module SocialWeb
         sign_request(request)
 
         res = perform(request)
-        return unless res.status.success?
-
-        ActivityStreams.from_json(res.body.to_s)
+        if res.status.success?
+          ActivityStreams.from_json(res.body.to_s)
+        else
+          SocialWeb[:config].logger.error(res.body.to_s)
+          nil
+        end
       end
 
       # @param [ActivityStreams] object
