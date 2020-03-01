@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 # frozen_string_literal: true
-ENV['SOCIAL_WEB_DATABASE_URL'] = 'sqlite://social_web_dev.sqlite3'
+ENV['SOCIAL_WEB_ACTIVITY_PUB_DATABASE_URL'] = 'sqlite://social_web_dev.sqlite3'
 
 require 'bundler/setup'
 require 'sequel'
@@ -9,15 +9,12 @@ require 'sequel'
 Sequel.extension :migration
 Sequel::Migrator.run(
   Sequel.connect(ENV['SOCIAL_WEB_DATABASE_URL']),
-  './db/migrations',
-  table: :social_web_schema_migrations
+  './activity_pub/db/migrations',
+  table: :social_web_activity_pub_schema_migrations
 )
 
 require 'social_web/boot'
 
 SocialWeb::Container.finalize!
-
-require 'factory_bot'
-FactoryBot.find_definitions
 
 binding.irb

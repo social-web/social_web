@@ -3,7 +3,6 @@
 source 'https://rubygems.org'
 
 gem 'social_web-activity_streams', path: '../activity_streams'
-gem 'roda', github: 'jeremyevans/roda'
-
+gem 'social_web-activity_pub', path: '../activity_pub'
 
 gemspec

@@ -1,21 +1,9 @@
 # frozen_string_literal: true
 
-ENV['SOCIAL_WEB_DATABASE_URL'] = 'sqlite://social_web_dev.sqlite3'
+ENV['SOCIAL_WEB_ACTIVITY_PUB_DATABASE_URL'] = 'sqlite://social_web_dev.sqlite3'
 
 require 'bundler/setup'
-require 'sequel'
-require 'social_web'
-require 'social_web/rack'
-
-Sequel.extension :migration
-
-SocialWeb::Rack.start!
-
-Sequel::Migrator.run(
-  SocialWeb::Rack['db'],
-  './db/migrations',
-  table: :social_web_schema_migrations
-)
+require 'social_web/boot'
 
 class WardenUser
   WARDEN = Struct.new(:test) do
@@ -47,5 +35,6 @@ class WardenUser
 end
 
 use WardenUser
+use SocialWeb::ActivityPub::Rack
 
-run SocialWeb::Rack::Routes.app.freeze
+run ->() { raise }
